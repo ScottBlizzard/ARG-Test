@@ -1,0 +1,6 @@
+| requirement_id | split | checker_score | overall_coverage | duplicate_count | test_count | repaired | valid_partition_coverage | invalid_partition_coverage | boundary_coverage | decision_rule_coverage | state_coverage | illegal_transition_coverage | exception_coverage | diagnostics_count |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| login_lockout_workflow | dev | 0.9500000000000001 | 0.143 | 0 | 5 | False | 0.0 | 0.0 | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | 2 |
+| password_policy_checker | dev | 0.75 | 0.357 | 0 | 6 | True | 0.25 | 0.0 | 0.0 | 0.25 | 1.0 | 1.0 | 0.0 | 4 |
+| shipping_fee_calculator | dev | 0.75 | 0.405 | 0 | 6 | True | 0.333 | 0.0 | 0.0 | 0.5 | 1.0 | 1.0 | 0.0 | 4 |
+| user_registration_validation | dev | 0.75 | 0.464 | 0 | 6 | True | 0.25 | 0.0 | 0.0 | 1.0 | 1.0 | 1.0 | 0.0 | 4 |

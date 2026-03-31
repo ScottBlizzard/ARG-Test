@@ -1,0 +1,11 @@
+﻿Requirement ID: coupon_discount_engine
+Domain: promotion engine
+
+Rules:
+1. Only one coupon may be applied to an order.
+2. SAVE10 gives 10 percent off when subtotal is at least 50.
+3. SAVE20 gives 20 percent off when subtotal is at least 100 and the customer is a premium member.
+4. FREESHIP sets shipping fee to 0 when subtotal is at least 30.
+5. Expired coupons are invalid.
+6. SAVE20 cannot be used when the order already contains sale items.
+7. A valid coupon changes only the allowed target and must never make subtotal negative.

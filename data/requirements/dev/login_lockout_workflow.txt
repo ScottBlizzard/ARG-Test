@@ -1,0 +1,10 @@
+﻿Requirement ID: login_lockout_workflow
+Domain: authentication workflow
+
+Rules:
+1. An account starts in the Active state.
+2. After 5 consecutive failed login attempts within 10 minutes, the account enters the Locked state for 15 minutes.
+3. A successful login in the Active state resets the failed-attempt counter to 0.
+4. A login attempt in the Locked state returns "account locked" without checking the password.
+5. After 15 minutes, the account returns to the Active state and the failed-attempt counter resets.
+6. An administrator may unlock the account immediately and return it to the Active state.

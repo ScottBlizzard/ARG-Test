@@ -1,0 +1,33 @@
+﻿{
+  "requirement_id": "ticket_booking_refund_rule",
+  "recommended_techniques": ["EP", "BVA", "Decision Table"],
+  "valid_partitions": [
+    "child age range",
+    "adult age range",
+    "senior age range",
+    "booking with seats and successful payment",
+    "standard refund above 48 hours",
+    "standard refund between 24 and 48 hours",
+    "standard refund below 24 hours"
+  ],
+  "invalid_partitions": [
+    "age below child minimum",
+    "no seats",
+    "payment failure",
+    "promotional ticket refund request"
+  ],
+  "boundaries": [
+    {"field": "age", "points": [1, 2, 3, 12, 13, 59, 60]},
+    {"field": "hours_before_departure", "points": [23, 24, 25, 48, 49]}
+  ],
+  "decision_rules": [
+    "seats available and payment success -> booking created",
+    "standard ticket and cancellation more than 48 hours -> 90 percent refund",
+    "standard ticket and cancellation 24 to 48 hours inclusive -> 50 percent refund",
+    "standard ticket and cancellation less than 24 hours -> 0 percent refund",
+    "promotional ticket -> non-refundable"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["negative age", "negative hours before departure"]
+}

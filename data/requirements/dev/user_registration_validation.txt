@@ -1,0 +1,11 @@
+﻿Requirement ID: user_registration_validation
+Domain: web account registration
+
+Rules:
+1. username is required and must be 3 to 20 characters.
+2. username may contain only letters, digits, and underscore.
+3. username must not start or end with underscore.
+4. email is required and must contain exactly one @ and a domain suffix.
+5. age is optional. If provided, age must be an integer between 13 and 120 inclusive.
+6. If any field is invalid, the system shows a field-level validation error and does not create the account.
+7. If all fields are valid, the system creates the account and sends a verification email.

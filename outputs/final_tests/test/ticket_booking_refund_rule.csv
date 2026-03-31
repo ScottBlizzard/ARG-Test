@@ -1,0 +1,7 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,EP,ticket_booking_refund_rule,None,request accepted,valid partition,High,repaired,representative valid input
+T02,EP,ticket_booking_refund_rule,None,validation error,invalid partition,High,repaired,representative invalid input
+T03,BVA,ticket_booking_refund_rule,None,validation error,below lower boundary,High,repaired,child tickets=1
+T04,BVA,ticket_booking_refund_rule,None,boundary accepted,on lower boundary,High,repaired,child tickets=2
+T05,BVA,ticket_booking_refund_rule,None,boundary accepted,on upper boundary,Medium,repaired,child tickets=12
+T06,Decision Table,ticket_booking_refund_rule,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination

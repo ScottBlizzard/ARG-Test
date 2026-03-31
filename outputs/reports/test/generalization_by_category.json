@@ -1,0 +1,21 @@
+{
+  "split": "test",
+  "categories": [
+    {
+      "category": "business_rules",
+      "requirement_count": 3,
+      "avg_checker_score": 0.75,
+      "avg_overall_coverage": 0.447,
+      "avg_duplicate_count": 0.0,
+      "avg_test_count": 6.0
+    },
+    {
+      "category": "workflow_state",
+      "requirement_count": 1,
+      "avg_checker_score": 0.95,
+      "avg_overall_coverage": 0.31,
+      "avg_duplicate_count": 0.0,
+      "avg_test_count": 5.0
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "requirement_id": "login_lockout_workflow",
+  "score": 0.9500000000000001,
+  "repaired": false,
+  "checks": [
+    {
+      "name": "schema",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": []
+    },
+    {
+      "name": "ep_contract",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": []
+    },
+    {
+      "name": "bva_contract",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": [
+        "not applicable"
+      ]
+    },
+    {
+      "name": "decision_contract",
+      "passed": false,
+      "score": 0.5,
+      "diagnostics": [
+        "decision table coverage appears shallow"
+      ]
+    },
+    {
+      "name": "state_contract",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": []
+    }
+  ],
+  "diagnostics": [
+    "bva_contract: not applicable",
+    "decision_contract: decision table coverage appears shallow"
+  ]
+}

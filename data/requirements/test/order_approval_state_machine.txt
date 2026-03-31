@@ -1,0 +1,12 @@
+﻿Requirement ID: order_approval_state_machine
+Domain: internal approval workflow
+
+Rules:
+1. An order starts in Draft.
+2. Submit is allowed only from Draft and moves the order to Submitted.
+3. ManagerApprove is allowed only from Submitted and moves the order to ManagerApproved.
+4. ManagerReject is allowed only from Submitted and moves the order to Rejected.
+5. FinanceApprove is allowed only from ManagerApproved and moves the order to FinanceApproved.
+6. FinanceReject is allowed only from ManagerApproved and moves the order to Rejected.
+7. Close is allowed only from FinanceApproved and moves the order to Closed.
+8. EditAndResubmit is allowed only from Rejected and moves the order to Draft.

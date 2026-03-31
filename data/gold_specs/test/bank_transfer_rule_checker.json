@@ -1,0 +1,32 @@
+﻿{
+  "requirement_id": "bank_transfer_rule_checker",
+  "recommended_techniques": ["EP", "BVA", "Decision Table"],
+  "valid_partitions": [
+    "standard user transfer within amount and daily limit",
+    "verified user transfer within amount and daily limit",
+    "transfer above 2000 with valid OTP"
+  ],
+  "invalid_partitions": [
+    "amount below minimum",
+    "amount above role limit",
+    "daily limit exceeded",
+    "missing OTP above threshold",
+    "blacklisted destination",
+    "same account transfer",
+    "insufficient balance"
+  ],
+  "boundaries": [
+    {"field": "amount_standard", "points": [0, 1, 2, 4999, 5000, 5001]},
+    {"field": "amount_verified", "points": [0, 1, 2, 19999, 20000, 20001]},
+    {"field": "otp_threshold", "points": [1999, 2000, 2001]}
+  ],
+  "decision_rules": [
+    "amount above 2000 requires OTP",
+    "blacklisted destination always rejected",
+    "same account always rejected",
+    "insufficient balance always rejected"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["amount non-numeric", "missing destination account"]
+}

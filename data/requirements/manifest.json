@@ -1,0 +1,50 @@
+﻿[
+  {
+    "requirement_id": "user_registration_validation",
+    "split": "dev",
+    "category": "input_validation",
+    "recommended_techniques": ["EP", "BVA"]
+  },
+  {
+    "requirement_id": "password_policy_checker",
+    "split": "dev",
+    "category": "input_validation",
+    "recommended_techniques": ["EP", "BVA", "Decision Table"]
+  },
+  {
+    "requirement_id": "shipping_fee_calculator",
+    "split": "dev",
+    "category": "business_rules",
+    "recommended_techniques": ["BVA", "Decision Table"]
+  },
+  {
+    "requirement_id": "login_lockout_workflow",
+    "split": "dev",
+    "category": "workflow_state",
+    "recommended_techniques": ["State Transition", "BVA"]
+  },
+  {
+    "requirement_id": "coupon_discount_engine",
+    "split": "test",
+    "category": "business_rules",
+    "recommended_techniques": ["Decision Table", "BVA"]
+  },
+  {
+    "requirement_id": "bank_transfer_rule_checker",
+    "split": "test",
+    "category": "business_rules",
+    "recommended_techniques": ["EP", "BVA", "Decision Table"]
+  },
+  {
+    "requirement_id": "ticket_booking_refund_rule",
+    "split": "test",
+    "category": "business_rules",
+    "recommended_techniques": ["EP", "BVA", "Decision Table"]
+  },
+  {
+    "requirement_id": "order_approval_state_machine",
+    "split": "test",
+    "category": "workflow_state",
+    "recommended_techniques": ["State Transition"]
+  }
+]

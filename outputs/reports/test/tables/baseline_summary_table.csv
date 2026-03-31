@@ -1,0 +1,13 @@
+requirement_id,split,baseline,checker_score,overall_coverage,duplicate_count,test_count,valid_partition_coverage,invalid_partition_coverage,boundary_coverage,decision_rule_coverage,state_coverage,illegal_transition_coverage,exception_coverage
+bank_transfer_rule_checker,test,rule_based,0.75,0.381,0,4,0.667,0.0,0.0,0.0,1.0,1.0,0.0
+bank_transfer_rule_checker,test,plain_llm,0.9,0.286,0,2,0.0,0.0,0.0,0.0,1.0,1.0,0.0
+bank_transfer_rule_checker,test,structured_no_checker,0.65,0.449,0,5,1.0,0.143,0.0,0.0,1.0,1.0,0.0
+coupon_discount_engine,test,rule_based,0.75,0.5,0,4,0.0,0.0,1.0,0.5,1.0,1.0,0.0
+coupon_discount_engine,test,plain_llm,0.9,0.286,0,2,0.0,0.0,0.0,0.0,1.0,1.0,0.0
+coupon_discount_engine,test,structured_no_checker,0.65,0.571,0,5,0.25,0.0,1.0,0.75,1.0,1.0,0.0
+order_approval_state_machine,test,rule_based,0.75,0.31,0,5,0.0,0.0,1.0,1.0,0.167,0.0,0.0
+order_approval_state_machine,test,plain_llm,0.9,0.286,0,2,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+order_approval_state_machine,test,structured_no_checker,0.8500000000000001,0.286,0,4,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+ticket_booking_refund_rule,test,rule_based,0.75,0.286,0,4,0.0,0.0,0.0,0.0,1.0,1.0,0.0
+ticket_booking_refund_rule,test,plain_llm,0.9,0.286,0,2,0.0,0.0,0.0,0.0,1.0,1.0,0.0
+ticket_booking_refund_rule,test,structured_no_checker,0.65,0.321,0,5,0.0,0.25,0.0,0.0,1.0,1.0,0.0

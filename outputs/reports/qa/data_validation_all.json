@@ -1,0 +1,26 @@
+{
+  "split": "all",
+  "passed": true,
+  "results": [
+    {
+      "split": "dev",
+      "requirement_count": 4,
+      "gold_spec_count": 4,
+      "missing_gold_specs": [],
+      "orphan_gold_specs": [],
+      "errors": [],
+      "warnings": [],
+      "passed": true
+    },
+    {
+      "split": "test",
+      "requirement_count": 4,
+      "gold_spec_count": 4,
+      "missing_gold_specs": [],
+      "orphan_gold_specs": [],
+      "errors": [],
+      "warnings": [],
+      "passed": true
+    }
+  ]
+}
