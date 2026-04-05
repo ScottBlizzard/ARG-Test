@@ -1,0 +1,52 @@
+{
+  "requirement_id": "coupon_expiry_and_timezone",
+  "score": 0.65,
+  "repaired": true,
+  "checks": [
+    {
+      "name": "schema",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": []
+    },
+    {
+      "name": "ep_contract",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": []
+    },
+    {
+      "name": "bva_contract",
+      "passed": false,
+      "score": 0.5,
+      "diagnostics": [
+        "missing lower-boundary or just-below case",
+        "missing upper-boundary or just-above case"
+      ]
+    },
+    {
+      "name": "decision_contract",
+      "passed": false,
+      "score": 0.5,
+      "diagnostics": [
+        "decision table coverage appears shallow"
+      ]
+    },
+    {
+      "name": "state_contract",
+      "passed": false,
+      "score": 0.0,
+      "diagnostics": [
+        "missing legal transition test",
+        "missing illegal transition test"
+      ]
+    }
+  ],
+  "diagnostics": [
+    "bva_contract: missing lower-boundary or just-below case",
+    "bva_contract: missing upper-boundary or just-above case",
+    "decision_contract: decision table coverage appears shallow",
+    "state_contract: missing legal transition test",
+    "state_contract: missing illegal transition test"
+  ]
+}

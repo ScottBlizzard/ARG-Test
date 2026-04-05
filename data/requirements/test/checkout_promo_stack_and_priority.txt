@@ -1,0 +1,13 @@
+Requirement ID: checkout_promo_stack_and_priority
+Domain: checkout promotion
+
+Rules:
+1. At most one coupon code may be applied to an order.
+2. Supported coupons:
+   - PERCENT10: 10% off merchandise subtotal when subtotal >= 100.
+   - FIXED20: 20 off merchandise subtotal when subtotal >= 200.
+   - SHIPFREE: shipping fee becomes 0 when subtotal >= 80.
+3. Coupons never apply to tax; percent/fixed coupons apply only to merchandise subtotal (excluding shipping and tax).
+4. Loyalty points may be redeemed after coupon discount; points redemption is capped by the remaining payable amount (cannot make payable negative).
+5. Expired/unknown coupon codes are invalid.
+6. If multiple coupons are provided, the checkout must reject the promotion input.

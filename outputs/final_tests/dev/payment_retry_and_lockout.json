@@ -1,0 +1,68 @@
+{
+  "requirement_id": "payment_retry_and_lockout",
+  "analysis": "- Requirement target: payment_retry_and_lockout\n- Rule: 1. A payment attempt starts in Ready state.\n- Rule: 2. After 3 consecutive failed payment attempts within 5 minutes, the payment is Locked for 10 minutes.\n- Rule: 3. A successful payment in Ready resets the consecutive failure counter to 0.\n- Rule: 4. In Locked, any attempt returns \"payment locked\" without contacting the provider.\n- Rule: 5. After 10 minutes, the payment returns to Ready and the counter resets.",
+  "pattern": "- Selected techniques: Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Convert conditional rules into decision rows and map each rule to at least one test case.",
+    "2. Enumerate legal and illegal transitions between named states and triggers."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "payment_retry_and_lockout",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table",
+      "requirement_target": "payment_retry_and_lockout",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "payment_retry_and_lockout",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "pending",
+      "input": "rule trigger combination"
+    },
+    {
+      "test_id": "T07",
+      "technique": "State Transition",
+      "requirement_target": "payment_retry_and_lockout",
+      "preconditions": "initial state",
+      "expected_output": "state transition succeeds",
+      "covered_item": "legal transition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "legal trigger"
+    },
+    {
+      "test_id": "T08",
+      "technique": "State Transition",
+      "requirement_target": "payment_retry_and_lockout",
+      "preconditions": "restricted state",
+      "expected_output": "transition rejected",
+      "covered_item": "illegal transition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "illegal trigger"
+    }
+  ]
+}

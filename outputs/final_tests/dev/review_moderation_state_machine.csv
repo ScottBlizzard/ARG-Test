@@ -1,0 +1,6 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table,review_moderation_state_machine,None,request accepted,valid partition,High,pending,representative valid input
+T02,Decision Table,review_moderation_state_machine,None,validation error,invalid partition,High,pending,representative invalid input
+T06,Decision Table,review_moderation_state_machine,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination
+T07,State Transition,review_moderation_state_machine,initial state,state transition succeeds,legal transition,High,pending,legal trigger
+T08,State Transition,review_moderation_state_machine,restricted state,transition rejected,illegal transition,High,pending,illegal trigger

@@ -1,0 +1,4 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table,return_request_eligibility,None,request accepted,valid partition,High,repaired,representative valid input
+T02,Decision Table,return_request_eligibility,None,validation error,invalid partition,High,repaired,representative invalid input
+T06,Decision Table,return_request_eligibility,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination

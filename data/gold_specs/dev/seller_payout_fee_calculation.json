@@ -1,0 +1,28 @@
+{
+  "requirement_id": "seller_payout_fee_calculation",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "electronics commission 5 percent",
+    "fashion commission 10 percent",
+    "other commission 8 percent",
+    "payout floors at 0"
+  ],
+  "invalid_partitions": [
+    "negative paid amount",
+    "negative refunds",
+    "refunds above paid amount"
+  ],
+  "boundaries": [
+    {"field": "paid_amount", "points": [0, 0.01, 10, 100]},
+    {"field": "refunds", "points": [0, 0.01, 10, 100]}
+  ],
+  "decision_rules": [
+    "commission_rate chosen by category",
+    "processor_fee equals 2 percent plus 0.30",
+    "net_payout equals paid minus refunds minus fees",
+    "if net_payout negative -> set to 0"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["unknown category uses other rate"]
+}

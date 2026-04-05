@@ -1,0 +1,9 @@
+Requirement ID: payment_authorize_capture_refund_workflow
+Domain: e-commerce payment workflow
+
+Rules:
+1. Card payments start as Authorized.
+2. Authorized may transition to Captured exactly once.
+3. Authorized may transition to Voided; void is not allowed after capture.
+4. Refunds are allowed only after Captured.
+5. Multiple refunds may occur, but total_refunded must not exceed captured_amount.

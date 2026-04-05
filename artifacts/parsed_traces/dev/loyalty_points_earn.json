@@ -1,0 +1,45 @@
+{
+  "requirement_id": "loyalty_points_earn",
+  "analysis": "- Requirement target: loyalty_points_earn\n- Rule: 1. Earned points are computed from net_subtotal (non-negative).\n- Rule: 2. earn_rate is 1 point per 1 currency unit.\n- Rule: 3. earned_points equals floor(net_subtotal).\n- Rule: 4. If an order is cancelled or fully refunded, earned_points become 0.",
+  "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Convert conditional rules into decision rows and map each rule to at least one test case."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "loyalty_points_earn",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table",
+      "requirement_target": "loyalty_points_earn",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "loyalty_points_earn",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "repaired",
+      "input": "rule trigger combination"
+    }
+  ]
+}

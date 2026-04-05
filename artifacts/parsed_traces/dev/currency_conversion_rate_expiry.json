@@ -1,0 +1,103 @@
+{
+  "requirement_id": "currency_conversion_rate_expiry",
+  "analysis": "- Requirement target: currency_conversion_rate_expiry\n- Rule: 1. An exchange_rate has an updated_at timestamp.\n- Rule: 2. A rate is considered fresh when age_minutes is less than 30.\n- Rule: 3. If the cached rate is stale (age_minutes at least 30), the system fetches a new rate.\n- Rule: 4. If fetching a new rate fails, checkout is blocked with an error.\n- Rule: 5. If target currency is unsupported, the system returns an error.\n- Numeric constraint: if the cached rate -> 30 to threshold",
+  "pattern": "- Selected techniques: EP, BVA, Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Partition inputs into valid and invalid classes for mandatory fields and business constraints.",
+    "2. Derive just-below, on-boundary, and just-above values for detected numeric limits.",
+    "3. Convert conditional rules into decision rows and map each rule to at least one test case.",
+    "4. Enumerate legal and illegal transitions between named states and triggers."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "EP",
+      "requirement_target": "currency_conversion_rate_expiry",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "EP",
+      "requirement_target": "currency_conversion_rate_expiry",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T03",
+      "technique": "BVA",
+      "requirement_target": "currency_conversion_rate_expiry",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "below lower boundary",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "if the cached rate=29"
+    },
+    {
+      "test_id": "T04",
+      "technique": "BVA",
+      "requirement_target": "currency_conversion_rate_expiry",
+      "preconditions": "None",
+      "expected_output": "boundary accepted",
+      "covered_item": "on lower boundary",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "if the cached rate=30"
+    },
+    {
+      "test_id": "T05",
+      "technique": "BVA",
+      "requirement_target": "currency_conversion_rate_expiry",
+      "preconditions": "None",
+      "expected_output": "boundary accepted",
+      "covered_item": "on upper boundary",
+      "priority": "Medium",
+      "checker_status": "pending",
+      "input": "if the cached rate=31"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "currency_conversion_rate_expiry",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "pending",
+      "input": "rule trigger combination"
+    },
+    {
+      "test_id": "T07",
+      "technique": "State Transition",
+      "requirement_target": "currency_conversion_rate_expiry",
+      "preconditions": "initial state",
+      "expected_output": "state transition succeeds",
+      "covered_item": "legal transition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "legal trigger"
+    },
+    {
+      "test_id": "T08",
+      "technique": "State Transition",
+      "requirement_target": "currency_conversion_rate_expiry",
+      "preconditions": "restricted state",
+      "expected_output": "transition rejected",
+      "covered_item": "illegal transition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "illegal trigger"
+    }
+  ]
+}

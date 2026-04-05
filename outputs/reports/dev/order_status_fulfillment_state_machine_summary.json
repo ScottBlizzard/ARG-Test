@@ -1,0 +1,23 @@
+{
+  "requirement_id": "order_status_fulfillment_state_machine",
+  "score": 0.9500000000000001,
+  "repaired": false,
+  "metrics": {
+    "gold_spec_found": true,
+    "requirement_id": "order_status_fulfillment_state_machine",
+    "test_count": 5,
+    "duplicate_count": 0,
+    "coverage": {
+      "valid_partition_coverage": 0.0,
+      "invalid_partition_coverage": 0.0,
+      "boundary_coverage": 1.0,
+      "decision_rule_coverage": 0.0,
+      "state_coverage": 0.0,
+      "illegal_transition_coverage": 0.0,
+      "exception_coverage": 0.0
+    },
+    "overall_coverage": 0.143,
+    "checker_score": 0.9500000000000001,
+    "repaired": false
+  }
+}

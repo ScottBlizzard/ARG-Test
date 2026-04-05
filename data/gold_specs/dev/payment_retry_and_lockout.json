@@ -1,0 +1,29 @@
+{
+  "requirement_id": "payment_retry_and_lockout",
+  "recommended_techniques": ["State Transition", "BVA"],
+  "valid_partitions": [
+    "Ready allows attempts",
+    "3 failures within 5 minutes locks payment",
+    "lock expires after 10 minutes",
+    "success resets failure counter"
+  ],
+  "invalid_partitions": [
+    "attempt during Locked contacts provider",
+    "negative time window",
+    "failure counter not reset after lock"
+  ],
+  "boundaries": [
+    {"field": "failure_count", "points": [2, 3, 4]},
+    {"field": "minutes_since_first_failure", "points": [4, 5, 6]},
+    {"field": "lock_minutes", "points": [9, 10, 11]}
+  ],
+  "decision_rules": [
+    "3 consecutive failures within 5 minutes -> transition to Locked",
+    "attempt in Locked -> return payment locked without provider call",
+    "after 10 minutes in Locked -> transition back to Ready",
+    "success in Ready -> reset counter"
+  ],
+  "states": ["Ready", "Locked"],
+  "illegal_transitions": ["Locked to Locked via success", "Ready to Ready via lock expiry"],
+  "exception_cases": ["provider timeout treated as failure"]
+}

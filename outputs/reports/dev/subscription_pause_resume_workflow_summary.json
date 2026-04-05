@@ -1,0 +1,23 @@
+{
+  "requirement_id": "subscription_pause_resume_workflow",
+  "score": 0.65,
+  "repaired": true,
+  "metrics": {
+    "gold_spec_found": true,
+    "requirement_id": "subscription_pause_resume_workflow",
+    "test_count": 3,
+    "duplicate_count": 0,
+    "coverage": {
+      "valid_partition_coverage": 0.0,
+      "invalid_partition_coverage": 0.0,
+      "boundary_coverage": 0.0,
+      "decision_rule_coverage": 0.0,
+      "state_coverage": 0.0,
+      "illegal_transition_coverage": 0.0,
+      "exception_coverage": 0.0
+    },
+    "overall_coverage": 0.0,
+    "checker_score": 0.65,
+    "repaired": true
+  }
+}

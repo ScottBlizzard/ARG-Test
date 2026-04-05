@@ -1,0 +1,8 @@
+Requirement ID: subscription_renewal_billing_rules
+Domain: e-commerce subscription billing
+
+Rules:
+1. An Active subscription renews at period_end.
+2. If auto_renew is false or status is Cancelled, no renewal occurs.
+3. If payment method is missing, renewal fails and the subscription becomes PastDue.
+4. If payment succeeds, a new billing period is created and status remains Active.

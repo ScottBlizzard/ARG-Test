@@ -1,0 +1,9 @@
+Requirement ID: coupon_code_format_validation
+Domain: e-commerce promotion
+
+Rules:
+1. coupon_code is required.
+2. coupon_code must be 6 to 12 characters.
+3. Allowed characters are uppercase letters A-Z and digits 0-9.
+4. Leading or trailing spaces are not allowed.
+5. Invalid coupon_code returns a validation error.

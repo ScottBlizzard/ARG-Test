@@ -1,0 +1,68 @@
+{
+  "requirement_id": "review_moderation_state_machine",
+  "analysis": "- Requirement target: review_moderation_state_machine\n- Rule: 1. A new review starts in Submitted.\n- Rule: 2. Submitted transitions to Pending when queued for moderation.\n- Rule: 3. A moderator may approve Pending to Approved or reject Pending to Rejected.\n- Rule: 4. A moderator may hide an Approved review, moving it to Hidden.\n- Rule: 5. Hidden reviews remain hidden until explicitly restored to Approved.",
+  "pattern": "- Selected techniques: Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Convert conditional rules into decision rows and map each rule to at least one test case.",
+    "2. Enumerate legal and illegal transitions between named states and triggers."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "review_moderation_state_machine",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table",
+      "requirement_target": "review_moderation_state_machine",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "review_moderation_state_machine",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "pending",
+      "input": "rule trigger combination"
+    },
+    {
+      "test_id": "T07",
+      "technique": "State Transition",
+      "requirement_target": "review_moderation_state_machine",
+      "preconditions": "initial state",
+      "expected_output": "state transition succeeds",
+      "covered_item": "legal transition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "legal trigger"
+    },
+    {
+      "test_id": "T08",
+      "technique": "State Transition",
+      "requirement_target": "review_moderation_state_machine",
+      "preconditions": "restricted state",
+      "expected_output": "transition rejected",
+      "covered_item": "illegal transition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "illegal trigger"
+    }
+  ]
+}

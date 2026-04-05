@@ -1,0 +1,9 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,EP,currency_conversion_rate_expiry,None,request accepted,valid partition,High,pending,representative valid input
+T02,EP,currency_conversion_rate_expiry,None,validation error,invalid partition,High,pending,representative invalid input
+T03,BVA,currency_conversion_rate_expiry,None,validation error,below lower boundary,High,pending,if the cached rate=29
+T04,BVA,currency_conversion_rate_expiry,None,boundary accepted,on lower boundary,High,pending,if the cached rate=30
+T05,BVA,currency_conversion_rate_expiry,None,boundary accepted,on upper boundary,Medium,pending,if the cached rate=31
+T06,Decision Table,currency_conversion_rate_expiry,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination
+T07,State Transition,currency_conversion_rate_expiry,initial state,state transition succeeds,legal transition,High,pending,legal trigger
+T08,State Transition,currency_conversion_rate_expiry,restricted state,transition rejected,illegal transition,High,pending,illegal trigger

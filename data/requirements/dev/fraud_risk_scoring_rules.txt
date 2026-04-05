@@ -1,0 +1,10 @@
+Requirement ID: fraud_risk_scoring_rules
+Domain: e-commerce fraud checks
+
+Rules:
+1. Risk score starts at 0.
+2. Add 30 if ip_country differs from shipping_country.
+3. Add 30 if order_total is above 1000.
+4. Add 20 if account_age_days is less than 7.
+5. Add 20 if failed_payment_attempts is at least 2.
+6. If risk score is at least 70, the order is flagged for manual review.

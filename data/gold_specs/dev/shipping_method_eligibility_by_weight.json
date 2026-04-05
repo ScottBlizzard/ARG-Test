@@ -1,0 +1,27 @@
+{
+  "requirement_id": "shipping_method_eligibility_by_weight",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "weight within 0 to 5 non-hazardous express allowed",
+    "weight within 0 to 20 standard allowed",
+    "weight above 20 freight required",
+    "hazardous true blocks express"
+  ],
+  "invalid_partitions": [
+    "negative weight",
+    "express selected while hazardous true",
+    "express selected with weight above 5"
+  ],
+  "boundaries": [
+    {"field": "weight", "points": [-1, 0, 1, 5, 6, 20, 21]}
+  ],
+  "decision_rules": [
+    "weight above 20 -> freight only",
+    "weight up to 20 -> standard allowed",
+    "weight up to 5 and not hazardous -> express allowed",
+    "hazardous true -> express not allowed"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["unknown shipping method"]
+}

@@ -1,0 +1,37 @@
+{
+  "requirement_id": "gift_card_and_coupon_combination_rules",
+  "recommended_techniques": ["Decision Table", "BVA"],
+  "valid_partitions": [
+    "gift card only",
+    "coupon only",
+    "coupon + gift card (coupon first)",
+    "gift card covers total payable to zero",
+    "cart includes gift card product (coupon applies only to other items)"
+  ],
+  "invalid_partitions": [
+    "multiple coupons",
+    "expired coupon",
+    "invalid gift card code",
+    "payable becomes negative",
+    "coupon discounts gift card product"
+  ],
+  "boundaries": [
+    {"field": "gift_card_balance", "points": [0, 1]},
+    {"field": "payable_after_coupon", "points": [0, 1]}
+  ],
+  "decision_rules": [
+    "multiple coupons -> reject",
+    "expired coupon -> reject coupon",
+    "invalid gift card code -> reject gift card",
+    "apply coupon discount to merchandise subtotal excluding gift card products",
+    "apply gift card after coupon; gift card can cover shipping and tax",
+    "final payable >= 0 must hold; if negative -> reject input/adjust to 0"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": [
+    "rounding causes payable -0.01",
+    "gift card balance updates concurrently",
+    "coupon and gift card applied in wrong order"
+  ]
+}

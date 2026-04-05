@@ -1,0 +1,8 @@
+Requirement ID: backorder_policy_and_eta
+Domain: e-commerce inventory
+
+Rules:
+1. If available_stock is 0 and backorder_allowed is true, the item may be purchased as backorder.
+2. Backorder requires estimated_ship_days between 1 and 60.
+3. If backorder_allowed is false and stock is 0, checkout is rejected.
+4. Negative stock is invalid.

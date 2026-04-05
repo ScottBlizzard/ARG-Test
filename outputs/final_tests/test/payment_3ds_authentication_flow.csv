@@ -1,0 +1,6 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table,payment_3ds_authentication_flow,None,request accepted,valid partition,High,pending,representative valid input
+T02,Decision Table,payment_3ds_authentication_flow,None,validation error,invalid partition,High,pending,representative invalid input
+T06,Decision Table,payment_3ds_authentication_flow,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination
+T07,State Transition,payment_3ds_authentication_flow,initial state,state transition succeeds,legal transition,High,pending,legal trigger
+T08,State Transition,payment_3ds_authentication_flow,restricted state,transition rejected,illegal transition,High,pending,illegal trigger

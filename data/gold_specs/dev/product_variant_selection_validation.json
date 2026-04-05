@@ -1,0 +1,25 @@
+{
+  "requirement_id": "product_variant_selection_validation",
+  "recommended_techniques": ["EP", "Decision Table"],
+  "valid_partitions": [
+    "valid option combination",
+    "variant exists and available",
+    "single-option product selection"
+  ],
+  "invalid_partitions": [
+    "missing required option",
+    "option value not in allowed set",
+    "combination does not exist",
+    "variant not available"
+  ],
+  "boundaries": [],
+  "decision_rules": [
+    "all required options provided -> lookup variant",
+    "variant not found -> reject",
+    "variant found but unavailable -> reject",
+    "variant found and available -> accept"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["catalog out of sync"]
+}

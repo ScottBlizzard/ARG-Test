@@ -1,0 +1,25 @@
+{
+  "requirement_id": "loyalty_points_earn",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "net_subtotal integer value",
+    "net_subtotal fractional floor",
+    "cancelled order earns 0",
+    "refunded order earns 0"
+  ],
+  "invalid_partitions": [
+    "negative net_subtotal",
+    "missing order status"
+  ],
+  "boundaries": [
+    {"field": "net_subtotal", "points": [-0.01, 0, 0.99, 1.0, 1.01, 9.99, 10.0]}
+  ],
+  "decision_rules": [
+    "status cancelled or fully refunded -> earned_points 0",
+    "otherwise earned_points equals floor(net_subtotal)",
+    "negative subtotal -> validation error"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["partial refund does not remove earned points"]
+}

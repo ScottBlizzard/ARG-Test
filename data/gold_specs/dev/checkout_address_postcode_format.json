@@ -1,0 +1,32 @@
+{
+  "requirement_id": "checkout_address_postcode_format",
+  "recommended_techniques": ["EP", "BVA"],
+  "valid_partitions": [
+    "US 5 digit postcode",
+    "US 9 digit postcode with dash",
+    "CN 6 digit postcode",
+    "UK alphanumeric postcode with optional space",
+    "other country non-empty length up to 12"
+  ],
+  "invalid_partitions": [
+    "US wrong length",
+    "US non-digit characters",
+    "CN not 6 digits",
+    "UK too short",
+    "UK too long",
+    "other country empty",
+    "other country length above 12"
+  ],
+  "boundaries": [
+    {"field": "postcode_length", "points": [0, 1, 5, 6, 8, 9, 12, 13]}
+  ],
+  "decision_rules": [
+    "country US -> accept 12345 or 12345-6789 only",
+    "country CN -> accept exactly 6 digits",
+    "country UK -> accept 5 to 8 alphanumeric with optional space",
+    "other -> accept non-empty length up to 12"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["country missing", "postcode has leading/trailing spaces"]
+}

@@ -1,0 +1,27 @@
+{
+  "requirement_id": "cash_on_delivery_eligibility",
+  "recommended_techniques": ["EP", "Decision Table"],
+  "valid_partitions": [
+    "domestic physical non-hazardous order_total within limit",
+    "international rejects COD",
+    "digital-only rejects COD",
+    "hazardous rejects COD"
+  ],
+  "invalid_partitions": [
+    "negative order total",
+    "order_total above 500"
+  ],
+  "boundaries": [
+    {"field": "order_total", "points": [-0.01, 0, 499.99, 500, 500.01]}
+  ],
+  "decision_rules": [
+    "non-domestic -> COD not allowed",
+    "order_total above 500 -> COD not allowed",
+    "digital-only -> COD not allowed",
+    "hazardous -> COD not allowed",
+    "otherwise -> COD allowed"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["mixed cart has digital and physical items"]
+}

@@ -1,0 +1,47 @@
+{
+  "requirement_id": "order_split_shipment_state_machine",
+  "recommended_techniques": ["State Transition"],
+  "valid_partitions": [
+    "single shipment normal flow",
+    "multi-shipment partial fulfillment",
+    "cancel pending shipment while others proceed",
+    "all shipped -> order shipped",
+    "all delivered -> order delivered"
+  ],
+  "invalid_partitions": [
+    "cancel packed shipment",
+    "cancel shipped shipment",
+    "delivered shipment transitions backward",
+    "order derived state inconsistent with shipments"
+  ],
+  "boundaries": [],
+  "decision_rules": [
+    "shipment PENDING -> allow cancel",
+    "shipment PACKED/SHIPPED/DELIVERED -> forbid cancel",
+    "all shipments PENDING -> order=ORDER_PENDING",
+    "all shipments DELIVERED -> order=ORDER_DELIVERED",
+    "all shipments SHIPPED -> order=ORDER_SHIPPED",
+    "otherwise -> order=ORDER_PARTIALLY_FULFILLED"
+  ],
+  "states": [
+    "PENDING",
+    "PACKED",
+    "SHIPPED",
+    "DELIVERED",
+    "ORDER_PENDING",
+    "ORDER_PARTIALLY_FULFILLED",
+    "ORDER_SHIPPED",
+    "ORDER_DELIVERED"
+  ],
+  "illegal_transitions": [
+    "DELIVERED -> SHIPPED",
+    "DELIVERED -> PACKED",
+    "DELIVERED -> PENDING",
+    "PACKED -> PENDING"
+  ],
+  "exception_cases": [
+    "shipment status update out of order",
+    "missing shipment status",
+    "partial delivery confirmation"
+  ]
+}

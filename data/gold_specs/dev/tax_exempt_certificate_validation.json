@@ -1,0 +1,25 @@
+{
+  "requirement_id": "tax_exempt_certificate_validation",
+  "recommended_techniques": ["EP", "BVA", "Decision Table"],
+  "valid_partitions": [
+    "US valid certificate id and not expired",
+    "US no certificate",
+    "non-US certificate ignored"
+  ],
+  "invalid_partitions": [
+    "US expired certificate",
+    "US certificate id wrong format",
+    "missing order date"
+  ],
+  "boundaries": [
+    {"field": "days_to_expiry", "points": [-1, 0, 1]}
+  ],
+  "decision_rules": [
+    "US + valid id + expiry on or after order date -> tax_rate 0",
+    "US + invalid or expired certificate -> normal tax",
+    "non-US -> ignore certificate and normal tax"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["certificate_id missing", "expiry date malformed"]
+}

@@ -1,0 +1,25 @@
+{
+  "requirement_id": "digital_product_instant_delivery",
+  "recommended_techniques": ["Decision Table"],
+  "valid_partitions": [
+    "Captured triggers license generation",
+    "email sent within 5 minutes",
+    "not captured blocks delivery"
+  ],
+  "invalid_partitions": [
+    "license generated before capture",
+    "delivery delayed over 5 minutes",
+    "missing customer email"
+  ],
+  "boundaries": [
+    {"field": "minutes_since_capture", "points": [4, 5, 6]}
+  ],
+  "decision_rules": [
+    "payment Captured -> generate license and send email",
+    "payment not Captured -> do not deliver",
+    "minutes_since_capture above 5 -> SLA violation"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["email provider outage"]
+}

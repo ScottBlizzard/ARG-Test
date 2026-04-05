@@ -1,0 +1,9 @@
+Requirement ID: tax_exempt_certificate_validation
+Domain: e-commerce tax
+
+Rules:
+1. Tax exemption is supported only for US orders.
+2. certificate_id must match pattern EX-XXXXXXXX where X is a digit.
+3. certificate_expiry_date must be on or after order_date.
+4. If a valid certificate is present for a US order, tax_rate becomes 0.
+5. Otherwise tax is calculated normally.

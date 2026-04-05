@@ -1,0 +1,45 @@
+{
+  "requirement_id": "order_total_tax_calculation",
+  "analysis": "- Requirement target: order_total_tax_calculation\n- Rule: 1. net_subtotal equals sum(item_price * quantity) minus item_discounts.\n- Rule: 2. shipping_fee is taxable only for US orders.\n- Rule: 3. tax_rate is: US 0.08, CN 0.13, other countries 0.\n- Rule: 4. tax_amount equals taxable_amount * tax_rate rounded to 2 decimals (half-up).\n- Rule: 5. order_total equals net_subtotal + shipping_fee + tax_amount.",
+  "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Convert conditional rules into decision rows and map each rule to at least one test case."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "order_total_tax_calculation",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table",
+      "requirement_target": "order_total_tax_calculation",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "order_total_tax_calculation",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "repaired",
+      "input": "rule trigger combination"
+    }
+  ]
+}

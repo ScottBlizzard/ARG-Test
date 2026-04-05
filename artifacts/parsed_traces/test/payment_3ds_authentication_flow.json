@@ -1,0 +1,68 @@
+{
+  "requirement_id": "payment_3ds_authentication_flow",
+  "analysis": "- Requirement target: payment_3ds_authentication_flow\n- Rule: 1. A card payment starts in INITIATED.\n- Rule: 2. If the payment provider requires 3DS, the payment enters AUTH_REQUIRED and the customer must complete authentication.\n- Rule: 3. After successful 3DS authentication, the payment becomes AUTHENTICATED and may be CAPTURED.\n- Rule: 4. If 3DS fails or the customer cancels, the payment becomes FAILED.\n- Rule: 5. Provider timeouts lead to PENDING_REVIEW; in that state the system must not capture until a final provider callback is received.\n- Rule: 6. A payment may be retried at most 2 times after FAILED.",
+  "pattern": "- Selected techniques: Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Convert conditional rules into decision rows and map each rule to at least one test case.",
+    "2. Enumerate legal and illegal transitions between named states and triggers."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "payment_3ds_authentication_flow",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table",
+      "requirement_target": "payment_3ds_authentication_flow",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "payment_3ds_authentication_flow",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "pending",
+      "input": "rule trigger combination"
+    },
+    {
+      "test_id": "T07",
+      "technique": "State Transition",
+      "requirement_target": "payment_3ds_authentication_flow",
+      "preconditions": "initial state",
+      "expected_output": "state transition succeeds",
+      "covered_item": "legal transition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "legal trigger"
+    },
+    {
+      "test_id": "T08",
+      "technique": "State Transition",
+      "requirement_target": "payment_3ds_authentication_flow",
+      "preconditions": "restricted state",
+      "expected_output": "transition rejected",
+      "covered_item": "illegal transition",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "illegal trigger"
+    }
+  ]
+}

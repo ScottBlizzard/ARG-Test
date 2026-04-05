@@ -1,0 +1,41 @@
+{
+  "requirement_id": "checkout_promo_stack_and_priority",
+  "recommended_techniques": ["Decision Table", "BVA"],
+  "valid_partitions": [
+    "no coupon, no points",
+    "PERCENT10 with subtotal >= 100",
+    "FIXED20 with subtotal >= 200",
+    "SHIPFREE with subtotal >= 80",
+    "points only within payable",
+    "coupon + points (points applied after coupon)"
+  ],
+  "invalid_partitions": [
+    "multiple coupons provided",
+    "coupon below minimum subtotal",
+    "expired coupon",
+    "unknown coupon code",
+    "points exceed remaining payable"
+  ],
+  "boundaries": [
+    {"field": "subtotal", "points": [79, 80, 81, 99, 100, 101, 199, 200, 201]},
+    {"field": "points_to_redeem", "points": [0, 1]},
+    {"field": "remaining_payable", "points": [0, 1]}
+  ],
+  "decision_rules": [
+    "multiple coupons -> reject promotion input",
+    "expired or unknown coupon -> reject coupon",
+    "PERCENT10 and subtotal >= 100 -> discount = 10% of merchandise subtotal",
+    "FIXED20 and subtotal >= 200 -> discount = 20",
+    "SHIPFREE and subtotal >= 80 -> shipping fee becomes 0",
+    "percent/fixed coupon -> applies to merchandise subtotal only (exclude shipping and tax)",
+    "apply points after coupon; points <= remaining payable -> reduce payable by points",
+    "points > remaining payable -> reject points input"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": [
+    "discount makes merchandise subtotal negative",
+    "tax becomes negative",
+    "floating rounding on percent discount"
+  ]
+}

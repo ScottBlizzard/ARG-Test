@@ -4,8 +4,8 @@
   "results": [
     {
       "split": "dev",
-      "requirement_count": 4,
-      "gold_spec_count": 4,
+      "requirement_count": 50,
+      "gold_spec_count": 50,
       "missing_gold_specs": [],
       "orphan_gold_specs": [],
       "errors": [],
@@ -14,8 +14,8 @@
     },
     {
       "split": "test",
-      "requirement_count": 4,
-      "gold_spec_count": 4,
+      "requirement_count": 10,
+      "gold_spec_count": 10,
       "missing_gold_specs": [],
       "orphan_gold_specs": [],
       "errors": [],

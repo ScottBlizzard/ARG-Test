@@ -1,0 +1,29 @@
+{
+  "requirement_id": "gift_card_partial_redemption",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "redeem less than balance",
+    "redeem equals balance",
+    "redeem equals order total"
+  ],
+  "invalid_partitions": [
+    "redeem amount 0",
+    "redeem above balance",
+    "redeem above order total",
+    "negative balance"
+  ],
+  "boundaries": [
+    {"field": "redeem_amount", "points": [0, 0.01, 1, 9.99, 10]},
+    {"field": "balance", "points": [0, 0.01, 10]},
+    {"field": "order_total", "points": [0, 0.01, 10]}
+  ],
+  "decision_rules": [
+    "redeem_amount within (0, min(balance, order_total)] -> apply redemption",
+    "redeem_amount above balance -> reject",
+    "redeem_amount above order_total -> reject",
+    "non-positive redeem -> reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["order_total recalculated after redemption"]
+}

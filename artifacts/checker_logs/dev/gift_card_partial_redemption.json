@@ -1,0 +1,55 @@
+{
+  "requirement_id": "gift_card_partial_redemption",
+  "score": 0.65,
+  "repaired": true,
+  "checks": [
+    {
+      "name": "schema",
+      "passed": false,
+      "score": 0.5,
+      "diagnostics": [
+        "verification references invalid step numbers: [2]"
+      ]
+    },
+    {
+      "name": "ep_contract",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": []
+    },
+    {
+      "name": "bva_contract",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": [
+        "not applicable"
+      ]
+    },
+    {
+      "name": "decision_contract",
+      "passed": false,
+      "score": 0.5,
+      "diagnostics": [
+        "decision table coverage appears shallow"
+      ]
+    },
+    {
+      "name": "state_contract",
+      "passed": false,
+      "score": 0.0,
+      "diagnostics": [
+        "analysis and steps do not clearly model states or transitions",
+        "missing legal transition test",
+        "missing illegal transition test"
+      ]
+    }
+  ],
+  "diagnostics": [
+    "schema: verification references invalid step numbers: [2]",
+    "bva_contract: not applicable",
+    "decision_contract: decision table coverage appears shallow",
+    "state_contract: analysis and steps do not clearly model states or transitions",
+    "state_contract: missing legal transition test",
+    "state_contract: missing illegal transition test"
+  ]
+}

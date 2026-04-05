@@ -1,0 +1,8 @@
+Requirement ID: invoice_vat_number_validation
+Domain: e-commerce invoicing
+
+Rules:
+1. A business invoice request requires vat_number.
+2. vat_number must start with two uppercase letters followed by 8 to 12 digits.
+3. Personal invoice requests do not require vat_number.
+4. If vat_number is required but invalid, invoice request is rejected.

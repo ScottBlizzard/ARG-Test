@@ -1,0 +1,23 @@
+{
+  "requirement_id": "coupon_stackability",
+  "recommended_techniques": ["Decision Table"],
+  "valid_partitions": [
+    "no coupons applied",
+    "single stackable coupon",
+    "multiple stackable coupons",
+    "single non-stackable coupon"
+  ],
+  "invalid_partitions": [
+    "two non-stackable coupons",
+    "non-stackable plus any additional coupon"
+  ],
+  "boundaries": [],
+  "decision_rules": [
+    "existing includes non-stackable -> reject adding any coupon",
+    "adding non-stackable while any coupon exists -> reject",
+    "stackable coupons can be added when no non-stackable present"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["unknown coupon stackable flag"]
+}

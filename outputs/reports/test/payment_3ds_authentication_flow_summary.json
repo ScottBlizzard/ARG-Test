@@ -1,0 +1,23 @@
+{
+  "requirement_id": "payment_3ds_authentication_flow",
+  "score": 0.9500000000000001,
+  "repaired": false,
+  "metrics": {
+    "gold_spec_found": true,
+    "requirement_id": "payment_3ds_authentication_flow",
+    "test_count": 5,
+    "duplicate_count": 0,
+    "coverage": {
+      "valid_partition_coverage": 0.0,
+      "invalid_partition_coverage": 0.0,
+      "boundary_coverage": 0.0,
+      "decision_rule_coverage": 0.5,
+      "state_coverage": 0.0,
+      "illegal_transition_coverage": 0.0,
+      "exception_coverage": 0.0
+    },
+    "overall_coverage": 0.071,
+    "checker_score": 0.9500000000000001,
+    "repaired": false
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "requirement_id": "free_shipping_threshold_by_member_tier",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "Guest subtotal at least 120 standard free",
+    "Silver subtotal at least 100 standard free",
+    "Gold subtotal at least 80 standard free",
+    "below threshold standard not free",
+    "international never free",
+    "express never free"
+  ],
+  "invalid_partitions": [
+    "negative subtotal",
+    "unknown member tier"
+  ],
+  "boundaries": [
+    {"field": "subtotal", "points": [79, 80, 81, 99, 100, 101, 119, 120, 121]}
+  ],
+  "decision_rules": [
+    "local/domestic + standard + tier threshold met -> shipping fee 0",
+    "local/domestic + standard + threshold not met -> shipping fee unchanged",
+    "international -> never free",
+    "express -> never free"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["missing tier", "subtotal missing"]
+}

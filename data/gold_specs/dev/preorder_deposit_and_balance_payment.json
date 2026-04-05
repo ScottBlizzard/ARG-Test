@@ -1,0 +1,28 @@
+{
+  "requirement_id": "preorder_deposit_and_balance_payment",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "deposit percent within 10 to 30",
+    "deposit paid then balance paid before deadline",
+    "balance unpaid by deadline cancels"
+  ],
+  "invalid_partitions": [
+    "deposit percent below 10",
+    "deposit percent above 30",
+    "negative order total",
+    "missing ship deadline"
+  ],
+  "boundaries": [
+    {"field": "deposit_percent", "points": [9, 10, 11, 29, 30, 31]},
+    {"field": "days_to_deadline", "points": [-1, 0, 1]}
+  ],
+  "decision_rules": [
+    "deposit_percent outside 10 to 30 -> reject",
+    "deposit unpaid -> cancel preorder",
+    "deposit paid but balance unpaid by deadline -> cancel preorder",
+    "deposit and balance paid on time -> proceed to fulfillment"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["order_total changes after deposit"]
+}

@@ -1,0 +1,8 @@
+Requirement ID: cart_stock_check_on_add
+Domain: e-commerce cart
+
+Rules:
+1. When adding to cart, the system checks current available_stock for the sku.
+2. If available_stock is 0, adding is rejected as out-of-stock.
+3. If requested quantity is less than or equal to available_stock, adding succeeds.
+4. If requested quantity is greater than available_stock, adding is rejected.

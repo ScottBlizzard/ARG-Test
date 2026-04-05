@@ -1,0 +1,26 @@
+{
+  "requirement_id": "coupon_usage_limit_per_user",
+  "recommended_techniques": ["EP", "Decision Table"],
+  "valid_partitions": [
+    "usage count below limit",
+    "usage count equals limit then reject further",
+    "limit is 1"
+  ],
+  "invalid_partitions": [
+    "usage count above limit",
+    "negative usage count",
+    "non-positive limit"
+  ],
+  "boundaries": [
+    {"field": "user_usage_count", "points": [-1, 0, 1, 2]},
+    {"field": "max_uses_per_user", "points": [0, 1, 2]}
+  ],
+  "decision_rules": [
+    "usage_count less than limit -> allow",
+    "usage_count at least limit -> reject",
+    "invalid negative counts or non-positive limit -> validation error"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["usage history unavailable"]
+}

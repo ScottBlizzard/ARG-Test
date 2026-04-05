@@ -1,0 +1,28 @@
+{
+  "requirement_id": "backorder_policy_and_eta",
+  "recommended_techniques": ["EP", "Decision Table"],
+  "valid_partitions": [
+    "stock above 0 normal purchase",
+    "stock 0 backorder allowed with valid eta",
+    "stock 0 backorder not allowed rejects"
+  ],
+  "invalid_partitions": [
+    "eta missing for backorder",
+    "eta below 1",
+    "eta above 60",
+    "negative stock"
+  ],
+  "boundaries": [
+    {"field": "estimated_ship_days", "points": [0, 1, 2, 60, 61]},
+    {"field": "available_stock", "points": [-1, 0, 1]}
+  ],
+  "decision_rules": [
+    "stock above 0 -> allow",
+    "stock 0 and backorder_allowed true and eta within 1 to 60 -> allow backorder",
+    "stock 0 and backorder_allowed false -> reject",
+    "invalid eta or negative stock -> error"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["eta provided but not integer"]
+}

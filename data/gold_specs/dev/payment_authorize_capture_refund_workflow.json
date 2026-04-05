@@ -1,0 +1,33 @@
+{
+  "requirement_id": "payment_authorize_capture_refund_workflow",
+  "recommended_techniques": ["State Transition", "Decision Table"],
+  "valid_partitions": [
+    "Authorized to Captured",
+    "Authorized to Voided",
+    "Captured allows partial refunds",
+    "refund total equals captured amount"
+  ],
+  "invalid_partitions": [
+    "refund before capture",
+    "void after capture",
+    "refund total above captured amount",
+    "capture twice"
+  ],
+  "boundaries": [
+    {"field": "captured_amount", "points": [0, 0.01, 10, 100]},
+    {"field": "refund_amount", "points": [0, 0.01, 9.99, 10, 10.01]}
+  ],
+  "decision_rules": [
+    "capture allowed only from Authorized",
+    "void allowed only from Authorized",
+    "refund allowed only from Captured",
+    "sum(refunds) must not exceed captured_amount"
+  ],
+  "states": ["Authorized", "Captured", "Voided", "Refunded"],
+  "illegal_transitions": [
+    "Captured to Voided",
+    "Authorized to Refunded",
+    "Voided to Captured"
+  ],
+  "exception_cases": ["provider duplicate capture webhook"]
+}

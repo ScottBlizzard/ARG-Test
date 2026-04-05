@@ -1,0 +1,8 @@
+Requirement ID: age_restricted_product_purchase_validation
+Domain: e-commerce compliance
+
+Rules:
+1. Some products define minimum_age (e.g., 18).
+2. If minimum_age is set, buyer_age and id_verified are required.
+3. Purchase is allowed only when buyer_age is at least minimum_age and id_verified is true.
+4. If validation fails, checkout is rejected.

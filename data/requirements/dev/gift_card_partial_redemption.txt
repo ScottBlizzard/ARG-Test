@@ -1,0 +1,9 @@
+Requirement ID: gift_card_partial_redemption
+Domain: e-commerce payment
+
+Rules:
+1. A gift card has balance (non-negative).
+2. A user may redeem redeem_amount greater than 0.
+3. redeem_amount must not exceed gift card balance.
+4. redeem_amount must not exceed order_total.
+5. On success, new_balance equals balance minus redeem_amount, and the order payable amount reduces by redeem_amount.

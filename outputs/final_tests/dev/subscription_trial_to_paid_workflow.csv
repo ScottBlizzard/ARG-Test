@@ -1,0 +1,7 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,EP,subscription_trial_to_paid_workflow,None,request accepted,valid partition,High,repaired,representative valid input
+T02,EP,subscription_trial_to_paid_workflow,None,validation error,invalid partition,High,repaired,representative invalid input
+T06,Decision Table,subscription_trial_to_paid_workflow,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination
+T07,State Transition,subscription_trial_to_paid_workflow,initial state,state transition succeeds,legal transition,High,repaired,legal trigger
+T08,State Transition,subscription_trial_to_paid_workflow,restricted state,transition rejected,illegal transition,High,repaired,illegal trigger
+T06,BVA,subscription_trial_to_paid_workflow,None,boundary behavior verified,boundary case (repair),Medium,repaired,repaired boundary input

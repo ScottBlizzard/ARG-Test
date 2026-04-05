@@ -1,0 +1,12 @@
+Requirement ID: return_refund_method_eligibility
+Domain: returns and refunds
+
+Rules:
+1. A return is eligible only if requested within 30 days of delivery and the item is not marked final-sale.
+2. Refund method depends on original payment method:
+   - CARD -> refund to original card if request <= 180 days since payment, else store credit.
+   - BANK_TRANSFER -> manual review required, refund via bank transfer only.
+   - COD -> store credit only.
+   - GIFT_CARD -> refund to gift card balance.
+3. Shipping fee is refundable only when the return reason is SELLER_FAULT.
+4. Refund amount must never exceed the amount paid for the returned items.

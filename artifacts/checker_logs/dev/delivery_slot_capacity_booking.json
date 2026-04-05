@@ -1,0 +1,47 @@
+{
+  "requirement_id": "delivery_slot_capacity_booking",
+  "score": 0.75,
+  "repaired": true,
+  "checks": [
+    {
+      "name": "schema",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": []
+    },
+    {
+      "name": "ep_contract",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": []
+    },
+    {
+      "name": "bva_contract",
+      "passed": true,
+      "score": 1.0,
+      "diagnostics": []
+    },
+    {
+      "name": "decision_contract",
+      "passed": false,
+      "score": 0.5,
+      "diagnostics": [
+        "decision table coverage appears shallow"
+      ]
+    },
+    {
+      "name": "state_contract",
+      "passed": false,
+      "score": 0.0,
+      "diagnostics": [
+        "missing legal transition test",
+        "missing illegal transition test"
+      ]
+    }
+  ],
+  "diagnostics": [
+    "decision_contract: decision table coverage appears shallow",
+    "state_contract: missing legal transition test",
+    "state_contract: missing illegal transition test"
+  ]
+}
