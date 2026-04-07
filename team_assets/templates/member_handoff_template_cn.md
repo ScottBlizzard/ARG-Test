@@ -1,4 +1,4 @@
-# 成员结果交接模板
+﻿# 成员结果交接模板
 
 ## 成员编号 / 姓名
 
@@ -31,6 +31,7 @@ python experiments\export_summary_tables.py --kind baseline --split test
 
 - 本次 baseline 对比已完成，test 集共导出 30 行对比记录（10 个 requirement × 3 个 baseline）。
 - 从 `overall_coverage` 均值看：`structured_no_checker`（约 0.303）最好，`rule_based`（约 0.295）次之，`plain_llm`（约 0.253）最弱。
+- 指标解释上，本次以 `overall_coverage` 作为主指标，以 `checker_score` 作为辅助参考（`checker_score` 主要反映格式/规则符合度）。
 - `plain_llm` 的主要问题是覆盖不充分，分区类与异常类覆盖经常为 0，导致总体覆盖偏低。
 - `structured_no_checker` 相比 `plain_llm` 的主要增益是覆盖更完整，且平均 `test_count` 更高（约 4.1 vs 2.0）。
 - `rule_based` 优势是稳定和可解释，局限是对复杂语义场景的覆盖提升有限。
@@ -38,7 +39,7 @@ python experiments\export_summary_tables.py --kind baseline --split test
 
 ## 已知问题
 
-- `checker_score` 与 `overall_coverage` 在部分 requirement 上存在不一致（例如 coverage 低但 checker_score 偏高），后续正式实验阶段建议统一解释口径。
+- `checker_score` 与 `overall_coverage` 在部分 requirement 上存在不一致（例如 coverage 低但 checker_score 偏高），需要分开考虑。
 - 多个 requirement 的 `exception_coverage` 仍为 0，后续若要强化结论，建议在正式阶段补充异常场景样例。
 
 ## 需要许奕处理的事情

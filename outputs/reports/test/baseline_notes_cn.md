@@ -12,6 +12,9 @@
 
 ## Baseline 对比摘要
 
+- 指标口径说明：  
+  本次 baseline 对比以 `overall_coverage` 作为主指标，以 `checker_score` 作为辅助指标；`checker_score` 更偏向格式/规则符合度，不代表覆盖完整性。
+
 - 最弱 baseline：`plain_llm`。  
   从 `overall_coverage` 看，`plain_llm` 平均约为 **0.253**，低于 `rule_based`（约 **0.295**）和 `structured_no_checker`（约 **0.303**）。
 

@@ -1,4 +1,4 @@
-# 4 号 Baseline 结果说明模板
+﻿# 4 号 Baseline 结果说明模板
 
 ## 本次运行配置
 
@@ -15,6 +15,7 @@
 
 ## Baseline 对比摘要
 
+- 指标口径说明: 本次对比以 `overall_coverage` 为主、`checker_score` 为辅；`checker_score` 主要反映格式/规则符合度，不能代表覆盖是否充分。
 - 最弱 baseline: `plain_llm`（平均 `overall_coverage` 约 0.253，低于 `rule_based` 约 0.295 和 `structured_no_checker` 约 0.303）。
 - plain LLM 的主要问题: 分区类与异常类覆盖不足，`valid_partition_coverage`、`invalid_partition_coverage`、`exception_coverage` 在多数 requirement 上为 0，且平均 `test_count` 仅约 2.0。
 - structured-no-checker 的主要优势: 覆盖完整性更好，平均 `overall_coverage` 最高（约 0.303），并能在多个 requirement 上补齐 plain LLM 漏掉的覆盖点，平均 `test_count` 约 4.1。
