@@ -3,19 +3,27 @@
   "categories": [
     {
       "category": "business_rules",
-      "requirement_count": 3,
+      "requirement_count": 6,
+      "avg_checker_score": 0.7,
+      "avg_overall_coverage": 0.366,
+      "avg_duplicate_count": 0.0,
+      "avg_test_count": 4.5
+    },
+    {
+      "category": "input_validation",
+      "requirement_count": 1,
       "avg_checker_score": 0.75,
-      "avg_overall_coverage": 0.447,
+      "avg_overall_coverage": 0.327,
       "avg_duplicate_count": 0.0,
       "avg_test_count": 6.0
     },
     {
       "category": "workflow_state",
-      "requirement_count": 1,
-      "avg_checker_score": 0.95,
-      "avg_overall_coverage": 0.31,
+      "requirement_count": 3,
+      "avg_checker_score": 0.917,
+      "avg_overall_coverage": 0.175,
       "avg_duplicate_count": 0.0,
-      "avg_test_count": 5.0
+      "avg_test_count": 5.333
     }
   ]
 }
