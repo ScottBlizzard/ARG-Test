@@ -1,0 +1,9 @@
+Requirement ID: customer_tier_upgrade_rules
+Domain: e-commerce loyalty
+
+Rules:
+1. Tiers are Bronze, Silver, and Gold.
+2. Tier is determined by rolling_12m_spend.
+3. If rolling_12m_spend is at least 2000, tier is Gold.
+4. Else if rolling_12m_spend is at least 500, tier is Silver.
+5. Otherwise tier is Bronze.

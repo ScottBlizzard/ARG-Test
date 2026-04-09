@@ -1,0 +1,9 @@
+Requirement ID: shipping_method_eligibility_by_weight
+Domain: e-commerce shipping
+
+Rules:
+1. Supported methods are Standard, Express, and Freight.
+2. weight must be non-negative.
+3. Standard is available for weight up to 20 kg.
+4. Express is available for weight up to 5 kg and only when hazardous is false.
+5. Freight is required when weight is above 20 kg.

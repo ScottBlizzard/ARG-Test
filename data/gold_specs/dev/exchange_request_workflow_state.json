@@ -1,0 +1,41 @@
+{
+  "requirement_id": "exchange_request_workflow_state",
+  "recommended_techniques": ["State Transition"],
+  "valid_partitions": [
+    "Requested to Approved",
+    "Requested to Rejected",
+    "Approved to ShippedBack",
+    "ShippedBack to Received",
+    "Received to ReplacementShipped",
+    "ReplacementShipped to Completed",
+    "Requested to Cancelled"
+  ],
+  "invalid_partitions": [
+    "cancel after Approved",
+    "ship back before approval",
+    "complete before replacement shipped"
+  ],
+  "boundaries": [],
+  "decision_rules": [
+    "only Requested can be approved rejected or cancelled",
+    "only Approved can move to ShippedBack",
+    "only ReplacementShipped can move to Completed"
+  ],
+  "states": [
+    "Requested",
+    "Approved",
+    "Rejected",
+    "Cancelled",
+    "ShippedBack",
+    "Received",
+    "ReplacementShipped",
+    "Completed"
+  ],
+  "illegal_transitions": [
+    "Approved to Cancelled",
+    "Requested to Received",
+    "Rejected to Approved",
+    "Completed to Requested"
+  ],
+  "exception_cases": ["duplicate warehouse receive event"]
+}

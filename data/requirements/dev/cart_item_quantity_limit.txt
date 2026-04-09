@@ -1,0 +1,8 @@
+Requirement ID: cart_item_quantity_limit
+Domain: e-commerce cart
+
+Rules:
+1. sku and quantity are required when adding an item to cart.
+2. quantity must be an integer between 1 and 99 (inclusive).
+3. quantity must not exceed current available_stock for the sku.
+4. If validation fails, the cart is not modified and a validation error is returned.

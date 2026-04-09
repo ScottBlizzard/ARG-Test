@@ -1,0 +1,45 @@
+{
+  "requirement_id": "cart_merge_on_login",
+  "analysis": "- Requirement target: cart_merge_on_login\n- Rule: 1. When a guest user logs in, the guest cart is merged into the user's existing cart.\n- Rule: 2. For the same sku, quantities are summed; if the sum exceeds 99, it is capped at 99.\n- Rule: 3. If the merged quantity exceeds available_stock, it is reduced to available_stock and a warning is returned.\n- Rule: 4. If the guest cart is empty, the user's cart remains unchanged.",
+  "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Convert conditional rules into decision rows and map each rule to at least one test case."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "cart_merge_on_login",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table",
+      "requirement_target": "cart_merge_on_login",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "cart_merge_on_login",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "repaired",
+      "input": "rule trigger combination"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table,exchange_request_workflow_state,None,request accepted,valid partition,High,pending,representative valid input
+T02,Decision Table,exchange_request_workflow_state,None,validation error,invalid partition,High,pending,representative invalid input
+T06,Decision Table,exchange_request_workflow_state,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination
+T07,State Transition,exchange_request_workflow_state,initial state,state transition succeeds,legal transition,High,pending,legal trigger
+T08,State Transition,exchange_request_workflow_state,restricted state,transition rejected,illegal transition,High,pending,illegal trigger

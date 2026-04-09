@@ -1,0 +1,5 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,EP,age_restricted_product_purchase_validation,None,request accepted,valid partition,High,repaired,representative valid input
+T02,EP,age_restricted_product_purchase_validation,None,validation error,invalid partition,High,repaired,representative invalid input
+T06,Decision Table,age_restricted_product_purchase_validation,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination
+T04,BVA,age_restricted_product_purchase_validation,None,boundary behavior verified,boundary case (repair),Medium,repaired,repaired boundary input

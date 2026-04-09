@@ -1,0 +1,28 @@
+{
+  "requirement_id": "cart_merge_on_login",
+  "recommended_techniques": ["Decision Table"],
+  "valid_partitions": [
+    "guest cart empty",
+    "no overlapping skus",
+    "overlapping sku quantities sum within 99",
+    "overlapping sku quantities sum above 99 capped"
+  ],
+  "invalid_partitions": [
+    "missing user cart",
+    "missing guest cart",
+    "negative quantity in cart"
+  ],
+  "boundaries": [
+    {"field": "quantity_sum", "points": [98, 99, 100]},
+    {"field": "available_stock", "points": [0, 1, 10]}
+  ],
+  "decision_rules": [
+    "guest empty -> no change",
+    "overlap -> sum quantities then cap at 99",
+    "after cap, if quantity above available_stock -> reduce to stock and warn",
+    "no overlap -> union items"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["stock lookup failure during merge"]
+}

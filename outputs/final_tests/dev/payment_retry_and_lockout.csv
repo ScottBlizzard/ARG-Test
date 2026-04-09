@@ -1,0 +1,6 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table,payment_retry_and_lockout,None,request accepted,valid partition,High,pending,representative valid input
+T02,Decision Table,payment_retry_and_lockout,None,validation error,invalid partition,High,pending,representative invalid input
+T06,Decision Table,payment_retry_and_lockout,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination
+T07,State Transition,payment_retry_and_lockout,initial state,state transition succeeds,legal transition,High,pending,legal trigger
+T08,State Transition,payment_retry_and_lockout,restricted state,transition rejected,illegal transition,High,pending,illegal trigger

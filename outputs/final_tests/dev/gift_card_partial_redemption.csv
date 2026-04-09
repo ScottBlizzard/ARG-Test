@@ -1,0 +1,4 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table,gift_card_partial_redemption,None,request accepted,valid partition,High,repaired,representative valid input
+T02,Decision Table,gift_card_partial_redemption,None,validation error,invalid partition,High,repaired,representative invalid input
+T06,Decision Table,gift_card_partial_redemption,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination

@@ -1,0 +1,30 @@
+{
+  "requirement_id": "cart_item_quantity_limit",
+  "recommended_techniques": ["EP", "BVA", "Decision Table"],
+  "valid_partitions": [
+    "quantity integer within 1 to 99",
+    "quantity less than or equal to available_stock"
+  ],
+  "invalid_partitions": [
+    "missing sku",
+    "missing quantity",
+    "quantity not an integer",
+    "quantity below 1",
+    "quantity above 99",
+    "quantity above available_stock"
+  ],
+  "boundaries": [
+    {"field": "quantity", "points": [0, 1, 2, 99, 100]},
+    {"field": "available_stock", "points": [0, 1, 5]}
+  ],
+  "decision_rules": [
+    "missing required field -> reject and do not modify cart",
+    "quantity not integer -> reject",
+    "quantity outside 1 to 99 -> reject",
+    "quantity within range and within stock -> accept and update cart",
+    "quantity within range but above stock -> reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["sku not found", "available_stock unknown"]
+}

@@ -1,0 +1,11 @@
+Requirement ID: exchange_request_workflow_state
+Domain: e-commerce exchange workflow
+
+Rules:
+1. An exchange request starts in Requested.
+2. Support may approve Requested to Approved or reject Requested to Rejected.
+3. After Approved, customer ships item back: Approved to ShippedBack.
+4. Warehouse receives item: ShippedBack to Received.
+5. Replacement shipment: Received to ReplacementShipped.
+6. Completion: ReplacementShipped to Completed.
+7. Customer may cancel only while Requested.

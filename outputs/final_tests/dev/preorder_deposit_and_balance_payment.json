@@ -1,0 +1,80 @@
+{
+  "requirement_id": "preorder_deposit_and_balance_payment",
+  "analysis": "- Requirement target: preorder_deposit_and_balance_payment\n- Rule: 1. A preorder defines deposit_percent between 10 and 30.\n- Rule: 2. deposit_amount equals order_total * deposit_percent and is due immediately.\n- Rule: 3. The remaining balance is due before ship_deadline_date.\n- Rule: 4. If deposit is not paid, the preorder is cancelled.\n- Rule: 5. If balance is not paid by the deadline, the preorder is cancelled.\n- Numeric constraint: a preorder defines deposit_percent between 10 and 30. -> 10 to 30",
+  "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Partition inputs into valid and invalid classes for mandatory fields and business constraints.",
+    "2. Derive just-below, on-boundary, and just-above values for detected numeric limits.",
+    "3. Convert conditional rules into decision rows and map each rule to at least one test case."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "EP",
+      "requirement_target": "preorder_deposit_and_balance_payment",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "EP",
+      "requirement_target": "preorder_deposit_and_balance_payment",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T03",
+      "technique": "BVA",
+      "requirement_target": "preorder_deposit_and_balance_payment",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "below lower boundary",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "a preorder defines deposit_percent between 10 and 30.=9"
+    },
+    {
+      "test_id": "T04",
+      "technique": "BVA",
+      "requirement_target": "preorder_deposit_and_balance_payment",
+      "preconditions": "None",
+      "expected_output": "boundary accepted",
+      "covered_item": "on lower boundary",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "a preorder defines deposit_percent between 10 and 30.=10"
+    },
+    {
+      "test_id": "T05",
+      "technique": "BVA",
+      "requirement_target": "preorder_deposit_and_balance_payment",
+      "preconditions": "None",
+      "expected_output": "boundary accepted",
+      "covered_item": "on upper boundary",
+      "priority": "Medium",
+      "checker_status": "repaired",
+      "input": "a preorder defines deposit_percent between 10 and 30.=30"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "preorder_deposit_and_balance_payment",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "repaired",
+      "input": "rule trigger combination"
+    }
+  ]
+}

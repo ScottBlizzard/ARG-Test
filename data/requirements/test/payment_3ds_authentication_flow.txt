@@ -1,0 +1,11 @@
+Requirement ID: payment_3ds_authentication_flow
+Domain: payment workflow
+
+Rules:
+1. A card payment starts in INITIATED.
+2. If the payment provider requires 3DS, the payment enters AUTH_REQUIRED and the customer must complete authentication.
+3. After successful 3DS authentication, the payment becomes AUTHENTICATED and may be CAPTURED.
+4. If 3DS fails or the customer cancels, the payment becomes FAILED.
+5. Provider timeouts lead to PENDING_REVIEW; in that state the system must not capture until a final provider callback is received.
+6. A payment may be retried at most 2 times after FAILED.
+7. Illegal: capture before authentication when 3DS is required.

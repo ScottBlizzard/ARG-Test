@@ -1,0 +1,8 @@
+Requirement ID: review_submission_validation
+Domain: e-commerce reviews
+
+Rules:
+1. Only verified purchasers may submit a review.
+2. rating must be an integer between 1 and 5.
+3. comment is optional, but if provided must be at most 500 characters.
+4. If validation fails, the review is rejected.

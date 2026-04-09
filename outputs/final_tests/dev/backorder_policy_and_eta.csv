@@ -1,0 +1,7 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,EP,backorder_policy_and_eta,None,request accepted,valid partition,High,repaired,representative valid input
+T02,EP,backorder_policy_and_eta,None,validation error,invalid partition,High,repaired,representative invalid input
+T03,BVA,backorder_policy_and_eta,None,validation error,below lower boundary,High,repaired,backorder requires estimated_ship_days between 1 and 60.=0
+T04,BVA,backorder_policy_and_eta,None,boundary accepted,on lower boundary,High,repaired,backorder requires estimated_ship_days between 1 and 60.=1
+T05,BVA,backorder_policy_and_eta,None,boundary accepted,on upper boundary,Medium,repaired,backorder requires estimated_ship_days between 1 and 60.=60
+T06,Decision Table,backorder_policy_and_eta,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination

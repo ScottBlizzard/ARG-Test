@@ -1,0 +1,9 @@
+Requirement ID: order_total_tax_calculation
+Domain: e-commerce checkout
+
+Rules:
+1. net_subtotal equals sum(item_price * quantity) minus item_discounts.
+2. shipping_fee is taxable only for US orders.
+3. tax_rate is: US 0.08, CN 0.13, other countries 0.
+4. tax_amount equals taxable_amount * tax_rate rounded to 2 decimals (half-up).
+5. order_total equals net_subtotal + shipping_fee + tax_amount.

@@ -1,0 +1,13 @@
+Requirement ID: order_split_shipment_state_machine
+Domain: fulfillment workflow
+
+Rules:
+1. An order may be split into multiple shipments.
+2. Shipment states: PENDING -> PACKED -> SHIPPED -> DELIVERED.
+3. Order state is derived:
+   - If all shipments are PENDING: ORDER_PENDING
+   - If at least one shipment is PACKED or SHIPPED and not all delivered: ORDER_PARTIALLY_FULFILLED
+   - If all shipments are SHIPPED: ORDER_SHIPPED
+   - If all shipments are DELIVERED: ORDER_DELIVERED
+4. Cancellation is allowed only for shipments that are still PENDING.
+5. Illegal: delivered shipment cannot return to packed/shipped.

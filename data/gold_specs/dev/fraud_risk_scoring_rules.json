@@ -1,0 +1,30 @@
+{
+  "requirement_id": "fraud_risk_scoring_rules",
+  "recommended_techniques": ["Decision Table"],
+  "valid_partitions": [
+    "score below 70 not flagged",
+    "score at least 70 flagged",
+    "mismatch ip and shipping adds points",
+    "high order total adds points"
+  ],
+  "invalid_partitions": [
+    "negative order total",
+    "negative account age",
+    "negative failed attempts"
+  ],
+  "boundaries": [
+    {"field": "order_total", "points": [999.99, 1000, 1000.01]},
+    {"field": "account_age_days", "points": [6, 7, 8]},
+    {"field": "failed_payment_attempts", "points": [1, 2, 3]}
+  ],
+  "decision_rules": [
+    "ip mismatch adds 30",
+    "order_total above 1000 adds 30",
+    "account_age_days less than 7 adds 20",
+    "failed_payment_attempts at least 2 adds 20",
+    "score at least 70 -> manual review"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["missing ip country"]
+}

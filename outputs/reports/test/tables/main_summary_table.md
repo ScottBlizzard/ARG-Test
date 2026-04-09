@@ -1,6 +1,12 @@
 | requirement_id | split | checker_score | overall_coverage | duplicate_count | test_count | repaired | valid_partition_coverage | invalid_partition_coverage | boundary_coverage | decision_rule_coverage | state_coverage | illegal_transition_coverage | exception_coverage | diagnostics_count |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| address_international_format_validation | test | 0.75 | 0.327 | 0 | 6 | True | 0.167 | 0.0 | 0.0 | 0.125 | 1.0 | 1.0 | 0.0 | 4 |
 | bank_transfer_rule_checker | test | 0.75 | 0.449 | 0 | 6 | True | 1.0 | 0.143 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 | 3 |
+| checkout_promo_stack_and_priority | test | 0.65 | 0.286 | 0 | 3 | True | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 | 6 |
 | coupon_discount_engine | test | 0.75 | 0.571 | 0 | 6 | True | 0.25 | 0.0 | 1.0 | 0.75 | 1.0 | 1.0 | 0.0 | 4 |
+| gift_card_and_coupon_combination_rules | test | 0.65 | 0.286 | 0 | 3 | True | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 | 6 |
 | order_approval_state_machine | test | 0.9500000000000001 | 0.31 | 0 | 5 | False | 0.0 | 0.0 | 1.0 | 1.0 | 0.167 | 0.0 | 0.0 | 2 |
+| order_split_shipment_state_machine | test | 0.8500000000000001 | 0.143 | 0 | 6 | True | 0.0 | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 | 3 |
+| payment_3ds_authentication_flow | test | 0.9500000000000001 | 0.071 | 0 | 5 | False | 0.0 | 0.0 | 0.0 | 0.5 | 0.0 | 0.0 | 0.0 | 2 |
+| return_refund_method_eligibility | test | 0.65 | 0.286 | 0 | 3 | True | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 | 6 |
 | ticket_booking_refund_rule | test | 0.75 | 0.321 | 0 | 6 | True | 0.0 | 0.25 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 | 4 |

@@ -1,0 +1,29 @@
+{
+  "requirement_id": "loyalty_points_redeem_limit",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "redeem points multiple of 100",
+    "redeem within balance",
+    "redeem value within 20 percent cap"
+  ],
+  "invalid_partitions": [
+    "redeem not multiple of 100",
+    "redeem above balance",
+    "redeem value above 20 percent",
+    "negative order total"
+  ],
+  "boundaries": [
+    {"field": "redeem_points", "points": [0, 100, 200, 300]},
+    {"field": "order_total", "points": [0, 0.01, 10, 50, 100]},
+    {"field": "cap_percent", "points": [0.19, 0.2, 0.21]}
+  ],
+  "decision_rules": [
+    "redeem_points % 100 != 0 -> reject",
+    "redeem_points above balance -> reject",
+    "redeem_value above 20% of order_total -> reject",
+    "all checks pass -> apply redemption"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["order_total changes after redemption"]
+}

@@ -1,0 +1,45 @@
+{
+  "requirement_id": "multi_currency_price_rounding",
+  "analysis": "- Requirement target: multi_currency_price_rounding\n- Rule: 1. Prices are converted using exchange_rate: converted = base_amount * exchange_rate.\n- Rule: 2. USD and EUR display 2 decimals; JPY displays 0 decimals.\n- Rule: 3. Rounding is half-up.\n- Rule: 4. Line total equals rounded(converted_unit_price) * quantity.\n- Rule: 5. Cart subtotal equals sum of line totals.",
+  "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Convert conditional rules into decision rows and map each rule to at least one test case."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "multi_currency_price_rounding",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table",
+      "requirement_target": "multi_currency_price_rounding",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "multi_currency_price_rounding",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "repaired",
+      "input": "rule trigger combination"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,EP,order_split_shipment_state_machine,None,request accepted,valid partition,High,repaired,representative valid input
+T02,EP,order_split_shipment_state_machine,None,validation error,invalid partition,High,repaired,representative invalid input
+T06,Decision Table,order_split_shipment_state_machine,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination
+T07,State Transition,order_split_shipment_state_machine,initial state,state transition succeeds,legal transition,High,repaired,legal trigger
+T08,State Transition,order_split_shipment_state_machine,restricted state,transition rejected,illegal transition,High,repaired,illegal trigger
+T06,BVA,order_split_shipment_state_machine,None,boundary behavior verified,boundary case (repair),Medium,repaired,repaired boundary input

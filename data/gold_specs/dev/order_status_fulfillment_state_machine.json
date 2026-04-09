@@ -1,0 +1,43 @@
+{
+  "requirement_id": "order_status_fulfillment_state_machine",
+  "recommended_techniques": ["State Transition"],
+  "valid_partitions": [
+    "Created to Paid",
+    "Paid to Packed",
+    "Packed to Shipped",
+    "Shipped to Delivered",
+    "Delivered to Returned",
+    "Cancel in Created Paid Packed"
+  ],
+  "invalid_partitions": [
+    "Cancel after Shipped",
+    "Return before Delivered",
+    "Skip states without required operation"
+  ],
+  "boundaries": [],
+  "decision_rules": [
+    "payment success triggers Created to Paid",
+    "pack triggers Paid to Packed",
+    "ship triggers Packed to Shipped",
+    "deliver triggers Shipped to Delivered",
+    "cancel allowed only before Shipped",
+    "return allowed only from Delivered"
+  ],
+  "states": [
+    "Created",
+    "Paid",
+    "Packed",
+    "Shipped",
+    "Delivered",
+    "Cancelled",
+    "Returned"
+  ],
+  "illegal_transitions": [
+    "Shipped to Cancelled",
+    "Created to Shipped",
+    "Paid to Delivered",
+    "Packed to Returned",
+    "Delivered to Paid"
+  ],
+  "exception_cases": ["duplicate ship event", "deliver event without tracking"]
+}

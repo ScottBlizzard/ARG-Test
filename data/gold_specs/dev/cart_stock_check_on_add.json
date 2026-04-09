@@ -1,0 +1,27 @@
+{
+  "requirement_id": "cart_stock_check_on_add",
+  "recommended_techniques": ["EP", "Decision Table"],
+  "valid_partitions": [
+    "available_stock at least 1",
+    "requested quantity less than or equal to stock"
+  ],
+  "invalid_partitions": [
+    "available_stock is 0",
+    "requested quantity above stock",
+    "negative stock",
+    "negative requested quantity"
+  ],
+  "boundaries": [
+    {"field": "available_stock", "points": [-1, 0, 1, 2]},
+    {"field": "requested_quantity", "points": [0, 1, 2]}
+  ],
+  "decision_rules": [
+    "stock equals 0 -> reject as out-of-stock",
+    "requested quantity less than or equal to stock -> accept",
+    "requested quantity greater than stock -> reject",
+    "negative stock or quantity -> validation error"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["sku not found", "stock service unavailable"]
+}

@@ -1,0 +1,26 @@
+{
+  "requirement_id": "flash_sale_stock_reservation",
+  "recommended_techniques": ["State Transition", "BVA"],
+  "valid_partitions": [
+    "reserve within stock",
+    "payment success within 5 minutes converts to sold",
+    "reservation expires after 5 minutes releases stock"
+  ],
+  "invalid_partitions": [
+    "reserve above stock",
+    "expire before 5 minutes",
+    "sell without reservation"
+  ],
+  "boundaries": [
+    {"field": "minutes_since_reserve", "points": [4, 5, 6]},
+    {"field": "available_stock", "points": [0, 1, 2]}
+  ],
+  "decision_rules": [
+    "reserve allowed only when stock sufficient",
+    "payment success before expiry -> mark sold and keep stock deducted",
+    "no payment by 5 minutes -> expire and restore stock"
+  ],
+  "states": ["Available", "Reserved", "Sold"],
+  "illegal_transitions": ["Available to Sold", "Sold to Reserved"],
+  "exception_cases": ["concurrent reservations for same sku"]
+}

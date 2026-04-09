@@ -1,0 +1,8 @@
+Requirement ID: refund_amount_calculation_rules
+Domain: e-commerce refunds
+
+Rules:
+1. refund_base equals paid_amount minus non_refundable_fees.
+2. If item_opened is true, apply restocking_fee_rate 0.10 capped at 50.
+3. refund_amount equals refund_base minus restocking_fee, and must be between 0 and paid_amount.
+4. If refund_amount would be negative, it becomes 0.

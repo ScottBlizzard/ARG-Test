@@ -1,0 +1,26 @@
+{
+  "requirement_id": "subscription_pause_resume_workflow",
+  "recommended_techniques": ["State Transition"],
+  "valid_partitions": [
+    "Active to Paused",
+    "Paused blocks renewal",
+    "Paused to Active resume"
+  ],
+  "invalid_partitions": [
+    "resume when not Paused",
+    "pause when Cancelled",
+    "negative remaining_days"
+  ],
+  "boundaries": [
+    {"field": "remaining_days", "points": [-1, 0, 1, 30]}
+  ],
+  "decision_rules": [
+    "pause allowed only from Active",
+    "renewal skipped while Paused",
+    "resume allowed only from Paused",
+    "resume sets next_billing_date using remaining_days"
+  ],
+  "states": ["Active", "Paused", "Cancelled"],
+  "illegal_transitions": ["Cancelled to Paused", "Paused to Cancelled via resume"],
+  "exception_cases": ["remaining_days missing on resume"]
+}

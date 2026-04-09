@@ -1,0 +1,9 @@
+Requirement ID: preorder_deposit_and_balance_payment
+Domain: e-commerce preorder
+
+Rules:
+1. A preorder defines deposit_percent between 10 and 30.
+2. deposit_amount equals order_total * deposit_percent and is due immediately.
+3. The remaining balance is due before ship_deadline_date.
+4. If deposit is not paid, the preorder is cancelled.
+5. If balance is not paid by the deadline, the preorder is cancelled.

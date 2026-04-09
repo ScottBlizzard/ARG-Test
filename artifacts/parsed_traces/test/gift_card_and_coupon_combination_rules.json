@@ -1,0 +1,45 @@
+{
+  "requirement_id": "gift_card_and_coupon_combination_rules",
+  "analysis": "- Requirement target: gift_card_and_coupon_combination_rules\n- Rule: 1. Gift cards may be used together with at most one coupon.\n- Rule: 2. Coupon discount is applied to merchandise subtotal (excluding shipping and tax) before applying gift card balance.\n- Rule: 3. Gift card balance is applied after coupon and can cover shipping and tax.\n- Rule: 4. Coupons cannot discount gift card products.\n- Rule: 5. The final payable amount must never be negative.\n- Rule: 6. Invalid inputs: multiple coupons, expired coupon, gift card code invalid.",
+  "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
+  "steps": [
+    "1. Convert conditional rules into decision rows and map each rule to at least one test case."
+  ],
+  "verification": "- Verified against Step 1 for basic coverage of valid and invalid cases.\n- Verified against Step 2 for boundary coverage where numeric limits exist.\n- Checked that each test case includes an expected output.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "gift_card_and_coupon_combination_rules",
+      "preconditions": "None",
+      "expected_output": "request accepted",
+      "covered_item": "valid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative valid input"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table",
+      "requirement_target": "gift_card_and_coupon_combination_rules",
+      "preconditions": "None",
+      "expected_output": "validation error",
+      "covered_item": "invalid partition",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "representative invalid input"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "gift_card_and_coupon_combination_rules",
+      "preconditions": "rule conditions satisfied",
+      "expected_output": "rule-specific outcome",
+      "covered_item": "decision rule coverage",
+      "priority": "Medium",
+      "checker_status": "repaired",
+      "input": "rule trigger combination"
+    }
+  ]
+}
