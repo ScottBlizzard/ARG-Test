@@ -33,6 +33,22 @@ class TestCase:
 
 
 @dataclass
+class RiskAssessment:
+    level: str
+    score: float
+    rule_count: int
+    numeric_constraint_count: int
+    technique_count: int
+    drivers: list[str] = field(default_factory=list)
+    recommended_focus: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        payload = asdict(self)
+        payload["score"] = round(float(self.score), 3)
+        return payload
+
+
+@dataclass
 class ParsedTrace:
     requirement_id: str
     analysis: str
@@ -42,6 +58,7 @@ class ParsedTrace:
     test_cases: list[TestCase]
     raw_text: str
     category: str | None = None
+    risk_assessment: RiskAssessment | None = None
     missing_sections: list[str] = field(default_factory=list)
 
     def selected_techniques(self) -> list[str]:
@@ -62,6 +79,7 @@ class ParsedTrace:
         return {
             "requirement_id": self.requirement_id,
             "category": self.category,
+            "risk_assessment": self.risk_assessment.to_dict() if self.risk_assessment else None,
             "analysis": self.analysis,
             "pattern": self.pattern,
             "steps": self.steps,

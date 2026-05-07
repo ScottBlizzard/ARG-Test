@@ -18,6 +18,7 @@ class Exporter:
         raw_candidates: list[str],
         selected: CandidateEvaluation,
         metrics: dict | None = None,
+        run_context: dict | None = None,
     ) -> None:
         for index, raw_text in enumerate(raw_candidates, start=1):
             raw_path = self.artifacts_root / 'raw_generations' / split / f'{requirement_id}_candidate_{index}.md'
@@ -32,10 +33,13 @@ class Exporter:
             checker_path,
             {
                 'requirement_id': requirement_id,
+                'category': selected.parsed_trace.category,
                 'score': selected.score,
                 'repaired': selected.repaired,
+                'risk_assessment': selected.parsed_trace.risk_assessment.to_dict() if selected.parsed_trace.risk_assessment else None,
                 'checks': [check.to_dict() for check in selected.checks],
                 'diagnostics': selected.diagnostics(),
+                'run_context': run_context or {},
             },
         )
 
@@ -47,8 +51,13 @@ class Exporter:
 
         report_payload = {
             'requirement_id': requirement_id,
+            'split': split,
+            'category': selected.parsed_trace.category,
             'score': selected.score,
             'repaired': selected.repaired,
+            'risk_assessment': selected.parsed_trace.risk_assessment.to_dict() if selected.parsed_trace.risk_assessment else None,
             'metrics': metrics or {},
+            'diagnostics': selected.diagnostics(),
+            'run_context': run_context or {},
         }
         write_json(self.outputs_root / 'reports' / split / f'{requirement_id}_summary.json', report_payload)

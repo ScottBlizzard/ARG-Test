@@ -4,11 +4,17 @@
 
 正式文档引用原则：
 
-- 主实验结果：`outputs/reports/dev/run_main_summary.json` 与 `outputs/reports/test/run_main_summary.json`
-- baseline：`outputs/reports/test/baseline_summary.json`
-- ablation：`outputs/reports/test/ablation_summary.json`
-- generalization：`outputs/reports/test/generalization_by_category.json`
+- 优先使用已经冻结的正式 live 结果根目录，例如：`.local_runs/formal_qwen_novpn/outputs/reports/`
+- 主实验结果：`<formal_root>/reports/dev/run_main_summary.json` 与 `<formal_root>/reports/test/run_main_summary.json`
+- baseline：`<formal_root>/reports/test/baseline_summary.json`
+- ablation：`<formal_root>/reports/test/ablation_summary.json`
+- generalization：`<formal_root>/reports/test/generalization_by_category.json`
 - case study raw evidence：`artifacts/raw_generations/`、`artifacts/parsed_traces/`、`artifacts/checker_logs/`、`outputs/final_tests/`
+
+当前特别说明：
+
+- 仓库根目录下的 `outputs/reports/test/run_main_summary.json` 仍是旧的 `10-case` 快照，不应继续作为 final 主引用源
+- `.local_runs/upgrade_mock/...` 与 `.local_runs/formal_qwen_upgrade_smoke/...` 用于升级验证，不应直接充当 final 主实验数字来源
 
 ## 2. Non-citable sources
 

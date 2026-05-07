@@ -67,10 +67,14 @@ def flatten_main(split: str) -> list[dict]:
     for item in payload:
         metrics = item.get('metrics', {})
         coverage = metrics.get('coverage', {})
+        risk = item.get('risk_assessment') or {}
         rows.append(
             {
                 'requirement_id': item.get('requirement_id', ''),
                 'split': split,
+                'category': item.get('category', ''),
+                'risk_level': risk.get('level', ''),
+                'risk_score': risk.get('score', ''),
                 'checker_score': item.get('score', ''),
                 'overall_coverage': metrics.get('overall_coverage', ''),
                 'duplicate_count': metrics.get('duplicate_count', ''),
@@ -97,12 +101,16 @@ def flatten_baseline(split: str) -> list[dict]:
     payload = load_json(path)
     rows = []
     for item in payload:
+        risk = item.get('risk_assessment') or {}
         for baseline, metrics in item.get('baselines', {}).items():
             coverage = metrics.get('coverage', {})
             rows.append(
                 {
                     'requirement_id': item.get('requirement_id', ''),
                     'split': split,
+                    'category': item.get('category', ''),
+                    'risk_level': risk.get('level', ''),
+                    'risk_score': risk.get('score', ''),
                     'baseline': baseline,
                     'checker_score': metrics.get('checker_score', ''),
                     'overall_coverage': metrics.get('overall_coverage', ''),
@@ -128,6 +136,7 @@ def flatten_ablation(split: str) -> list[dict]:
     payload = load_json(path)
     rows = []
     for item in payload:
+        risk = item.get('risk_assessment') or {}
         for variant in ['structured_no_checker', 'full_pipeline']:
             metrics = item.get(variant, {})
             coverage = metrics.get('coverage', {})
@@ -135,6 +144,9 @@ def flatten_ablation(split: str) -> list[dict]:
                 {
                     'requirement_id': item.get('requirement_id', ''),
                     'split': split,
+                    'category': item.get('category', ''),
+                    'risk_level': risk.get('level', ''),
+                    'risk_score': risk.get('score', ''),
                     'variant': variant,
                     'checker_score': metrics.get('checker_score', ''),
                     'overall_coverage': metrics.get('overall_coverage', ''),

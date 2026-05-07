@@ -12,7 +12,7 @@ if str(ROOT) not in sys.path:
 from src.baselines import build_plain_llm_trace, build_rule_based_trace, build_structured_no_checker_trace
 from src.evaluation import evaluate_suite
 from src.pipeline import ARGTestPipeline
-from src.utils import extract_requirement_id, gold_spec_path, list_requirement_files, read_text, write_json
+from src.utils import build_run_manifest, extract_requirement_id, gold_spec_path, list_requirement_files, read_text, write_json
 
 
 def main() -> None:
@@ -25,27 +25,45 @@ def main() -> None:
 
     pipeline = ARGTestPipeline(base_dir=ROOT, provider=args.provider, model=args.model, candidates=1, output_root=args.output_root)
     summaries = []
+    requirement_ids: list[str] = []
 
     for path in list_requirement_files(ROOT, args.split):
         requirement_text = read_text(path)
         requirement_id = extract_requirement_id(requirement_text, path.stem)
+        requirement_ids.append(requirement_id)
         gold_path = gold_spec_path(ROOT, args.split, requirement_id)
         traces = {
             'rule_based': build_rule_based_trace(requirement_id, requirement_text),
             'plain_llm': build_plain_llm_trace(requirement_id, requirement_text, pipeline.client, pipeline.plain_prompt(requirement_text)),
             'structured_no_checker': build_structured_no_checker_trace(requirement_id, requirement_text, pipeline.client, pipeline.generation_prompt(requirement_text)),
         }
-        per_requirement = {'requirement_id': requirement_id, 'split': args.split, 'baselines': {}}
+        per_requirement = {'requirement_id': requirement_id, 'split': args.split, 'category': None, 'risk_assessment': None, 'baselines': {}}
         for name, trace in traces.items():
-            pipeline.annotate_trace(trace, args.split)
+            pipeline.annotate_trace(trace, args.split, requirement_text)
             candidate = pipeline.assess_trace(trace, source=name, repaired=False)
             metrics = evaluate_suite(trace.test_cases, gold_path)
             metrics['checker_score'] = candidate.score
             per_requirement['baselines'][name] = metrics
+            if per_requirement['category'] is None:
+                per_requirement['category'] = trace.category
+            if per_requirement['risk_assessment'] is None and trace.risk_assessment:
+                per_requirement['risk_assessment'] = trace.risk_assessment.to_dict()
         summaries.append(per_requirement)
 
     output_path = pipeline.config.paths.outputs / 'reports' / args.split / 'baseline_summary.json'
     write_json(output_path, summaries)
+    manifest = build_run_manifest(
+        experiment='run_baselines',
+        split=args.split,
+        provider=pipeline.config.provider,
+        model=pipeline.config.model,
+        candidates=1,
+        enable_repair=False,
+        runtime_root=pipeline.config.paths.runtime_root,
+        requirement_ids=requirement_ids,
+        extra={'output_summary_path': str(output_path)},
+    )
+    write_json(pipeline.config.paths.outputs / 'reports' / args.split / 'baseline_manifest.json', manifest)
     print(json.dumps(summaries, indent=2, ensure_ascii=False))
 
 

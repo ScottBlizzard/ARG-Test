@@ -10,7 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.pipeline import ARGTestPipeline
-from src.utils import extract_requirement_id, list_requirement_files, read_text, write_json
+from src.utils import build_run_manifest, extract_requirement_id, list_requirement_files, read_text, write_json
 
 
 def parse_ids(raw: str) -> set[str]:
@@ -71,6 +71,23 @@ def main() -> None:
     if selected_ids:
         summaries = merge_with_existing(report_path, args.split, summaries)
     write_json(report_path, summaries)
+    manifest = build_run_manifest(
+        experiment='run_main',
+        split=args.split,
+        provider=pipeline.config.provider,
+        model=pipeline.config.model,
+        candidates=args.candidates,
+        enable_repair=pipeline.config.enable_repair,
+        runtime_root=pipeline.config.paths.runtime_root,
+        requirement_ids=[item['requirement_id'] for item in summaries],
+        extra={
+            'limit': args.limit,
+            'targeted_ids': sorted(selected_ids),
+            'merged_with_existing': bool(selected_ids),
+            'output_summary_path': str(report_path),
+        },
+    )
+    write_json(pipeline.config.paths.outputs / 'reports' / args.split / 'run_main_manifest.json', manifest)
     print(json.dumps(summaries, indent=2, ensure_ascii=False))
 
 

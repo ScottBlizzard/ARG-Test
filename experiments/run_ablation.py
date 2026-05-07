@@ -12,7 +12,7 @@ if str(ROOT) not in sys.path:
 from src.baselines import build_structured_no_checker_trace
 from src.evaluation import evaluate_suite
 from src.pipeline import ARGTestPipeline
-from src.utils import extract_requirement_id, gold_spec_path, list_requirement_files, load_json, read_text, write_json
+from src.utils import build_run_manifest, extract_requirement_id, gold_spec_path, list_requirement_files, load_json, read_text, write_json
 
 
 def main() -> None:
@@ -37,10 +37,12 @@ def main() -> None:
     if main_summary_path.exists() and not args.fresh_full_pipeline:
         cached_main = {item['requirement_id']: item for item in load_json(main_summary_path)}
     summaries = []
+    requirement_ids: list[str] = []
 
     for path in list_requirement_files(ROOT, args.split):
         requirement_text = read_text(path)
         requirement_id = extract_requirement_id(requirement_text, path.stem)
+        requirement_ids.append(requirement_id)
         gold_path = gold_spec_path(ROOT, args.split, requirement_id)
 
         baseline_trace = build_structured_no_checker_trace(
@@ -49,7 +51,7 @@ def main() -> None:
             pipeline.client,
             pipeline.generation_prompt(requirement_text),
         )
-        pipeline.annotate_trace(baseline_trace, args.split)
+        pipeline.annotate_trace(baseline_trace, args.split, requirement_text)
         baseline_candidate = pipeline.assess_trace(baseline_trace, source='structured_no_checker', repaired=False)
         baseline_metrics = evaluate_suite(baseline_trace.test_cases, gold_path)
         baseline_metrics['checker_score'] = baseline_candidate.score
@@ -64,6 +66,8 @@ def main() -> None:
             {
                 'requirement_id': requirement_id,
                 'split': args.split,
+                'category': baseline_trace.category,
+                'risk_assessment': baseline_trace.risk_assessment.to_dict() if baseline_trace.risk_assessment else None,
                 'structured_no_checker': baseline_metrics,
                 'full_pipeline': full_metrics,
             }
@@ -71,6 +75,21 @@ def main() -> None:
 
     output_path = pipeline.config.paths.outputs / 'reports' / args.split / 'ablation_summary.json'
     write_json(output_path, summaries)
+    manifest = build_run_manifest(
+        experiment='run_ablation',
+        split=args.split,
+        provider=pipeline.config.provider,
+        model=pipeline.config.model,
+        candidates=args.candidates,
+        enable_repair=pipeline.config.enable_repair,
+        runtime_root=pipeline.config.paths.runtime_root,
+        requirement_ids=requirement_ids,
+        extra={
+            'fresh_full_pipeline': args.fresh_full_pipeline,
+            'output_summary_path': str(output_path),
+        },
+    )
+    write_json(pipeline.config.paths.outputs / 'reports' / args.split / 'ablation_manifest.json', manifest)
     print(json.dumps(summaries, indent=2, ensure_ascii=False))
 
 

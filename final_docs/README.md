@@ -13,6 +13,7 @@ Current structure:
 - `05_evidence_and_submission_checklist_cn.md`: evidence-source and submission checklist.
 - `06_upgrade_backlog_cn.md`: high-impact upgrade backlog for the final phase.
 - `07_final_upgrade_report_cn.md`: complete final-upgrade report with best-version recommendations.
+- `08_upgrade_implementation_status_cn.md`: implementation-complete status after the core upgrade landed.
 - `execution_evidence/`: saved execution evidence for the selected detailed module.
 
 Suggested next additions:

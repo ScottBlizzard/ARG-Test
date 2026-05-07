@@ -4,6 +4,7 @@ import csv
 import json
 import os
 import re
+from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
@@ -35,6 +36,10 @@ def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
+
+
+def utc_now_iso() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def load_dotenv_file(path: Path, override: bool = False) -> None:
@@ -217,3 +222,32 @@ def float_from_env(name: str, default: float | None = None) -> float | None:
     if raw is None or not raw.strip():
         return default
     return float(raw.strip())
+
+
+def build_run_manifest(
+    *,
+    experiment: str,
+    split: str,
+    provider: str,
+    model: str,
+    candidates: int | None,
+    enable_repair: bool,
+    runtime_root: Path,
+    requirement_ids: list[str],
+    extra: dict | None = None,
+) -> dict:
+    payload = {
+        "experiment": experiment,
+        "generated_at_utc": utc_now_iso(),
+        "split": split,
+        "provider": provider,
+        "model": model,
+        "candidates": candidates,
+        "enable_repair": enable_repair,
+        "runtime_root": str(runtime_root),
+        "requirement_count": len(requirement_ids),
+        "requirement_ids": requirement_ids,
+    }
+    if extra:
+        payload.update(extra)
+    return payload

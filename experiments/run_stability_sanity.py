@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.pipeline import ARGTestPipeline
-from src.utils import extract_requirement_id, list_requirement_files, read_text, requirement_category, write_json
+from src.utils import build_run_manifest, extract_requirement_id, list_requirement_files, read_text, requirement_category, write_json
 
 DEFAULT_IDS = [
     'bundle_discount_eligibility_rules',
@@ -142,6 +142,21 @@ def main() -> None:
     report_dir.mkdir(parents=True, exist_ok=True)
     write_json(report_dir / 'stability_sanity_summary.json', payload)
     (report_dir / 'stability_sanity_summary.md').write_text(build_markdown(payload), encoding='utf-8')
+    manifest = build_run_manifest(
+        experiment='run_stability_sanity',
+        split=args.split,
+        provider=pipeline.config.provider,
+        model=pipeline.config.model,
+        candidates=args.candidates,
+        enable_repair=pipeline.config.enable_repair,
+        runtime_root=pipeline.config.paths.runtime_root,
+        requirement_ids=selected_ids,
+        extra={
+            'formal_root': args.formal_root,
+            'output_summary_path': str(report_dir / 'stability_sanity_summary.json'),
+        },
+    )
+    write_json(report_dir / 'stability_sanity_manifest.json', manifest)
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 
