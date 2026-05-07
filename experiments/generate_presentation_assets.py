@@ -9,6 +9,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
+from matplotlib.lines import Line2D
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE, MSO_CONNECTOR
@@ -53,24 +54,36 @@ def avg(values: list[float]) -> float:
     return round(sum(values) / len(values), 3) if values else 0.0
 
 
+def pretty_requirement_name(requirement_id: str) -> str:
+    return requirement_id.replace('_', ' ').title()
+
+
+def short_diag(text: str, width: int = 56) -> str:
+    cleaned = ' '.join(text.split())
+    return textwrap.shorten(cleaned, width=width, placeholder='...')
+
+
 def configure_matplotlib() -> None:
     plt.rcParams.update({
-        'figure.facecolor': PALETTE['paper'],
-        'axes.facecolor': PALETTE['paper'],
-        'savefig.facecolor': PALETTE['paper'],
+        'figure.facecolor': PALETTE['white'],
+        'axes.facecolor': PALETTE['white'],
+        'savefig.facecolor': PALETTE['white'],
         'font.family': ['DejaVu Sans', 'Microsoft YaHei', 'Segoe UI'],
+        'font.size': 11.5,
         'axes.titleweight': 'bold',
         'axes.labelcolor': PALETTE['ink'],
         'xtick.color': PALETTE['muted'],
         'ytick.color': PALETTE['muted'],
         'axes.edgecolor': PALETTE['line'],
+        'axes.spines.top': False,
+        'axes.spines.right': False,
     })
 
 
 def save_fig(fig, output_path: Path) -> None:
-    fig.savefig(output_path, bbox_inches='tight')
+    fig.savefig(output_path, bbox_inches='tight', pad_inches=0.06)
     if output_path.suffix.lower() != '.pdf':
-        fig.savefig(output_path.with_suffix('.pdf'), bbox_inches='tight')
+        fig.savefig(output_path.with_suffix('.pdf'), bbox_inches='tight', pad_inches=0.06)
 
 
 def aggregate_payload(run_main: list[dict], baseline: list[dict], ablation: list[dict]) -> dict:
@@ -79,6 +92,10 @@ def aggregate_payload(run_main: list[dict], baseline: list[dict], ablation: list
             'avg_checker_score': avg([float(item['score']) for item in run_main]),
             'avg_overall_coverage': avg([float(item['metrics']['overall_coverage']) for item in run_main]),
             'avg_test_count': avg([float(item['metrics']['test_count']) for item in run_main]),
+            'avg_risk_score': avg([float(item['risk_assessment']['score']) for item in run_main]),
+            'high_risk_count': sum(1 for item in run_main if item['risk_assessment']['level'] == 'High'),
+            'repaired_count': sum(1 for item in run_main if item.get('repaired')),
+            'avg_duplicate_count': avg([float(item['metrics']['duplicate_count']) for item in run_main]),
             'count': len(run_main),
         },
         'baseline': {},
@@ -216,29 +233,32 @@ def build_architecture_pptx(output_path: Path) -> None:
 
 def save_main_vs_baselines(output_path: Path, payload: dict) -> None:
     configure_matplotlib()
-    methods = ['Rule-based', 'Plain LLM', 'Structured No Checker', 'ARG-Test Full Pipeline']
-    coverage = [
-        payload['baseline']['rule_based']['avg_overall_coverage'],
-        payload['baseline']['plain_llm']['avg_overall_coverage'],
-        payload['baseline']['structured_no_checker']['avg_overall_coverage'],
-        payload['main']['avg_overall_coverage'],
+    methods = [
+        ('ARG-Test Full Pipeline', payload['main']['avg_overall_coverage'], payload['main']['avg_checker_score'], payload['main']['avg_test_count'], PALETTE['purple']),
+        ('Structured No Checker', payload['baseline']['structured_no_checker']['avg_overall_coverage'], payload['baseline']['structured_no_checker']['avg_checker_score'], payload['baseline']['structured_no_checker']['avg_test_count'], PALETTE['teal']),
+        ('Rule-based', payload['baseline']['rule_based']['avg_overall_coverage'], payload['baseline']['rule_based']['avg_checker_score'], payload['baseline']['rule_based']['avg_test_count'], PALETTE['gold']),
+        ('Plain LLM', payload['baseline']['plain_llm']['avg_overall_coverage'], payload['baseline']['plain_llm']['avg_checker_score'], payload['baseline']['plain_llm']['avg_test_count'], PALETTE['accent']),
     ]
-    scores = [
-        payload['baseline']['rule_based']['avg_checker_score'],
-        payload['baseline']['plain_llm']['avg_checker_score'],
-        payload['baseline']['structured_no_checker']['avg_checker_score'],
-        payload['main']['avg_checker_score'],
+    fig, ax = plt.subplots(figsize=(8.8, 5.0), dpi=200)
+    ax.set_xlim(0, 1.02)
+    ax.set_ylim(-0.6, len(methods) - 0.4)
+    ax.grid(axis='x', color=PALETTE['line'], linestyle='--', linewidth=0.8, alpha=0.85)
+    ax.set_xlabel('Average metric value')
+    y_positions = list(range(len(methods)))
+    for idx, (label, coverage, score, test_count, color) in enumerate(methods):
+        if idx == 0:
+            ax.axhspan(idx - 0.5, idx + 0.5, color=PALETTE['purple_soft'], alpha=0.22, zorder=0)
+        ax.barh(idx - 0.16, coverage, height=0.28, color=color, alpha=0.92, edgecolor='none', zorder=3)
+        ax.barh(idx + 0.16, score, height=0.20, color=PALETTE['ink'], alpha=0.92, edgecolor='none', zorder=4)
+        ax.text(min(max(coverage, score) + 0.02, 0.94), idx, f'cov {coverage:.3f} | score {score:.3f} | tests {test_count:.3f}', va='center', ha='left', fontsize=10.8, color=PALETTE['ink'])
+    ax.set_yticks(y_positions, [item[0] for item in methods])
+    ax.invert_yaxis()
+    legend_handles = [
+        FancyBboxPatch((0, 0), 1, 1, facecolor=PALETTE['teal'], edgecolor='none', alpha=0.92, label='Coverage'),
+        FancyBboxPatch((0, 0), 1, 1, facecolor=PALETTE['ink'], edgecolor='none', alpha=0.92, label='Checker score'),
     ]
-    colors = [PALETTE['gold'], PALETTE['accent'], PALETTE['teal'], PALETTE['purple']]
-    fig, ax = plt.subplots(figsize=(11.0, 5.8), dpi=180)
-    ax.barh(methods, coverage, color=colors, edgecolor='none', height=0.58)
-    ax.set_xlim(0, 0.75)
-    ax.set_xlabel('Average Overall Coverage')
-    ax.grid(axis='x', color=PALETTE['line'], linestyle='--', alpha=0.7)
-    ax.spines[['top', 'right']].set_visible(False)
-    for idx, (cov, score) in enumerate(zip(coverage, scores)):
-        ax.text(cov + 0.012, idx, f'cov {cov:.3f} | score {score:.3f}', va='center', ha='left', fontsize=11, color=PALETTE['ink'])
-    fig.tight_layout()
+    ax.legend(handles=legend_handles, frameon=False, loc='lower right')
+    fig.tight_layout(pad=0.8)
     save_fig(fig, output_path)
     plt.close(fig)
 
@@ -247,22 +267,34 @@ def save_main_vs_baselines(output_path: Path, payload: dict) -> None:
 def save_ablation(output_path: Path, payload: dict) -> None:
     configure_matplotlib()
     labels = ['Structured No Checker', 'Full Pipeline']
-    coverage = [payload['ablation']['structured_no_checker']['avg_overall_coverage'], payload['ablation']['full_pipeline']['avg_overall_coverage']]
-    scores = [payload['ablation']['structured_no_checker']['avg_checker_score'], payload['ablation']['full_pipeline']['avg_checker_score']]
-    x = list(range(len(labels)))
-    fig, ax = plt.subplots(figsize=(8.8, 5.5), dpi=180)
-    width = 0.34
-    ax.bar([i - width/2 for i in x], coverage, width=width, color=PALETTE['teal'], label='Coverage')
-    ax.bar([i + width/2 for i in x], scores, width=width, color=PALETTE['accent'], label='Checker Score')
-    ax.set_xticks(x, labels)
-    ax.set_ylim(0, 1.05)
-    ax.grid(axis='y', color=PALETTE['line'], linestyle='--', alpha=0.7)
-    ax.spines[['top', 'right']].set_visible(False)
-    ax.legend(frameon=False, loc='upper left')
-    for i, (cov, score) in enumerate(zip(coverage, scores)):
-        ax.text(i - width/2, cov + 0.03, f'{cov:.3f}', ha='center', fontsize=10.5, color=PALETTE['ink'])
-        ax.text(i + width/2, score + 0.03, f'{score:.3f}', ha='center', fontsize=10.5, color=PALETTE['ink'])
-    fig.tight_layout()
+    coverage = [
+        payload['baseline']['structured_no_checker']['avg_overall_coverage'],
+        payload['main']['avg_overall_coverage'],
+    ]
+    scores = [
+        payload['baseline']['structured_no_checker']['avg_checker_score'],
+        payload['main']['avg_checker_score'],
+    ]
+    test_counts = [
+        payload['baseline']['structured_no_checker']['avg_test_count'],
+        payload['main']['avg_test_count'],
+    ]
+    fig, axes = plt.subplots(1, 2, figsize=(8.2, 3.9), dpi=200)
+    metric_specs = [
+        ('Checker score', scores, PALETTE['accent'], f"+{scores[1] - scores[0]:.3f}"),
+        ('Overall coverage', coverage, PALETTE['teal'], f"{coverage[1] - coverage[0]:+.3f}"),
+    ]
+    for ax, (title, values, color, delta_text) in zip(axes, metric_specs):
+        bars = ax.bar(labels, values, color=[PALETTE['panel'], color], edgecolor='none', width=0.58)
+        ax.set_ylim(0, 1.02)
+        ax.set_title(title, fontsize=12.2, color=PALETTE['ink'], pad=8)
+        ax.grid(axis='y', color=PALETTE['line'], linestyle='--', linewidth=0.8, alpha=0.85)
+        for idx, (bar, value) in enumerate(zip(bars, values)):
+            ax.text(bar.get_x() + bar.get_width() / 2, value + 0.03, f'{value:.3f}', ha='center', fontsize=10.5, color=PALETTE['ink'])
+            ax.text(bar.get_x() + bar.get_width() / 2, 0.04, f'tests {test_counts[idx]:.3f}', ha='center', fontsize=9.5, color=PALETTE['muted'])
+        ax.text(0.5, 0.98, f'delta = {delta_text}', transform=ax.transAxes, ha='center', va='top', fontsize=10.0, color=PALETTE['muted'])
+        ax.tick_params(axis='x', labelrotation=0)
+    fig.tight_layout(pad=0.8, w_pad=1.8)
     save_fig(fig, output_path)
     plt.close(fig)
 
@@ -278,18 +310,21 @@ def save_generalization(output_path: Path, categories: list[dict]) -> None:
     labels = [label_map[item['category']] for item in categories]
     coverage = [item['avg_overall_coverage'] for item in categories]
     scores = [item['avg_checker_score'] for item in categories]
+    counts = [item['requirement_count'] for item in categories]
+    risks = [item.get('avg_risk_score', 0.0) for item in categories]
     colors = [PALETTE['accent'], PALETTE['gold'], PALETTE['teal']]
-    fig, ax = plt.subplots(figsize=(8.8, 5.6), dpi=180)
-    bars = ax.bar(labels, coverage, color=colors, width=0.58)
-    ax.plot(labels, scores, color=PALETTE['ink'], marker='o', linewidth=2.5, markersize=7, label='Checker Score')
+    x = list(range(len(labels)))
+    fig, ax = plt.subplots(figsize=(8.4, 4.7), dpi=200)
+    bars = ax.bar(x, coverage, color=colors, width=0.56, edgecolor='none', zorder=2)
+    ax.plot(x, scores, color=PALETTE['ink'], marker='o', linewidth=2.4, markersize=7, label='Checker score', zorder=4)
     ax.set_ylim(0, 1.02)
+    ax.set_xticks(x, labels)
     ax.grid(axis='y', color=PALETTE['line'], linestyle='--', alpha=0.7)
-    ax.spines[['top', 'right']].set_visible(False)
-    ax.legend(frameon=False, loc='upper left')
-    for bar, cov, score in zip(bars, coverage, scores):
+    for idx, (bar, cov, score) in enumerate(zip(bars, coverage, scores)):
         ax.text(bar.get_x() + bar.get_width()/2, cov + 0.03, f'cov {cov:.3f}', ha='center', fontsize=10.5, color=PALETTE['ink'])
         ax.text(bar.get_x() + bar.get_width()/2, score + 0.03, f'score {score:.3f}', ha='center', fontsize=10.5, color=PALETTE['ink'])
-    fig.tight_layout()
+        ax.text(bar.get_x() + bar.get_width()/2, 0.04, f'n={counts[idx]} | risk {risks[idx]:.2f}', ha='center', fontsize=9.4, color=PALETTE['muted'])
+    fig.tight_layout(pad=0.8)
     save_fig(fig, output_path)
     plt.close(fig)
 
@@ -333,33 +368,224 @@ def save_stability(output_path: Path, stability: dict) -> None:
 
 
 
+def save_reproducibility_summary(output_path: Path, series: list[dict]) -> None:
+    configure_matplotlib()
+    fig = plt.figure(figsize=(11.4, 5.6), dpi=200)
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.set_axis_off()
+
+    mock_item, live_multi, live_same = series
+
+    ax.text(0.04, 0.93, 'Reproducibility and stability are controlled at the pipeline level', fontsize=17.2, fontweight='bold', color=PALETTE['ink'])
+    ax.text(
+        0.04,
+        0.885,
+        'ARG-Test verifies a deterministic local chain, exposes residual live-endpoint variance honestly, and closes archival reproducibility with offline replay.',
+        fontsize=10.9,
+        color=PALETTE['muted'],
+    )
+
+    summary_cards = [
+        (
+            'Deterministic repository chain',
+            'Verified',
+            f"Mock 3-seed repeatability: {mock_item['stable_case_count']}/{mock_item['requirement_count']} stable with zero score and coverage drift.",
+            PALETTE['teal_soft'],
+            PALETTE['teal'],
+        ),
+        (
+            'Seeded live experiments',
+            'Supported',
+            'Live reruns remain usable for analysis, but the upstream endpoint still contributes residual nondeterminism.',
+            PALETTE['gold_soft'],
+            PALETTE['gold'],
+        ),
+        (
+            'Submission replay path',
+            'Solved',
+            'Frozen raw generations rebuild archived result bundles offline, which is the recommended final-package reproducibility route.',
+            PALETTE['panel_alt'],
+            PALETTE['purple'],
+        ),
+    ]
+
+    for idx, (title, badge, body, fill, line) in enumerate(summary_cards):
+        x = 0.04 + idx * 0.305
+        y = 0.63
+        w = 0.275
+        h = 0.19
+        ax.add_patch(
+            FancyBboxPatch(
+                (x, y),
+                w,
+                h,
+                boxstyle='round,pad=0.012,rounding_size=0.026',
+                facecolor=fill,
+                edgecolor=line,
+                linewidth=1.5,
+            )
+        )
+        ax.text(
+            x + 0.02,
+            y + h - 0.040,
+            textwrap.fill(title, width=24),
+            fontsize=11.2,
+            fontweight='bold',
+            color=PALETTE['ink'],
+            va='top',
+        )
+        ax.text(
+            x + 0.02,
+            y + h - 0.102,
+            f"Status: {badge}",
+            fontsize=8.8,
+            fontweight='bold',
+            color=line,
+            va='top',
+        )
+        ax.text(
+            x + 0.02,
+            y + h - 0.124,
+            textwrap.fill(body, width=36),
+            fontsize=8.6,
+            color=PALETTE['muted'],
+            va='top',
+        )
+
+    left_x = 0.04
+    left_y = 0.11
+    left_w = 0.43
+    left_h = 0.43
+    right_x = 0.51
+    right_y = 0.11
+    right_w = 0.42
+    right_h = 0.43
+
+    for x, y, w, h, title in [
+        (left_x, left_y, left_w, left_h, 'Stable-case ratio across repeatability studies'),
+        (right_x, right_y, right_w, right_h, 'Observed live-endpoint variance'),
+    ]:
+        ax.add_patch(
+            FancyBboxPatch(
+                (x, y),
+                w,
+                h,
+                boxstyle='round,pad=0.012,rounding_size=0.024',
+                facecolor=PALETTE['white'],
+                edgecolor=PALETTE['line'],
+                linewidth=1.1,
+            )
+        )
+        ax.text(x + 0.02, y + h - 0.05, title, fontsize=12.4, fontweight='bold', color=PALETTE['ink'])
+
+    ratio_rows = [
+        ('Mock 3-seed', mock_item, PALETTE['teal']),
+        ('Live multi-seed', live_multi, PALETTE['gold']),
+        ('Live same-seed', live_same, PALETTE['accent']),
+    ]
+    for idx, (label, item, color) in enumerate(ratio_rows):
+        row_y = left_y + 0.275 - idx * 0.105
+        stable_rate = item['stable_case_count'] / item['requirement_count'] if item['requirement_count'] else 0.0
+        ax.text(left_x + 0.02, row_y + 0.025, label, fontsize=10.3, fontweight='bold', color=PALETTE['ink'], va='center')
+        ax.add_patch(
+            FancyBboxPatch(
+                (left_x + 0.15, row_y),
+                0.19,
+                0.03,
+                boxstyle='round,pad=0.002,rounding_size=0.01',
+                facecolor=PALETTE['panel'],
+                edgecolor='none',
+            )
+        )
+        ax.add_patch(
+            FancyBboxPatch(
+                (left_x + 0.15, row_y),
+                0.19 * stable_rate,
+                0.03,
+                boxstyle='round,pad=0.002,rounding_size=0.01',
+                facecolor=color,
+                edgecolor='none',
+            )
+        )
+        ax.text(
+            left_x + 0.40,
+            row_y + 0.025,
+            f"{item['stable_case_count']}/{item['requirement_count']} | {stable_rate:.0%}",
+            fontsize=9.3,
+            color=PALETTE['muted'],
+            va='center',
+            ha='right',
+        )
+
+    delta_rows = [
+        ('Live multi-seed score drift', live_multi['avg_max_score_delta'], 0.25, PALETTE['purple'], '0.12'),
+        ('Live multi-seed coverage drift', live_multi['avg_max_coverage_delta'], 0.40, PALETTE['gold'], '0.09'),
+        ('Live same-seed score drift', live_same['avg_max_score_delta'], 0.25, PALETTE['purple'], '0.10'),
+        ('Live same-seed coverage drift', live_same['avg_max_coverage_delta'], 0.40, PALETTE['accent'], '0.22'),
+    ]
+    for idx, (label, value, cap, color, shown) in enumerate(delta_rows):
+        row_y = right_y + 0.275 - idx * 0.075
+        ax.text(right_x + 0.02, row_y + 0.028, label, fontsize=9.8, color=PALETTE['ink'], va='center')
+        ax.add_patch(
+            FancyBboxPatch(
+                (right_x + 0.21, row_y + 0.012),
+                0.15,
+                0.022,
+                boxstyle='round,pad=0.002,rounding_size=0.008',
+                facecolor=PALETTE['panel'],
+                edgecolor='none',
+            )
+        )
+        ax.add_patch(
+            FancyBboxPatch(
+                (right_x + 0.21, row_y + 0.012),
+                0.15 * min(value / cap, 1.0),
+                0.022,
+                boxstyle='round,pad=0.002,rounding_size=0.008',
+                facecolor=color,
+                edgecolor='none',
+            )
+        )
+        ax.text(right_x + 0.39, row_y + 0.028, shown, fontsize=9.8, color=PALETTE['muted'], va='center', ha='right')
+    save_fig(fig, output_path)
+    plt.close(fig)
+
+
 def save_scorecard(output_path: Path, payload: dict, categories: list[dict]) -> None:
     configure_matplotlib()
-    fig = plt.figure(figsize=(12.5, 6.4), dpi=180)
+    fig = plt.figure(figsize=(10.6, 5.2), dpi=200)
     ax = fig.add_axes([0, 0, 1, 1])
     ax.set_axis_off()
     cards = [
-        ('Test Split', f"{payload['main']['count']} requirements", PALETTE['gold_soft'], PALETTE['gold']),
-        ('Avg Checker Score', f"{payload['main']['avg_checker_score']:.3f}", PALETTE['accent_soft'], PALETTE['accent']),
-        ('Avg Coverage', f"{payload['main']['avg_overall_coverage']:.3f}", PALETTE['teal_soft'], PALETTE['teal']),
-        ('Avg Test Count', f"{payload['main']['avg_test_count']:.3f}", PALETTE['purple_soft'], PALETTE['purple']),
+        ('Test Split', f"{payload['main']['count']} reqs", PALETTE['gold_soft'], PALETTE['gold']),
+        ('Checker Score', f"{payload['main']['avg_checker_score']:.3f}", PALETTE['accent_soft'], PALETTE['accent']),
+        ('Coverage', f"{payload['main']['avg_overall_coverage']:.3f}", PALETTE['teal_soft'], PALETTE['teal']),
+        ('High Risk', f"{payload['main']['high_risk_count']}/16", PALETTE['purple_soft'], PALETTE['purple']),
+        ('Repaired', f"{payload['main']['repaired_count']}/16", PALETTE['panel_alt'], PALETTE['ink']),
     ]
     for idx, (label, value, fill, line) in enumerate(cards):
-        x = 0.04 + idx * 0.236
-        patch = FancyBboxPatch((x, 0.62), 0.205, 0.2, boxstyle='round,pad=0.012,rounding_size=0.025', facecolor=fill, edgecolor=line, linewidth=1.8)
+        x = 0.035 + idx * 0.188
+        patch = FancyBboxPatch((x, 0.66), 0.165, 0.18, boxstyle='round,pad=0.012,rounding_size=0.024', facecolor=fill, edgecolor=line, linewidth=1.6)
         ax.add_patch(patch)
-        ax.text(x + 0.02, 0.745, label, fontsize=11.2, color=PALETTE['muted'])
-        ax.text(x + 0.1025, 0.67, value, fontsize=18.5, fontweight='bold', color=PALETTE['ink'], ha='center')
-    ax.text(0.05, 0.50, 'Category Coverage', fontsize=15, fontweight='bold', color=PALETTE['ink'])
-    y = 0.40
+        ax.text(x + 0.018, 0.786, label, fontsize=10.6, color=PALETTE['muted'])
+        ax.text(x + 0.0825, 0.707, value, fontsize=17.2, fontweight='bold', color=PALETTE['ink'], ha='center')
+    ax.text(0.045, 0.56, 'Category performance', fontsize=14.5, fontweight='bold', color=PALETTE['ink'])
+    ax.text(0.84, 0.56, f"avg risk {payload['main']['avg_risk_score']:.3f}", fontsize=10.6, color=PALETTE['muted'], ha='right')
+    y = 0.44
     label_map = {'business_rules': 'Business Rules', 'input_validation': 'Input Validation', 'workflow_state': 'Workflow State'}
     colors = [PALETTE['accent'], PALETTE['gold'], PALETTE['teal']]
     for idx, item in enumerate(categories):
-        ax.add_patch(FancyBboxPatch((0.05, y - idx * 0.11), 0.64, 0.07, boxstyle='round,pad=0.008,rounding_size=0.02', facecolor=PALETTE['white'], edgecolor=PALETTE['line'], linewidth=1.1))
-        ax.text(0.07, y + 0.022 - idx * 0.11, label_map[item['category']], fontsize=12.5, fontweight='bold', color=PALETTE['ink'])
-        ax.add_patch(FancyBboxPatch((0.28, y - idx * 0.11 + 0.012), 0.3, 0.028, boxstyle='round,pad=0.002,rounding_size=0.01', facecolor=PALETTE['panel'], edgecolor='none'))
-        ax.add_patch(FancyBboxPatch((0.28, y - idx * 0.11 + 0.012), 0.3 * item['avg_overall_coverage'], 0.028, boxstyle='round,pad=0.002,rounding_size=0.01', facecolor=colors[idx], edgecolor='none'))
-        ax.text(0.60, y + 0.022 - idx * 0.11, f"cov {item['avg_overall_coverage']:.3f} | score {item['avg_checker_score']:.3f}", fontsize=11.5, color=PALETTE['muted'])
+        row_y = y - idx * 0.12
+        ax.add_patch(FancyBboxPatch((0.045, row_y), 0.91, 0.082, boxstyle='round,pad=0.008,rounding_size=0.02', facecolor=PALETTE['white'], edgecolor=PALETTE['line'], linewidth=1.0))
+        ax.text(0.065, row_y + 0.048, label_map[item['category']], fontsize=12.0, fontweight='bold', color=PALETTE['ink'], va='center')
+        ax.text(0.25, row_y + 0.048, f"n={item['requirement_count']}", fontsize=10.1, color=PALETTE['muted'], va='center')
+        ax.add_patch(FancyBboxPatch((0.33, row_y + 0.024), 0.28, 0.022, boxstyle='round,pad=0.001,rounding_size=0.008', facecolor=PALETTE['panel'], edgecolor='none'))
+        ax.add_patch(FancyBboxPatch((0.33, row_y + 0.024), 0.28 * item['avg_overall_coverage'], 0.022, boxstyle='round,pad=0.001,rounding_size=0.008', facecolor=colors[idx], edgecolor='none'))
+        dot_x = 0.33 + 0.28 * item['avg_checker_score']
+        ax.add_patch(plt.Circle((dot_x, row_y + 0.062), 0.0065, color=PALETTE['ink']))
+        ax.text(0.64, row_y + 0.048, f"cov {item['avg_overall_coverage']:.3f}", fontsize=10.8, color=PALETTE['ink'], va='center')
+        ax.text(0.86, row_y + 0.048, f"score {item['avg_checker_score']:.3f}", fontsize=10.8, color=PALETTE['ink'], va='center', ha='right')
+        ax.text(0.94, row_y + 0.048, f"risk {item.get('avg_risk_score', 0.0):.2f}", fontsize=10.0, color=PALETTE['muted'], va='center', ha='right')
     save_fig(fig, output_path)
     plt.close(fig)
 
@@ -368,34 +594,38 @@ def save_scorecard(output_path: Path, payload: dict, categories: list[dict]) -> 
 def save_case_study(output_path: Path, run_main: list[dict]) -> None:
     configure_matplotlib()
     selected = [
-        'checkout_promo_stack_and_priority',
+        'coupon_discount_engine',
         'payment_card_expiry_and_cvv_validation',
         'payment_3ds_authentication_flow',
     ]
     by_id = {item['requirement_id']: item for item in run_main}
     label_map = {
-        'checkout_promo_stack_and_priority': 'Business-rule case',
+        'coupon_discount_engine': 'Business-rule case',
         'payment_card_expiry_and_cvv_validation': 'Input-validation case',
         'payment_3ds_authentication_flow': 'Workflow case',
     }
-    fig, axes = plt.subplots(1, 3, figsize=(14.6, 5.3), dpi=180)
+    fig, axes = plt.subplots(1, 3, figsize=(12.8, 4.7), dpi=200)
     for ax, rid, color in zip(axes, selected, [PALETTE['accent'], PALETTE['gold'], PALETTE['teal']]):
         item = by_id[rid]
         ax.set_axis_off()
-        ax.add_patch(FancyBboxPatch((0.02, 0.05), 0.96, 0.9, boxstyle='round,pad=0.018,rounding_size=0.04', facecolor=PALETTE['white'], edgecolor=color, linewidth=2.0))
-        ax.text(0.07, 0.86, label_map[rid], fontsize=15, fontweight='bold', color=PALETTE['ink'])
-        ax.text(0.07, 0.76, textwrap.fill(rid.replace('_', ' '), width=26), fontsize=10.0, color=PALETTE['muted'])
-        ax.text(0.07, 0.59, f"checker score: {float(item['score']):.3f}", fontsize=13, color=PALETTE['ink'])
-        ax.text(0.07, 0.49, f"overall coverage: {float(item['metrics']['overall_coverage']):.3f}", fontsize=13, color=PALETTE['ink'])
-        ax.text(0.07, 0.39, f"test cases: {int(item['metrics']['test_count'])}", fontsize=13, color=PALETTE['ink'])
-        diags = item.get('diagnostics', [])[:1]
-        ax.text(0.07, 0.20, 'diagnostics snapshot:', fontsize=11.5, color=PALETTE['muted'])
-        y = 0.11
-        for diag in diags:
-            wrapped = textwrap.fill(textwrap.shorten(diag, width=52, placeholder='...'), width=32)
-            ax.text(0.08, y, f"• {wrapped}", fontsize=9.2, color=PALETTE['muted'], va='top')
-            y -= 0.09
-    fig.tight_layout()
+        ax.add_patch(FancyBboxPatch((0.03, 0.05), 0.94, 0.9, boxstyle='round,pad=0.018,rounding_size=0.035', facecolor=PALETTE['white'], edgecolor=PALETTE['line'], linewidth=1.0))
+        ax.add_patch(FancyBboxPatch((0.03, 0.82), 0.94, 0.13, boxstyle='round,pad=0.018,rounding_size=0.035', facecolor=color, edgecolor=color, linewidth=0))
+        ax.text(0.08, 0.875, label_map[rid], fontsize=13.8, fontweight='bold', color=PALETTE['white'], va='center')
+        ax.text(0.08, 0.73, textwrap.fill(pretty_requirement_name(rid), width=22), fontsize=12.5, fontweight='bold', color=PALETTE['ink'])
+        ax.text(0.08, 0.64, rid, fontsize=9.6, color=PALETTE['muted'])
+        ax.text(0.08, 0.50, f"checker score", fontsize=9.8, color=PALETTE['muted'])
+        ax.text(0.55, 0.50, f"{float(item['score']):.3f}", fontsize=16.5, fontweight='bold', color=PALETTE['ink'], ha='right')
+        ax.text(0.08, 0.40, f"overall coverage", fontsize=9.8, color=PALETTE['muted'])
+        ax.text(0.55, 0.40, f"{float(item['metrics']['overall_coverage']):.3f}", fontsize=16.5, fontweight='bold', color=PALETTE['ink'], ha='right')
+        ax.text(0.08, 0.30, f"test cases", fontsize=9.8, color=PALETTE['muted'])
+        ax.text(0.55, 0.30, f"{int(item['metrics']['test_count'])}", fontsize=16.5, fontweight='bold', color=PALETTE['ink'], ha='right')
+        risk = item.get('risk_assessment', {})
+        ax.text(0.67, 0.50, 'risk profile', fontsize=9.8, color=PALETTE['muted'])
+        ax.text(0.90, 0.44, f"{risk.get('level', 'NA')} / {risk.get('score', 0):.2f}", fontsize=11.6, fontweight='bold', color=PALETTE['ink'], ha='right')
+        ax.text(0.67, 0.35, 'top diagnostic', fontsize=9.8, color=PALETTE['muted'])
+        diag = short_diag((item.get('diagnostics') or ['no diagnostic'])[0], width=46)
+        ax.text(0.67, 0.28, textwrap.fill(diag, width=18), fontsize=9.2, color=PALETTE['ink'], ha='left', va='top')
+    fig.tight_layout(pad=0.7, w_pad=1.0)
     save_fig(fig, output_path)
     plt.close(fig)
 
@@ -415,6 +645,7 @@ PNG figures:
 - `ablation_gain.png`
 - `generalization_by_category.png`
 - `stability_sanity_check.png`
+- `reproducibility_stability_overview.png`
 - `case_study_snapshots.png`
 
 PDF figures:
@@ -423,6 +654,7 @@ PDF figures:
 - `ablation_gain.pdf`
 - `generalization_by_category.pdf`
 - `stability_sanity_check.pdf`
+- `reproducibility_stability_overview.pdf`
 - `case_study_snapshots.pdf`
 
 If you edit the architecture PPTX and want a PNG export, run:
@@ -436,11 +668,18 @@ def main() -> None:
     parser = argparse.ArgumentParser(description='Generate PPTX and PNG presentation assets from final experiment results.')
     parser.add_argument('--output-root', default='.local_runs/formal_qwen_novpn')
     parser.add_argument('--stability-root', default='.local_runs/stability_qwen_20260411')
+    parser.add_argument('--repro-mock-root', default='.local_runs/repro_multi_seed_mock')
+    parser.add_argument('--repro-live-root', default='.local_runs/repro_live_qwen_5case')
+    parser.add_argument('--repro-same-seed-root', default='.local_runs/repro_live_same_seed_3case')
     parser.add_argument('--figure-dir', default='report_assets/figures')
+    parser.add_argument('--skip-architecture', action='store_true')
     args = parser.parse_args()
 
     report_root = ROOT / args.output_root / 'outputs' / 'reports' / 'test'
     stability_root = ROOT / args.stability_root / 'outputs' / 'reports' / 'test'
+    repro_mock_root = ROOT / args.repro_mock_root / 'outputs' / 'reports' / 'test'
+    repro_live_root = ROOT / args.repro_live_root / 'outputs' / 'reports' / 'test'
+    repro_same_seed_root = ROOT / args.repro_same_seed_root / 'outputs' / 'reports' / 'test'
     figure_dir = ROOT / args.figure_dir
     ensure_dir(figure_dir)
 
@@ -449,21 +688,52 @@ def main() -> None:
     ablation = read_json(report_root / 'ablation_summary.json')
     categories = read_json(report_root / 'generalization_by_category.json')['categories']
     stability = read_json(stability_root / 'stability_sanity_summary.json')
+    repro_mock = read_json(repro_mock_root / 'repeatability_summary.json')
+    repro_live = read_json(repro_live_root / 'repeatability_summary.json')
+    repro_same_seed = read_json(repro_same_seed_root / 'repeatability_summary.json')
     payload = aggregate_payload(run_main, baseline, ablation)
+    repro_series = [
+        {
+            'label': 'Mock 3-seed',
+            'subhead': f"provider={repro_mock['provider']} | n={repro_mock['requirement_count']}",
+            'stable_case_count': int(repro_mock['stable_case_count']),
+            'requirement_count': int(repro_mock['requirement_count']),
+            'avg_max_score_delta': float(repro_mock['avg_max_score_delta']),
+            'avg_max_coverage_delta': float(repro_mock['avg_max_coverage_delta']),
+        },
+        {
+            'label': 'Live multi-seed',
+            'subhead': f"provider={repro_live['model']} | n={repro_live['requirement_count']}",
+            'stable_case_count': int(repro_live['stable_case_count']),
+            'requirement_count': int(repro_live['requirement_count']),
+            'avg_max_score_delta': float(repro_live['avg_max_score_delta']),
+            'avg_max_coverage_delta': float(repro_live['avg_max_coverage_delta']),
+        },
+        {
+            'label': 'Live same-seed',
+            'subhead': f"seed fixed x{repro_same_seed['repeats']} | n={repro_same_seed['requirement_count']}",
+            'stable_case_count': int(repro_same_seed['stable_case_count']),
+            'requirement_count': int(repro_same_seed['requirement_count']),
+            'avg_max_score_delta': float(repro_same_seed['avg_max_score_delta']),
+            'avg_max_coverage_delta': float(repro_same_seed['avg_max_coverage_delta']),
+        },
+    ]
 
-    build_architecture_pptx(figure_dir / 'arg_test_architecture_editable.pptx')
+    if not args.skip_architecture:
+        build_architecture_pptx(figure_dir / 'arg_test_architecture_editable.pptx')
     save_scorecard(figure_dir / 'final_result_scorecard.png', payload, categories)
     save_main_vs_baselines(figure_dir / 'main_vs_baselines.png', payload)
     save_ablation(figure_dir / 'ablation_gain.png', payload)
     save_generalization(figure_dir / 'generalization_by_category.png', categories)
     save_stability(figure_dir / 'stability_sanity_check.png', stability)
+    save_reproducibility_summary(figure_dir / 'reproducibility_stability_overview.png', repro_series)
     save_case_study(figure_dir / 'case_study_snapshots.png', run_main)
     write_readme(figure_dir)
 
     print(json.dumps({
         'figure_dir': str(figure_dir),
         'generated': [
-            'arg_test_architecture_editable.pptx',
+            *([] if args.skip_architecture else ['arg_test_architecture_editable.pptx']),
             'final_result_scorecard.png',
             'final_result_scorecard.pdf',
             'main_vs_baselines.png',
@@ -474,6 +744,8 @@ def main() -> None:
             'generalization_by_category.pdf',
             'stability_sanity_check.png',
             'stability_sanity_check.pdf',
+            'reproducibility_stability_overview.png',
+            'reproducibility_stability_overview.pdf',
             'case_study_snapshots.png',
             'case_study_snapshots.pdf',
             'README.md',

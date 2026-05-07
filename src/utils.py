@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import os
 import re
@@ -224,6 +225,27 @@ def float_from_env(name: str, default: float | None = None) -> float | None:
     return float(raw.strip())
 
 
+def int_from_env(name: str, default: int | None = None) -> int | None:
+    raw = os.getenv(name)
+    if raw is None or not raw.strip():
+        return default
+    return int(raw.strip())
+
+
+def stable_hash_int(*parts: object) -> int:
+    token = "||".join(str(part) for part in parts)
+    digest = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    return int(digest[:16], 16)
+
+
+def derive_stage_seed(base_seed: int | None, requirement_id: str, stage: str, slot: int = 0) -> int | None:
+    if base_seed is None:
+        return None
+    derived = stable_hash_int(base_seed, requirement_id, stage, slot)
+    bounded = derived % 2_147_483_647
+    return bounded or 1
+
+
 def build_run_manifest(
     *,
     experiment: str,
@@ -231,6 +253,10 @@ def build_run_manifest(
     provider: str,
     model: str,
     candidates: int | None,
+    openai_api_mode: str | None = None,
+    seed: int | None = None,
+    temperature: float | None = None,
+    top_p: float | None = None,
     enable_repair: bool,
     runtime_root: Path,
     requirement_ids: list[str],
@@ -243,6 +269,10 @@ def build_run_manifest(
         "provider": provider,
         "model": model,
         "candidates": candidates,
+        "openai_api_mode": openai_api_mode,
+        "seed": seed,
+        "temperature": temperature,
+        "top_p": top_p,
         "enable_repair": enable_repair,
         "runtime_root": str(runtime_root),
         "requirement_count": len(requirement_ids),

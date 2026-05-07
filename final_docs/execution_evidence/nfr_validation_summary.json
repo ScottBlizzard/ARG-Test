@@ -57,11 +57,11 @@
   },
   "maintainability": {
     "src_module_count": 27,
-    "experiment_script_count": 14,
-    "test_file_count": 5,
-    "test_case_count": 23,
+    "experiment_script_count": 15,
+    "test_file_count": 6,
+    "test_case_count": 27,
     "pytest_exit_code": 0,
-    "pytest_summary": "23 passed in 0.19s",
+    "pytest_summary": "27 passed in 0.28s",
     "runtime_output_isolation_supported": true
   }
 }

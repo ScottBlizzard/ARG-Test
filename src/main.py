@@ -10,33 +10,35 @@ from .pipeline import ARGTestPipeline
 from .utils import list_requirement_files
 
 
+def add_runtime_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument('--provider', default='mock')
+    parser.add_argument('--model', default='mock-arg-test')
+    parser.add_argument('--candidates', type=int, default=3)
+    parser.add_argument('--api-mode', default=None, choices=['responses', 'chat_completions'], help='OpenAI API surface to use for provider=openai')
+    parser.add_argument('--seed', type=int, default=None, help='Global deterministic seed recorded in the run manifest')
+    parser.add_argument('--temperature', type=float, default=None, help='Sampling temperature. For high reproducibility prefer 0.0')
+    parser.add_argument('--top-p', type=float, default=None, help='Top-p sampling parameter. For high reproducibility prefer 1.0')
+    parser.add_argument('--output-root', default=None)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='ARG-Test CLI')
     subparsers = parser.add_subparsers(dest='command', required=True)
 
     run_parser = subparsers.add_parser('run', help='Run the full pipeline for one requirement file')
     run_parser.add_argument('--input', required=True, help='Path to a requirement file')
-    run_parser.add_argument('--provider', default='mock')
-    run_parser.add_argument('--model', default='mock-arg-test')
-    run_parser.add_argument('--candidates', type=int, default=3)
-    run_parser.add_argument('--output-root', default=None)
+    add_runtime_args(run_parser)
 
     run_text_parser = subparsers.add_parser('run-text', help='Run the full pipeline for direct text input')
     run_text_parser.add_argument('--text', default=None, help='Requirement text. If omitted, read from stdin.')
     run_text_parser.add_argument('--requirement-id', default=None)
     run_text_parser.add_argument('--split', default='adhoc')
-    run_text_parser.add_argument('--provider', default='mock')
-    run_text_parser.add_argument('--model', default='mock-arg-test')
-    run_text_parser.add_argument('--candidates', type=int, default=3)
-    run_text_parser.add_argument('--output-root', default=None)
+    add_runtime_args(run_text_parser)
 
     batch_parser = subparsers.add_parser('batch', help='Run the full pipeline for a split')
     batch_parser.add_argument('--split', choices=['dev', 'test'], required=True)
-    batch_parser.add_argument('--provider', default='mock')
-    batch_parser.add_argument('--model', default='mock-arg-test')
-    batch_parser.add_argument('--candidates', type=int, default=3)
+    add_runtime_args(batch_parser)
     batch_parser.add_argument('--limit', type=int, default=0)
-    batch_parser.add_argument('--output-root', default=None)
 
     batch_csv_parser = subparsers.add_parser('batch-csv', help='Run the pipeline for requirements loaded from CSV')
     batch_csv_parser.add_argument('--input', required=True, help='Path to a CSV file with requirement rows')
@@ -44,20 +46,14 @@ def build_parser() -> argparse.ArgumentParser:
     batch_csv_parser.add_argument('--id-column', default='requirement_id')
     batch_csv_parser.add_argument('--split-column', default='split')
     batch_csv_parser.add_argument('--default-split', default='adhoc')
-    batch_csv_parser.add_argument('--provider', default='mock')
-    batch_csv_parser.add_argument('--model', default='mock-arg-test')
-    batch_csv_parser.add_argument('--candidates', type=int, default=3)
-    batch_csv_parser.add_argument('--output-root', default=None)
+    add_runtime_args(batch_csv_parser)
 
     state_model_parser = subparsers.add_parser('state-model', help='Build a state-transition model from a requirement file or direct text')
     state_model_parser.add_argument('--input', default=None, help='Path to a requirement file')
     state_model_parser.add_argument('--text', default=None, help='Requirement text. If omitted and --input is absent, read from stdin.')
     state_model_parser.add_argument('--requirement-id', default=None)
     state_model_parser.add_argument('--split', default='adhoc')
-    state_model_parser.add_argument('--provider', default='mock')
-    state_model_parser.add_argument('--model', default='mock-arg-test')
-    state_model_parser.add_argument('--candidates', type=int, default=3)
-    state_model_parser.add_argument('--output-root', default=None)
+    add_runtime_args(state_model_parser)
     return parser
 
 
@@ -68,6 +64,10 @@ def main() -> None:
         provider=args.provider,
         model=args.model,
         candidates=args.candidates,
+        openai_api_mode=args.api_mode,
+        seed=args.seed,
+        temperature=args.temperature,
+        top_p=args.top_p,
         output_root=args.output_root,
     )
 

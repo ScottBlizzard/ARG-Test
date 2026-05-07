@@ -18,6 +18,10 @@ def main() -> None:
     parser.add_argument('--provider', default=None)
     parser.add_argument('--model', default=None)
     parser.add_argument('--candidates', type=int, default=None)
+    parser.add_argument('--api-mode', default=None, choices=['responses', 'chat_completions'])
+    parser.add_argument('--seed', type=int, default=None)
+    parser.add_argument('--temperature', type=float, default=None)
+    parser.add_argument('--top-p', type=float, default=None)
     parser.add_argument('--output-root', default=None)
     args = parser.parse_args()
 
@@ -26,6 +30,10 @@ def main() -> None:
         provider=args.provider,
         model=args.model,
         candidates=args.candidates,
+        openai_api_mode=args.api_mode,
+        seed=args.seed,
+        temperature=args.temperature,
+        top_p=args.top_p,
         output_root=args.output_root,
     )
     runtime_root = config.paths.runtime_root
@@ -40,6 +48,10 @@ def main() -> None:
         'provider': config.provider,
         'model': config.model,
         'candidates': config.candidates,
+        'openai_api_mode': config.openai_api_mode,
+        'seed': config.seed,
+        'temperature': config.temperature,
+        'top_p': config.top_p,
         'enable_repair': config.enable_repair,
         'project_root': str(config.paths.root),
         'runtime_root': str(config.paths.runtime_root),

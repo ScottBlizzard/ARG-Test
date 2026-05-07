@@ -23,10 +23,27 @@ def safe_avg(values: list[float]) -> float:
 def main() -> None:
     parser = argparse.ArgumentParser(description='Aggregate main experiment results by requirement category.')
     parser.add_argument('--split', choices=['dev', 'test'], default='test')
+    parser.add_argument('--provider', default=None)
+    parser.add_argument('--model', default=None)
+    parser.add_argument('--candidates', type=int, default=None)
+    parser.add_argument('--api-mode', default=None, choices=['responses', 'chat_completions'])
+    parser.add_argument('--seed', type=int, default=None)
+    parser.add_argument('--temperature', type=float, default=None)
+    parser.add_argument('--top-p', type=float, default=None)
     parser.add_argument('--output-root', default=None)
     args = parser.parse_args()
 
-    config = load_runtime_config(base_dir=ROOT, output_root=args.output_root)
+    config = load_runtime_config(
+        base_dir=ROOT,
+        provider=args.provider,
+        model=args.model,
+        candidates=args.candidates,
+        openai_api_mode=args.api_mode,
+        seed=args.seed,
+        temperature=args.temperature,
+        top_p=args.top_p,
+        output_root=args.output_root,
+    )
     manifest_path = ROOT / 'data' / 'requirements' / 'manifest.json'
     main_summary_path = config.paths.outputs / 'reports' / args.split / 'run_main_summary.json'
     if not manifest_path.exists() or not main_summary_path.exists():
@@ -75,6 +92,10 @@ def main() -> None:
         provider=config.provider,
         model=config.model,
         candidates=config.candidates,
+        openai_api_mode=config.openai_api_mode,
+        seed=config.seed,
+        temperature=config.temperature,
+        top_p=config.top_p,
         enable_repair=config.enable_repair,
         runtime_root=config.paths.runtime_root,
         requirement_ids=[item.get('requirement_id', '') for item in main_summary],

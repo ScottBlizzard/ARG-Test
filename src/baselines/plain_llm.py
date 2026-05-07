@@ -3,11 +3,18 @@
 from ..parser import parse_trace
 
 
-def build_plain_llm_trace(requirement_id: str, requirement_text: str, client, plain_prompt: str):
+def build_plain_llm_trace(
+    requirement_id: str,
+    requirement_text: str,
+    client,
+    plain_prompt: str,
+    control: dict | None = None,
+):
     table = client.generate_plain_table(
         requirement_id=requirement_id,
         requirement_text=requirement_text,
         prompt=plain_prompt,
+        control=control,
     )
     wrapped = '\n'.join(
         [

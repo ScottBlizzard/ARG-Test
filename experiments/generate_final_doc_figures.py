@@ -1,0 +1,229 @@
+from __future__ import annotations
+
+import shutil
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch
+
+
+ROOT = Path(__file__).resolve().parents[1]
+FINAL_DOCS = ROOT / "final_docs"
+RISK_DIR = FINAL_DOCS / "risk_analysis_report"
+TEST_PLAN_DIR = FINAL_DOCS / "test_plan"
+DETAIL_DIR = FINAL_DOCS / "detailed_test_design_execution"
+
+PALETTE = {
+    "ink": "#132238",
+    "muted": "#5B6677",
+    "line": "#D8DCE3",
+    "paper": "#FBFAF6",
+    "white": "#FFFFFF",
+    "red": "#D55C3A",
+    "gold": "#D8A332",
+    "teal": "#3B8C88",
+    "purple": "#7C6BB0",
+    "blue_soft": "#E8EEF5",
+    "gold_soft": "#F5E3B5",
+    "teal_soft": "#B9DDD8",
+    "red_soft": "#F2C6B8",
+}
+
+
+RISK_ITEMS = [
+    ("R1", 5, 4, 3, 60, "showcase realism"),
+    ("R2", 5, 4, 4, 80, "score/coverage gap"),
+    ("R3", 4, 4, 3, 48, "workflow generalization"),
+    ("R4", 5, 5, 5, 125, "white-box evidence"),
+    ("R5", 5, 3, 5, 75, "result-source control"),
+    ("R6", 4, 3, 3, 36, "document consistency"),
+    ("R7", 4, 3, 4, 48, "evidence discoverability"),
+    ("R8", 3, 4, 3, 36, "schedule/cost realism"),
+    ("R9", 2, 3, 5, 30, "README sync"),
+    ("R10", 3, 2, 4, 24, "middle/final confusion"),
+]
+
+
+def configure() -> None:
+    plt.rcParams.update(
+        {
+            "figure.facecolor": PALETTE["white"],
+            "axes.facecolor": PALETTE["white"],
+            "savefig.facecolor": PALETTE["white"],
+            "font.family": ["DejaVu Sans", "Microsoft YaHei", "Segoe UI"],
+            "font.size": 11.5,
+            "axes.edgecolor": PALETTE["line"],
+            "axes.labelcolor": PALETTE["ink"],
+            "xtick.color": PALETTE["muted"],
+            "ytick.color": PALETTE["muted"],
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+        }
+    )
+
+
+def save_fig(fig: plt.Figure, output_path: Path) -> None:
+    fig.savefig(output_path, bbox_inches="tight", pad_inches=0.06)
+    fig.savefig(output_path.with_suffix(".pdf"), bbox_inches="tight", pad_inches=0.06)
+
+
+def ensure_dir(path: Path) -> None:
+    path.mkdir(parents=True, exist_ok=True)
+
+
+def risk_color(priority: int) -> str:
+    if priority >= 60:
+        return PALETTE["red"]
+    if priority >= 36:
+        return PALETTE["gold"]
+    return PALETTE["teal"]
+
+
+def save_risk_heatmap(output_path: Path) -> None:
+    configure()
+    fig, ax = plt.subplots(figsize=(8.2, 5.8), dpi=220)
+    ax.set_xlim(0.5, 5.5)
+    ax.set_ylim(0.5, 5.5)
+    ax.set_xticks(range(1, 6))
+    ax.set_yticks(range(1, 6))
+    ax.set_xlabel("Likelihood")
+    ax.set_ylabel("Impact")
+    ax.set_title("Risk priority map for the final ARG-Test submission", fontsize=15.5, color=PALETTE["ink"], pad=14)
+    ax.grid(color=PALETTE["line"], linestyle="--", linewidth=0.8, alpha=0.8)
+
+    display_positions = {
+        "R1": (3.95, 4.98),
+        "R2": (4.78, 5.02),
+        "R3": (4.06, 4.03),
+        "R4": (5.00, 5.00),
+        "R5": (3.00, 5.00),
+        "R6": (3.00, 4.03),
+        "R7": (3.18, 3.88),
+        "R8": (3.98, 3.02),
+        "R9": (3.00, 2.00),
+        "R10": (2.00, 3.00),
+    }
+
+    for risk_id, impact, likelihood, detectability, priority, label in RISK_ITEMS:
+        plot_x, plot_y = display_positions[risk_id]
+        ax.scatter(
+            plot_x,
+            plot_y,
+            s=130 + priority * 5,
+            color=risk_color(priority),
+            alpha=0.88,
+            edgecolor=PALETTE["white"],
+            linewidth=1.3,
+            zorder=3,
+        )
+        ax.text(
+            plot_x + 0.06,
+            plot_y + 0.06,
+            risk_id,
+            fontsize=9.6,
+            color=PALETTE["ink"],
+            zorder=4,
+        )
+
+    ax.add_patch(FancyBboxPatch((3.55, 4.45), 1.55, 0.72, boxstyle="round,pad=0.015,rounding_size=0.03", facecolor=PALETTE["red_soft"], edgecolor=PALETTE["red"], linewidth=1.2))
+    ax.text(3.68, 4.98, "High priority", fontsize=10.2, fontweight="bold", color=PALETTE["ink"])
+    ax.text(3.68, 4.72, "R1, R2, R4, R5", fontsize=9.6, color=PALETTE["muted"])
+
+    ax.add_patch(FancyBboxPatch((3.55, 3.55), 1.55, 0.72, boxstyle="round,pad=0.015,rounding_size=0.03", facecolor=PALETTE["gold_soft"], edgecolor=PALETTE["gold"], linewidth=1.2))
+    ax.text(3.68, 4.08, "Medium priority", fontsize=10.2, fontweight="bold", color=PALETTE["ink"])
+    ax.text(3.68, 3.82, "R3, R6, R7, R8", fontsize=9.4, color=PALETTE["muted"])
+
+    ax.add_patch(FancyBboxPatch((3.55, 2.65), 1.55, 0.72, boxstyle="round,pad=0.015,rounding_size=0.03", facecolor=PALETTE["teal_soft"], edgecolor=PALETTE["teal"], linewidth=1.2))
+    ax.text(3.68, 3.18, "Low priority", fontsize=10.2, fontweight="bold", color=PALETTE["ink"])
+    ax.text(3.68, 2.92, "R9, R10", fontsize=9.6, color=PALETTE["muted"])
+
+    ax.text(
+        0.03,
+        0.03,
+        "Bubble size reflects computed priority = Impact x Likelihood x Detectability.",
+        transform=ax.transAxes,
+        fontsize=9.6,
+        color=PALETTE["muted"],
+    )
+    save_fig(fig, output_path)
+    plt.close(fig)
+
+
+def save_coupon_scorecard(output_path: Path) -> None:
+    configure()
+    fig = plt.figure(figsize=(8.8, 3.7), dpi=220)
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.set_axis_off()
+
+    ax.text(0.04, 0.88, "Detailed module execution evidence", fontsize=16.2, fontweight="bold", color=PALETTE["ink"])
+    ax.text(
+        0.04,
+        0.81,
+        "coupon_discount_engine combines black-box design, white-box execution, and mutation usefulness evidence.",
+        fontsize=10.3,
+        color=PALETTE["muted"],
+    )
+
+    cards = [
+        ("Executable tests", "15 module tests\n27 repo tests", PALETTE["gold_soft"], PALETTE["gold"]),
+        ("Coverage", "100% statement\n100% branch", PALETTE["teal_soft"], PALETTE["teal"]),
+        ("Mutation result", "4 / 4 mutants killed", PALETTE["red_soft"], PALETTE["red"]),
+    ]
+    for idx, (title, value, fill, line) in enumerate(cards):
+        x = 0.05 + idx * 0.305
+        patch = FancyBboxPatch(
+            (x, 0.19),
+            0.26,
+            0.48,
+            boxstyle="round,pad=0.014,rounding_size=0.03",
+            facecolor=fill,
+            edgecolor=line,
+            linewidth=1.5,
+        )
+        ax.add_patch(patch)
+        ax.text(x + 0.02, 0.59, title, fontsize=12.4, fontweight="bold", color=PALETTE["ink"])
+        ax.text(x + 0.13, 0.37, value, fontsize=15.6, fontweight="bold", color=PALETTE["ink"], ha="center", va="center")
+
+    ax.text(
+        0.05,
+        0.08,
+        "Evidence sources: tests/test_coupon_discount_engine_blackbox.py, tests/test_coupon_discount_engine_whitebox.py, coverage XML, and coupon_discount_engine_mutation_demo.md.",
+        fontsize=9.2,
+        color=PALETTE["muted"],
+    )
+    save_fig(fig, output_path)
+    plt.close(fig)
+
+
+def copy_architecture_figure(output_path: Path) -> None:
+    source = ROOT / "report_assets" / "final_latex_report" / "figures" / "arg_test_architecture_final.png"
+    if source.exists():
+        ensure_dir(output_path.parent)
+        shutil.copy2(source, output_path)
+
+
+def build_all_doc_figures() -> list[Path]:
+    risk_fig = RISK_DIR / "figures" / "risk_priority_heatmap.png"
+    plan_fig = TEST_PLAN_DIR / "figures" / "arg_test_architecture_final.png"
+    detail_fig = DETAIL_DIR / "figures" / "coupon_module_evidence_scorecard.png"
+
+    ensure_dir(risk_fig.parent)
+    ensure_dir(plan_fig.parent)
+    ensure_dir(detail_fig.parent)
+
+    save_risk_heatmap(risk_fig)
+    copy_architecture_figure(plan_fig)
+    save_coupon_scorecard(detail_fig)
+
+    return [plan_fig, risk_fig, detail_fig]
+
+
+def main() -> None:
+    print("\n".join(str(path) for path in build_all_doc_figures()))
+
+
+if __name__ == "__main__":
+    main()

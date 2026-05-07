@@ -17,6 +17,16 @@ def parse_ids(raw: str) -> set[str]:
     return {item.strip() for item in raw.split(',') if item.strip()}
 
 
+def add_runtime_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument('--provider', default='mock')
+    parser.add_argument('--model', default='mock-arg-test')
+    parser.add_argument('--candidates', type=int, default=3)
+    parser.add_argument('--api-mode', default=None, choices=['responses', 'chat_completions'])
+    parser.add_argument('--seed', type=int, default=None)
+    parser.add_argument('--temperature', type=float, default=None)
+    parser.add_argument('--top-p', type=float, default=None)
+
+
 def summary_order_for_split(split: str) -> list[str]:
     ordered_ids = []
     for path in list_requirement_files(ROOT, split):
@@ -41,9 +51,7 @@ def merge_with_existing(report_path: Path, split: str, new_summaries: list[dict]
 def main() -> None:
     parser = argparse.ArgumentParser(description='Run the full ARG-Test pipeline over a split.')
     parser.add_argument('--split', choices=['dev', 'test'], default='dev')
-    parser.add_argument('--provider', default='mock')
-    parser.add_argument('--model', default='mock-arg-test')
-    parser.add_argument('--candidates', type=int, default=3)
+    add_runtime_args(parser)
     parser.add_argument('--limit', type=int, default=0)
     parser.add_argument('--ids', default='', help='Comma-separated requirement_ids for targeted rerun.')
     parser.add_argument('--output-root', default=None)
@@ -54,6 +62,10 @@ def main() -> None:
         provider=args.provider,
         model=args.model,
         candidates=args.candidates,
+        openai_api_mode=args.api_mode,
+        seed=args.seed,
+        temperature=args.temperature,
+        top_p=args.top_p,
         output_root=args.output_root,
     )
     requirement_files = list_requirement_files(ROOT, args.split)
@@ -77,6 +89,10 @@ def main() -> None:
         provider=pipeline.config.provider,
         model=pipeline.config.model,
         candidates=args.candidates,
+        openai_api_mode=pipeline.config.openai_api_mode,
+        seed=pipeline.config.seed,
+        temperature=pipeline.config.temperature,
+        top_p=pipeline.config.top_p,
         enable_repair=pipeline.config.enable_repair,
         runtime_root=pipeline.config.paths.runtime_root,
         requirement_ids=[item['requirement_id'] for item in summaries],

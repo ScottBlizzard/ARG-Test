@@ -84,11 +84,26 @@ Recommended pattern for official runs:
 
 ```powershell
 Copy-Item .env.example .env
-python experiments/check_runtime_ready.py --provider openai --model <your-model> --output-root .local_runs/formal_openai
-powershell -ExecutionPolicy Bypass -File experiments/run_formal_workflow.ps1 -Provider openai -Model <your-model> -OutputRoot .local_runs/formal_openai
+python experiments/check_runtime_ready.py --provider openai --model <your-model> --api-mode chat_completions --seed 202601 --temperature 0.0 --top-p 1.0 --output-root .local_runs/formal_openai
+powershell -ExecutionPolicy Bypass -File experiments/run_formal_workflow.ps1 -Provider openai -Model <your-model> -ApiMode chat_completions -Seed 202601 -Temperature 0.0 -TopP 1.0 -OutputRoot .local_runs/formal_openai
 ```
 
 This keeps official artifacts outside tracked `artifacts/` and `outputs/` by writing them into `.local_runs/`.
+
+## Reproducibility workflow
+
+For seed-controlled formal experiments, keep the decoding configuration explicit:
+
+```powershell
+python experiments/run_main.py --split test --provider openai --model qwen3.5-flash --candidates 3 --api-mode chat_completions --seed 202601 --temperature 0.0 --top-p 1.0 --output-root .local_runs/formal_seeded
+python experiments/run_repeatability.py --split test --provider openai --model qwen3.5-flash --candidates 3 --api-mode chat_completions --seed-values 101,202,303 --temperature 0.0 --top-p 1.0 --ids bundle_discount_eligibility_rules,payment_3ds_authentication_flow,payment_card_expiry_and_cvv_validation --output-root .local_runs/repro_live_qwen
+python experiments/replay_seeded_runtime.py --source-root .local_runs/repro_live_qwen/rerun_1 --split test --ids bundle_discount_eligibility_rules,payment_3ds_authentication_flow,payment_card_expiry_and_cvv_validation --output-root .local_runs/repro_live_qwen_replayed
+```
+
+Interpretation:
+
+- `run_repeatability.py` measures live multi-seed stability and records `seed_schedule`, `temperature`, `top_p`, and per-seed outputs.
+- `replay_seeded_runtime.py` rebuilds a saved seeded runtime from `artifacts/raw_generations/` without calling the provider again. This is the archive-grade reproducibility path for the final submission.
 
 If you only want a local smoke run without touching tracked outputs:
 
@@ -165,6 +180,10 @@ Important defaults:
 - `ARG_TEST_PROVIDER=mock`
 - `ARG_TEST_MODEL=mock-arg-test`
 - `ARG_TEST_CANDIDATES=3`
+- `ARG_TEST_OPENAI_API_MODE=chat_completions`
+- `ARG_TEST_SEED=202601`
+- `ARG_TEST_TEMPERATURE=0.0`
+- `ARG_TEST_TOP_P=1.0`
 - `ARG_TEST_ENABLE_REPAIR=true`
 - `ARG_TEST_OUTPUT_ROOT=` writes into repo-local `artifacts/` and `outputs/`
 - `ARG_TEST_OUTPUT_ROOT=.local_runs/formal_openai` keeps formal outputs out of tracked directories
@@ -184,5 +203,7 @@ Important defaults:
 
 - The default `mock` provider is for local scaffolding and parser/checker verification.
 - Real evaluation should use an actual LLM through `src/llm_client.py`.
+- For seed-controlled OpenAI-compatible runs, `chat_completions + seed + temperature=0.0 + top_p=1.0` is the intended reproducibility configuration.
+- If the upstream provider still exhibits nondeterminism, use `experiments/replay_seeded_runtime.py` to replay the frozen raw generations and reproduce the final artifacts exactly.
 - Gold specs are for evaluation only. Do not feed them into the real generation pipeline.
 - `prompts/system_prompt.txt` is prepended to generation, baseline, and repair prompts.

@@ -16,14 +16,26 @@ class Exporter:
         requirement_id: str,
         split: str,
         raw_candidates: list[str],
+        candidate_metadata: list[dict] | None,
         selected: CandidateEvaluation,
         metrics: dict | None = None,
         run_context: dict | None = None,
+        candidate_controls: list[dict] | None = None,
     ) -> None:
         for index, raw_text in enumerate(raw_candidates, start=1):
             raw_path = self.artifacts_root / 'raw_generations' / split / f'{requirement_id}_candidate_{index}.md'
             raw_path.parent.mkdir(parents=True, exist_ok=True)
             raw_path.write_text(raw_text, encoding='utf-8')
+            metadata_path = self.artifacts_root / 'raw_generations' / split / f'{requirement_id}_candidate_{index}.json'
+            write_json(
+                metadata_path,
+                {
+                    'requirement_id': requirement_id,
+                    'candidate_index': index,
+                    'candidate_control': (candidate_controls or [])[index - 1] if candidate_controls and len(candidate_controls) >= index else None,
+                    'generation_metadata': (candidate_metadata or [])[index - 1] if candidate_metadata and len(candidate_metadata) >= index else None,
+                },
+            )
 
         parsed_path = self.artifacts_root / 'parsed_traces' / split / f'{requirement_id}.json'
         write_json(parsed_path, selected.parsed_trace.to_dict())
@@ -46,6 +58,9 @@ class Exporter:
                 'category': selected.parsed_trace.category,
                 'score': selected.score,
                 'repaired': selected.repaired,
+                'candidate_index': selected.candidate_index,
+                'generation_metadata': selected.generation_metadata,
+                'candidate_controls': candidate_controls or [],
                 'risk_assessment': selected.parsed_trace.risk_assessment.to_dict() if selected.parsed_trace.risk_assessment else None,
                 'state_model': selected.parsed_trace.state_model.to_dict() if selected.parsed_trace.state_model else None,
                 'checks': [check.to_dict() for check in selected.checks],
@@ -66,6 +81,9 @@ class Exporter:
             'category': selected.parsed_trace.category,
             'score': selected.score,
             'repaired': selected.repaired,
+            'candidate_index': selected.candidate_index,
+            'generation_metadata': selected.generation_metadata,
+            'candidate_controls': candidate_controls or [],
             'risk_assessment': selected.parsed_trace.risk_assessment.to_dict() if selected.parsed_trace.risk_assessment else None,
             'state_model': selected.parsed_trace.state_model.to_dict() if selected.parsed_trace.state_model else None,
             'metrics': metrics or {},

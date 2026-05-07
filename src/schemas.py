@@ -270,19 +270,25 @@ class CheckResult:
 @dataclass
 class CandidateEvaluation:
     requirement_id: str
+    requirement_text: str
     raw_text: str
     parsed_trace: ParsedTrace
     checks: list[CheckResult]
     score: float
     repaired: bool = False
     source: str = "structured"
+    candidate_index: int | None = None
+    generation_metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "requirement_id": self.requirement_id,
+            "requirement_text": self.requirement_text,
             "score": self.score,
             "repaired": self.repaired,
             "source": self.source,
+            "candidate_index": self.candidate_index,
+            "generation_metadata": self.generation_metadata,
             "checks": [check.to_dict() for check in self.checks],
             "parsed_trace": self.parsed_trace.to_dict(),
         }

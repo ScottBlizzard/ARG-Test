@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from .utils import bool_from_env, load_dotenv_file, project_root
+from .utils import bool_from_env, float_from_env, int_from_env, load_dotenv_file, project_root
 
 
 @dataclass
@@ -24,6 +24,10 @@ class RuntimeConfig:
     provider: str
     model: str
     candidates: int
+    openai_api_mode: str
+    seed: int | None
+    temperature: float | None
+    top_p: float | None
     enable_repair: bool
     paths: ProjectPaths
 
@@ -60,6 +64,10 @@ def load_runtime_config(
     provider: str | None = None,
     model: str | None = None,
     candidates: int | None = None,
+    openai_api_mode: str | None = None,
+    seed: int | None = None,
+    temperature: float | None = None,
+    top_p: float | None = None,
     output_root: str | None = None,
 ) -> RuntimeConfig:
     paths = resolve_paths(base_dir=base_dir, output_root=output_root)
@@ -67,6 +75,10 @@ def load_runtime_config(
         provider=(provider or os.getenv('ARG_TEST_PROVIDER', 'mock')).strip(),
         model=(model or os.getenv('ARG_TEST_MODEL', 'mock-arg-test')).strip(),
         candidates=candidates or int(os.getenv('ARG_TEST_CANDIDATES', '3')),
+        openai_api_mode=(openai_api_mode or os.getenv('ARG_TEST_OPENAI_API_MODE', 'chat_completions')).strip().lower(),
+        seed=seed if seed is not None else int_from_env('ARG_TEST_SEED'),
+        temperature=temperature if temperature is not None else float_from_env('ARG_TEST_TEMPERATURE', 0.0),
+        top_p=top_p if top_p is not None else float_from_env('ARG_TEST_TOP_P', 1.0),
         enable_repair=bool_from_env('ARG_TEST_ENABLE_REPAIR', True),
         paths=paths,
     )

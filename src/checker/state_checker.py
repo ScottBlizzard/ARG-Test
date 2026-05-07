@@ -16,7 +16,7 @@ def check_state_transition(parsed: ParsedTrace) -> CheckResult:
         return CheckResult(name="state_contract", passed=True, score=1.0, diagnostics=["not applicable"])
     combined = [normalize_text(f"{case.covered_item} {case.expected_output} {case.input_data}") for case in parsed.test_cases]
     has_legal = any("legal" in text or "succeeds" in text or "approved" in text for text in combined)
-    has_illegal = any("illegal" in text or "reject" in text or "locked" in text for text in combined)
+    has_illegal = any("illegal transition" in text or ("transition" in text and "reject" in text) or "locked" in text for text in combined)
     diagnostics: list[str] = []
     if not any(marker in parsed.analysis.lower() or marker in " ".join(parsed.steps).lower() for marker in STATE_MARKERS):
         diagnostics.append("analysis and steps do not clearly model states or transitions")

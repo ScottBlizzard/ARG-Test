@@ -11,7 +11,7 @@ def check_bva(parsed: ParsedTrace) -> CheckResult:
     combined = [normalize_text(f"{case.covered_item} {case.input_data}") for case in parsed.test_cases]
     lower = any("lower" in text or "below" in text or "min" in text for text in combined)
     upper = any("upper" in text or "above" in text or "max" in text for text in combined)
-    on_boundary = any("boundary" in text or "on " in text for text in combined)
+    on_boundary = any("boundary" in text or "on-boundary" in text or "on boundary" in text for text in combined)
     diagnostics: list[str] = []
     if not lower:
         diagnostics.append("missing lower-boundary or just-below case")

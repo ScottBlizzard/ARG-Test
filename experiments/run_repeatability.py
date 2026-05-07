@@ -18,6 +18,29 @@ def parse_ids(raw: str) -> set[str]:
     return {item.strip() for item in raw.split(",") if item.strip()}
 
 
+def parse_seed_values(raw: str) -> list[int]:
+    return [int(item.strip()) for item in raw.split(",") if item.strip()]
+
+
+def build_seed_schedule(
+    repeats: int,
+    *,
+    seed_values: list[int],
+    seed_base: int | None,
+    seed_step: int,
+    fixed_seed: int | None,
+) -> list[int | None]:
+    if seed_values:
+        if len(seed_values) != repeats:
+            raise SystemExit(f"Expected {repeats} seed values but received {len(seed_values)}")
+        return seed_values
+    if seed_base is not None:
+        return [seed_base + index * seed_step for index in range(repeats)]
+    if fixed_seed is not None:
+        return [fixed_seed for _ in range(repeats)]
+    return [None for _ in range(repeats)]
+
+
 def safe_avg(values: list[float]) -> float:
     return round(sum(values) / len(values), 3) if values else 0.0
 
@@ -35,6 +58,7 @@ def build_markdown(payload: dict) -> str:
         f"- Split: `{payload['split']}`",
         f"- Repeats: `{payload['repeats']}`",
         f"- Requirements: `{payload['requirement_count']}`",
+        f"- Seed schedule: `{', '.join('none' if value is None else str(value) for value in payload['seed_schedule'])}`",
         f"- Stable cases (max score delta<=0.05 and max coverage delta<=0.10): `{payload['stable_case_count']}/{payload['requirement_count']}`",
         f"- Mean checker score across reruns: `{payload['avg_score_mean']}`",
         f"- Mean overall coverage across reruns: `{payload['avg_coverage_mean']}`",
@@ -57,6 +81,13 @@ def main() -> None:
     parser.add_argument("--provider", default="mock")
     parser.add_argument("--model", default="mock-arg-test")
     parser.add_argument("--candidates", type=int, default=3)
+    parser.add_argument("--api-mode", default=None, choices=["responses", "chat_completions"])
+    parser.add_argument("--seed", type=int, default=None, help="Fixed seed reused for every repeat.")
+    parser.add_argument("--seed-base", type=int, default=None, help="Base seed for a deterministic multi-seed schedule.")
+    parser.add_argument("--seed-step", type=int, default=101, help="Seed increment used with --seed-base.")
+    parser.add_argument("--seed-values", default="", help="Comma-separated explicit seeds. Length must equal --repeats.")
+    parser.add_argument("--temperature", type=float, default=None)
+    parser.add_argument("--top-p", type=float, default=None)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--ids", default="", help="Comma-separated requirement ids.")
@@ -76,17 +107,29 @@ def main() -> None:
         raise SystemExit("No requirement files selected for repeatability run")
 
     requirement_ids = [extract_requirement_id(read_text(path), path.stem) for path in requirement_files]
+    seed_schedule = build_seed_schedule(
+        args.repeats,
+        seed_values=parse_seed_values(args.seed_values),
+        seed_base=args.seed_base,
+        seed_step=args.seed_step,
+        fixed_seed=args.seed,
+    )
     repeat_runs: list[dict] = []
     aggregated: dict[str, dict[str, list[float] | dict | str]] = {}
     enable_repair = True
 
     for repeat_index in range(1, args.repeats + 1):
         rerun_root = Path(args.output_root) / f"rerun_{repeat_index}"
+        repeat_seed = seed_schedule[repeat_index - 1]
         pipeline = ARGTestPipeline(
             base_dir=ROOT,
             provider=args.provider,
             model=args.model,
             candidates=args.candidates,
+            openai_api_mode=args.api_mode,
+            seed=repeat_seed,
+            temperature=args.temperature,
+            top_p=args.top_p,
             output_root=str(rerun_root),
         )
         enable_repair = pipeline.config.enable_repair
@@ -94,6 +137,7 @@ def main() -> None:
         repeat_runs.append(
             {
                 "repeat_index": repeat_index,
+                "seed": repeat_seed,
                 "runtime_root": str(pipeline.config.paths.runtime_root),
                 "summaries": summaries,
             }
@@ -138,6 +182,8 @@ def main() -> None:
         "split": args.split,
         "provider": args.provider,
         "model": args.model,
+        "openai_api_mode": pipeline.config.openai_api_mode if repeat_runs else args.api_mode,
+        "seed_schedule": seed_schedule,
         "candidates": args.candidates,
         "repeats": args.repeats,
         "requirement_count": len(requirement_rows),
@@ -162,6 +208,10 @@ def main() -> None:
         provider=args.provider,
         model=args.model,
         candidates=args.candidates,
+        openai_api_mode=pipeline.config.openai_api_mode if repeat_runs else args.api_mode,
+        seed=None,
+        temperature=pipeline.config.temperature if repeat_runs else args.temperature,
+        top_p=pipeline.config.top_p if repeat_runs else args.top_p,
         enable_repair=enable_repair,
         runtime_root=runtime_root,
         requirement_ids=requirement_ids,
@@ -169,6 +219,7 @@ def main() -> None:
             "repeats": args.repeats,
             "limit": args.limit,
             "selected_ids": sorted(selected_ids),
+            "seed_schedule": seed_schedule,
             "output_summary_path": str(report_dir / "repeatability_summary.json"),
         },
     )

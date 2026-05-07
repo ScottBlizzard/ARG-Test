@@ -68,6 +68,10 @@ def main() -> None:
     parser.add_argument('--provider', default='openai')
     parser.add_argument('--model', default='qwen3.5-flash')
     parser.add_argument('--candidates', type=int, default=3)
+    parser.add_argument('--api-mode', default=None, choices=['responses', 'chat_completions'])
+    parser.add_argument('--seed', type=int, default=None)
+    parser.add_argument('--temperature', type=float, default=None)
+    parser.add_argument('--top-p', type=float, default=None)
     parser.add_argument('--ids', default='', help='Comma-separated requirement_ids. Defaults to a representative 5-case set.')
     parser.add_argument('--output-root', required=True, help='Isolated runtime root for the sanity rerun.')
     parser.add_argument('--formal-root', default='.local_runs/formal_qwen_novpn', help='Runtime root of the frozen formal results.')
@@ -84,6 +88,10 @@ def main() -> None:
         provider=args.provider,
         model=args.model,
         candidates=args.candidates,
+        openai_api_mode=args.api_mode,
+        seed=args.seed,
+        temperature=args.temperature,
+        top_p=args.top_p,
         output_root=args.output_root,
     )
 
@@ -148,6 +156,10 @@ def main() -> None:
         provider=pipeline.config.provider,
         model=pipeline.config.model,
         candidates=args.candidates,
+        openai_api_mode=pipeline.config.openai_api_mode,
+        seed=pipeline.config.seed,
+        temperature=pipeline.config.temperature,
+        top_p=pipeline.config.top_p,
         enable_repair=pipeline.config.enable_repair,
         runtime_root=pipeline.config.paths.runtime_root,
         requirement_ids=selected_ids,

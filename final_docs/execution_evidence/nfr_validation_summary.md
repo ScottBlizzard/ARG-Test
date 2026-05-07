@@ -30,9 +30,9 @@
 ## Maintainability
 
 - `src/` Python modules: `27`
-- experiment scripts: `14`
-- test files: `5`
-- test cases: `23`
+- experiment scripts: `15`
+- test files: `6`
+- test cases: `27`
 - pytest exit code: `0`
-- pytest summary: `23 passed in 0.19s`
+- pytest summary: `27 passed in 0.28s`
 - runtime output isolation supported: `true`
