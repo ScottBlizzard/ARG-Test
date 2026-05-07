@@ -1,0 +1,44 @@
+{
+  "requirement_id": "address_international_format_validation",
+  "recommended_techniques": ["EP", "BVA"],
+  "valid_partitions": [
+    "US postcode 5 digits",
+    "US postcode 5+4",
+    "CN postcode 6 digits",
+    "UK postcode length within range",
+    "phone E.164 valid",
+    "optional address_line2 omitted"
+  ],
+  "invalid_partitions": [
+    "missing required field",
+    "postcode missing for required country",
+    "US postcode wrong length",
+    "CN postcode non-digit",
+    "UK postcode too short/too long",
+    "phone not E.164",
+    "address_line1 empty",
+    "address line too long"
+  ],
+  "boundaries": [
+    {"field": "address_line1_length", "points": [0, 1, 80, 81]},
+    {"field": "address_line2_length", "points": [0, 80, 81]},
+    {"field": "phone_digits", "points": [7, 8, 15, 16]}
+  ],
+  "decision_rules": [
+    "missing any required field -> reject",
+    "country=US and postcode matches NNNNN or NNNNN-NNNN -> accept; else reject",
+    "country=CN and postcode matches 6 digits -> accept; else reject",
+    "country=UK and 5<=len<=8 and alphanumeric/space -> accept; else reject",
+    "country in {US,CN,UK} and postcode missing -> reject",
+    "phone matches E.164 (+ and 8..15 digits) -> accept; else reject",
+    "address_line1 length 1..80 -> accept; else reject",
+    "address_line2 length <=80 -> accept; else reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": [
+    "non-ASCII characters in name/address",
+    "leading/trailing spaces in postcode",
+    "country code lowercase"
+  ]
+}

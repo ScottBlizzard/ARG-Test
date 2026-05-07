@@ -1,7 +1,7 @@
 test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
-T01,EP,review_submission_validation,None,request accepted,valid partition,High,repaired,representative valid input
-T02,EP,review_submission_validation,None,validation error,invalid partition,High,repaired,representative invalid input
-T03,BVA,review_submission_validation,None,validation error,below lower boundary,High,repaired,rating=0
-T04,BVA,review_submission_validation,None,boundary accepted,on lower boundary,High,repaired,rating=1
-T05,BVA,review_submission_validation,None,boundary accepted,on upper boundary,Medium,repaired,rating=5
-T06,Decision Table,review_submission_validation,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination
+T01,EP,review_submission_validation,None,request accepted,valid partition,High,pending,representative valid input
+T02,EP,review_submission_validation,None,validation error,invalid partition,High,pending,representative invalid input
+T03,BVA,review_submission_validation,None,validation error,below lower boundary,High,pending,rating=0
+T04,BVA,review_submission_validation,None,boundary accepted,on lower boundary,High,pending,rating=1
+T05,BVA,review_submission_validation,None,boundary accepted,on upper boundary,Medium,pending,rating=5
+T06,Decision Table,review_submission_validation,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination

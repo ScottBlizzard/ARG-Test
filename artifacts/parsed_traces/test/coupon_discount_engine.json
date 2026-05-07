@@ -1,5 +1,6 @@
 {
   "requirement_id": "coupon_discount_engine",
+  "category": "business_rules",
   "analysis": "- Requirement target: coupon_discount_engine\n- Rule: 1. Only one coupon may be applied to an order.\n- Rule: 2. SAVE10 gives 10 percent off when subtotal is at least 50.\n- Rule: 3. SAVE20 gives 20 percent off when subtotal is at least 100 and the customer is a premium member.\n- Rule: 4. FREESHIP sets shipping fee to 0 when subtotal is at least 30.\n- Rule: 5. Expired coupons are invalid.\n- Rule: 6. SAVE20 cannot be used when the order already contains sale items.\n- Numeric constraint: save10 gives 10 percent off when subtotal -> 50 to threshold\n- Numeric constraint: save20 gives 20 percent off when subtotal -> 100 to threshold\n- Numeric constraint: freeship sets shipping fee to 0 when subtotal -> 30 to threshold",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
@@ -18,7 +19,7 @@
       "expected_output": "request accepted",
       "covered_item": "valid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative valid input"
     },
     {
@@ -29,7 +30,7 @@
       "expected_output": "validation error",
       "covered_item": "invalid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative invalid input"
     },
     {
@@ -40,7 +41,7 @@
       "expected_output": "validation error",
       "covered_item": "below lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "save10 gives 10 percent off when subtotal=49"
     },
     {
@@ -51,7 +52,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "save10 gives 10 percent off when subtotal=50"
     },
     {
@@ -62,7 +63,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on upper boundary",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "save10 gives 10 percent off when subtotal=51"
     },
     {
@@ -73,7 +74,7 @@
       "expected_output": "rule-specific outcome",
       "covered_item": "decision rule coverage",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "rule trigger combination"
     }
   ]

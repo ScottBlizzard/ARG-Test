@@ -1,0 +1,26 @@
+{
+  "requirement_id": "age_restricted_product_purchase_validation",
+  "recommended_techniques": ["EP", "BVA", "Decision Table"],
+  "valid_partitions": [
+    "minimum age not set",
+    "buyer age equals minimum and id verified",
+    "buyer age above minimum and id verified"
+  ],
+  "invalid_partitions": [
+    "buyer age below minimum",
+    "id not verified",
+    "missing buyer age",
+    "negative age"
+  ],
+  "boundaries": [
+    {"field": "buyer_age", "points": [17, 18, 19]}
+  ],
+  "decision_rules": [
+    "minimum_age missing -> allow",
+    "minimum_age set and buyer_age at least minimum and id_verified true -> allow",
+    "otherwise -> reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["id_verified missing"]
+}

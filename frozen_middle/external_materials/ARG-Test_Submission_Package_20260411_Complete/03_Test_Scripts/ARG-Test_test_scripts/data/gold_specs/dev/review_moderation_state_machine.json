@@ -1,0 +1,25 @@
+{
+  "requirement_id": "review_moderation_state_machine",
+  "recommended_techniques": ["State Transition"],
+  "valid_partitions": [
+    "Submitted to Pending",
+    "Pending to Approved",
+    "Pending to Rejected",
+    "Approved to Hidden",
+    "Hidden to Approved"
+  ],
+  "invalid_partitions": [
+    "approve from Submitted",
+    "hide from Pending",
+    "restore from Rejected"
+  ],
+  "boundaries": [],
+  "decision_rules": [
+    "only Pending can be approved or rejected",
+    "only Approved can be hidden",
+    "only Hidden can be restored"
+  ],
+  "states": ["Submitted", "Pending", "Approved", "Rejected", "Hidden"],
+  "illegal_transitions": ["Submitted to Approved", "Pending to Hidden", "Rejected to Approved"],
+  "exception_cases": ["moderation action repeated"]
+}

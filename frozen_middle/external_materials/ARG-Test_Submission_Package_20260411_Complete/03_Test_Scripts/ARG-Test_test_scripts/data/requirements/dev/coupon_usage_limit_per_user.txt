@@ -1,0 +1,8 @@
+Requirement ID: coupon_usage_limit_per_user
+Domain: e-commerce promotion
+
+Rules:
+1. A coupon may define max_uses_per_user (positive integer).
+2. A user may apply and redeem the coupon at most max_uses_per_user times.
+3. If user_usage_count is at least max_uses_per_user, applying the coupon is rejected.
+4. Negative usage counts are invalid.

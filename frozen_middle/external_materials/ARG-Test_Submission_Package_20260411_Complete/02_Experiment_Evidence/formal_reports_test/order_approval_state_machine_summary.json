@@ -1,0 +1,31 @@
+{
+  "requirement_id": "order_approval_state_machine",
+  "score": 1.0,
+  "repaired": false,
+  "metrics": {
+    "gold_spec_found": true,
+    "requirement_id": "order_approval_state_machine",
+    "test_count": 10,
+    "duplicate_count": 0,
+    "coverage": {
+      "valid_partition_coverage": 0.857,
+      "invalid_partition_coverage": 0.75,
+      "boundary_coverage": null,
+      "decision_rule_coverage": null,
+      "state_coverage": 1.0,
+      "illegal_transition_coverage": 0.0,
+      "exception_coverage": 0.5
+    },
+    "applicable_dimensions": [
+      "valid_partition_coverage",
+      "invalid_partition_coverage",
+      "state_coverage",
+      "illegal_transition_coverage",
+      "exception_coverage"
+    ],
+    "applicable_dimension_count": 5,
+    "overall_coverage": 0.621,
+    "checker_score": 1.0,
+    "repaired": false
+  }
+}

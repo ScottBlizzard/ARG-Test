@@ -1,5 +1,6 @@
 {
   "requirement_id": "coupon_expiry_and_timezone",
+  "category": "business_rules",
   "analysis": "- Requirement target: coupon_expiry_and_timezone\n- Rule: 1. A coupon has start_time_utc and end_time_utc.\n- Rule: 2. A coupon is valid when now_utc is between start_time_utc and end_time_utc (inclusive).\n- Rule: 3. Validation uses UTC timestamps only; user timezone does not change validity.\n- Rule: 4. If now_utc is outside the window, applying the coupon is rejected.",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

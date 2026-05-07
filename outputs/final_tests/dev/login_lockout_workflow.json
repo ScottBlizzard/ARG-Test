@@ -1,5 +1,6 @@
 {
   "requirement_id": "login_lockout_workflow",
+  "category": "workflow_state",
   "analysis": "- Requirement target: login_lockout_workflow\n- Rule: 1. An account starts in the Active state.\n- Rule: 2. After 5 consecutive failed login attempts within 10 minutes, the account enters the Locked state for 15 minutes.\n- Rule: 3. A successful login in the Active state resets the failed-attempt counter to 0.\n- Rule: 4. A login attempt in the Locked state returns \"account locked\" without checking the password.\n- Rule: 5. After 15 minutes, the account returns to the Active state and the failed-attempt counter resets.\n- Rule: 6. An administrator may unlock the account immediately and return it to the Active state.",
   "pattern": "- Selected techniques: Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

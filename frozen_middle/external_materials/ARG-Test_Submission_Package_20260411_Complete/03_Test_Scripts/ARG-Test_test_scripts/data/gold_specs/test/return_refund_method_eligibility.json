@@ -1,0 +1,42 @@
+{
+  "requirement_id": "return_refund_method_eligibility",
+  "recommended_techniques": ["EP", "BVA", "Decision Table"],
+  "valid_partitions": [
+    "eligible return within 30 days",
+    "card refund within 180 days -> original card",
+    "card refund after 180 days -> store credit",
+    "bank transfer payment -> manual review",
+    "COD payment -> store credit",
+    "gift card payment -> refund to gift card",
+    "seller fault -> shipping fee refundable"
+  ],
+  "invalid_partitions": [
+    "return requested after 30 days",
+    "final-sale item",
+    "refund amount exceeds amount paid",
+    "shipping fee refunded for non seller-fault reason"
+  ],
+  "boundaries": [
+    {"field": "days_since_delivery", "points": [29, 30, 31]},
+    {"field": "days_since_payment", "points": [179, 180, 181]}
+  ],
+  "decision_rules": [
+    "days_since_delivery > 30 -> reject return",
+    "final-sale item -> reject return",
+    "payment=CARD and days_since_payment <= 180 -> refund to original card",
+    "payment=CARD and days_since_payment > 180 -> refund to store credit",
+    "payment=BANK_TRANSFER -> require manual review and refund via bank transfer",
+    "payment=COD -> refund to store credit",
+    "payment=GIFT_CARD -> refund to gift card balance",
+    "reason=SELLER_FAULT -> shipping fee refundable",
+    "reason!=SELLER_FAULT -> shipping fee not refundable",
+    "refund_amount <= paid_amount_for_returned_items -> accept; else reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": [
+    "partial return with mixed payment methods",
+    "item delivered date missing",
+    "paid amount recorded incorrectly"
+  ]
+}

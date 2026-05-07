@@ -1,0 +1,49 @@
+{
+  "requirement_id": "payment_3ds_authentication_flow",
+  "recommended_techniques": ["State Transition", "Decision Table"],
+  "valid_partitions": [
+    "3DS not required -> capture success",
+    "3DS required -> authenticate success -> capture success",
+    "3DS required -> customer cancels -> failed",
+    "provider timeout -> pending review -> later success callback -> capture",
+    "failed then retry within limit"
+  ],
+  "invalid_partitions": [
+    "capture attempted while in AUTH_REQUIRED",
+    "retry count exceeds limit",
+    "capture attempted in PENDING_REVIEW",
+    "callback signature invalid"
+  ],
+  "boundaries": [
+    {"field": "retry_count", "points": [0, 1, 2, 3]}
+  ],
+  "decision_rules": [
+    "3DS required and state=INITIATED -> transition to AUTH_REQUIRED",
+    "3DS success and state=AUTH_REQUIRED -> transition to AUTHENTICATED",
+    "3DS fail/cancel and state=AUTH_REQUIRED -> transition to FAILED",
+    "provider timeout -> transition to PENDING_REVIEW",
+    "state=AUTHENTICATED -> allow CAPTURE -> transition to CAPTURED",
+    "state=AUTH_REQUIRED -> forbid CAPTURE",
+    "state=PENDING_REVIEW -> forbid CAPTURE until final callback",
+    "retry allowed only when state=FAILED and retry_count < 2"
+  ],
+  "states": [
+    "INITIATED",
+    "AUTH_REQUIRED",
+    "AUTHENTICATED",
+    "CAPTURED",
+    "FAILED",
+    "PENDING_REVIEW"
+  ],
+  "illegal_transitions": [
+    "INITIATED -> CAPTURED when 3DS required",
+    "AUTH_REQUIRED -> CAPTURED",
+    "PENDING_REVIEW -> CAPTURED",
+    "CAPTURED -> AUTH_REQUIRED"
+  ],
+  "exception_cases": [
+    "provider callback arrives twice",
+    "provider callback does not match payment id",
+    "callback signature invalid"
+  ]
+}

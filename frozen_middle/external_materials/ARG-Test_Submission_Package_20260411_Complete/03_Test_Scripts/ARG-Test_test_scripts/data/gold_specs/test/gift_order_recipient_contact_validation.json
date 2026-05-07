@@ -1,0 +1,76 @@
+{
+  "requirement_id": "gift_order_recipient_contact_validation",
+  "recommended_techniques": [
+    "EP",
+    "BVA",
+    "Decision Table"
+  ],
+  "valid_partitions": [
+    "EMAIL channel with valid recipient_email",
+    "SMS channel with valid recipient_phone",
+    "scheduled_send_days_ahead omitted",
+    "scheduled_send_days_ahead on boundary 0",
+    "gift_message omitted"
+  ],
+  "invalid_partitions": [
+    "missing recipient_name",
+    "delivery_channel not EMAIL or SMS",
+    "EMAIL channel and recipient_email missing",
+    "EMAIL channel and invalid email format",
+    "SMS channel and recipient_phone missing",
+    "SMS channel and invalid E.164 phone",
+    "scheduled_send_days_ahead negative",
+    "scheduled_send_days_ahead above 365",
+    "gift_message too long"
+  ],
+  "boundaries": [
+    {
+      "field": "recipient_email_length",
+      "points": [
+        4,
+        5,
+        100,
+        101
+      ]
+    },
+    {
+      "field": "phone_digits",
+      "points": [
+        7,
+        8,
+        15,
+        16
+      ]
+    },
+    {
+      "field": "scheduled_send_days_ahead",
+      "points": [
+        -1,
+        0,
+        365,
+        366
+      ]
+    },
+    {
+      "field": "gift_message_length",
+      "points": [
+        0,
+        200,
+        201
+      ]
+    }
+  ],
+  "decision_rules": [
+    "delivery_channel = EMAIL and recipient_email valid -> accept; else reject",
+    "delivery_channel = SMS and recipient_phone valid -> accept; else reject",
+    "selected delivery channel missing its contact field -> reject",
+    "scheduled_send_days_ahead within 0..365 -> accept; else reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": [
+    "recipient email uppercase characters",
+    "recipient phone includes spaces",
+    "gift message contains emoji"
+  ]
+}

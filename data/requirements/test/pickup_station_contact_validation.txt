@@ -1,0 +1,11 @@
+Requirement ID: pickup_station_contact_validation
+Domain: pickup fulfillment validation
+
+Rules:
+1. Required fields: recipient_name, recipient_phone, pickup_station_id.
+2. pickup_station_id must match PS- followed by 6 digits.
+3. recipient_phone must be in E.164 format (+ followed by 8 to 15 digits).
+4. pickup_code is optional unless contactless_pickup is true.
+5. When contactless_pickup is true, pickup_code must be exactly 6 alphanumeric characters.
+6. recipient_name length must be 1 to 40 inclusive.
+7. note is optional with maximum length 120.

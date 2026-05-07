@@ -1,7 +1,7 @@
 test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
-T01,EP,bank_transfer_rule_checker,None,request accepted,valid partition,High,repaired,representative valid input
-T02,EP,bank_transfer_rule_checker,None,validation error,invalid partition,High,repaired,representative invalid input
-T03,BVA,bank_transfer_rule_checker,None,validation error,below lower boundary,High,repaired,transfer amount=0
-T04,BVA,bank_transfer_rule_checker,None,boundary accepted,on lower boundary,High,repaired,transfer amount=1
-T05,BVA,bank_transfer_rule_checker,None,boundary accepted,on upper boundary,Medium,repaired,transfer amount=5000
-T06,Decision Table,bank_transfer_rule_checker,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination
+T01,EP,bank_transfer_rule_checker,None,request accepted,valid partition,High,pending,representative valid input
+T02,EP,bank_transfer_rule_checker,None,validation error,invalid partition,High,pending,representative invalid input
+T03,BVA,bank_transfer_rule_checker,None,validation error,below lower boundary,High,pending,transfer amount=0
+T04,BVA,bank_transfer_rule_checker,None,boundary accepted,on lower boundary,High,pending,transfer amount=1
+T05,BVA,bank_transfer_rule_checker,None,boundary accepted,on upper boundary,Medium,pending,transfer amount=5000
+T06,Decision Table,bank_transfer_rule_checker,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination

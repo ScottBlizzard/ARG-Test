@@ -1,0 +1,32 @@
+{
+  "requirement_id": "checkout_address_required_fields",
+  "recommended_techniques": ["EP", "BVA"],
+  "valid_partitions": [
+    "all required fields present",
+    "phone digits length 7 to 15",
+    "street2 omitted"
+  ],
+  "invalid_partitions": [
+    "missing name",
+    "missing phone",
+    "missing country",
+    "missing city",
+    "missing street1",
+    "missing postcode",
+    "phone too short",
+    "phone too long",
+    "phone contains non-digit"
+  ],
+  "boundaries": [
+    {"field": "phone_length", "points": [6, 7, 8, 15, 16]}
+  ],
+  "decision_rules": [
+    "any required field missing -> reject",
+    "phone not all digits -> reject",
+    "phone length outside 7 to 15 -> reject",
+    "all checks pass -> accept"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["all fields blank", "phone has leading plus sign"]
+}

@@ -1,0 +1,9 @@
+Requirement ID: payment_method_availability_by_country
+Domain: e-commerce payment
+
+Rules:
+1. Card payment is available in all countries.
+2. PayPal is available only for US and EU.
+3. Alipay is available only for CN.
+4. If country is unknown, only Card is shown.
+5. Selecting an unavailable method returns an error.

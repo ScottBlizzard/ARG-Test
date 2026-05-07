@@ -1,0 +1,8 @@
+Requirement ID: download_link_expiry_and_download_limit
+Domain: e-commerce digital fulfillment
+
+Rules:
+1. A download link is issued at issued_at.
+2. The link expires after 7 days.
+3. The link allows at most 5 successful downloads.
+4. If expired or download_count already at 5, access is rejected.

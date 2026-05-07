@@ -23,9 +23,9 @@ Verification:
 FinalAnswer:
 | Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T01 | EP | checkout_address_required_fields | None | representative valid input | request accepted | valid partition | High | repaired |
-| T02 | EP | checkout_address_required_fields | None | representative invalid input | validation error | invalid partition | High | repaired |
-| T03 | BVA | checkout_address_required_fields | None | phone=6 | validation error | below lower boundary | High | repaired |
-| T04 | BVA | checkout_address_required_fields | None | phone=7 | boundary accepted | on lower boundary | High | repaired |
-| T05 | BVA | checkout_address_required_fields | None | phone=15 | boundary accepted | on upper boundary | Medium | repaired |
-| T06 | Decision Table | checkout_address_required_fields | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | repaired |
+| T01 | EP | checkout_address_required_fields | None | representative valid input | request accepted | valid partition | High | pending |
+| T02 | EP | checkout_address_required_fields | None | representative invalid input | validation error | invalid partition | High | pending |
+| T03 | BVA | checkout_address_required_fields | None | phone=6 | validation error | below lower boundary | High | pending |
+| T04 | BVA | checkout_address_required_fields | None | phone=7 | boundary accepted | on lower boundary | High | pending |
+| T05 | BVA | checkout_address_required_fields | None | phone=15 | boundary accepted | on upper boundary | Medium | pending |
+| T06 | Decision Table | checkout_address_required_fields | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | pending |

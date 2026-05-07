@@ -1,0 +1,11 @@
+﻿Requirement ID: bank_transfer_rule_checker
+Domain: online banking
+
+Rules:
+1. transfer amount must be between 1 and 5000 inclusive for standard users.
+2. transfer amount must be between 1 and 20000 inclusive for verified users.
+3. daily transferred total must not exceed 10000 for standard users and 50000 for verified users.
+4. Transfers above 2000 require a valid one-time password.
+5. Transfers to a blacklisted account must be rejected.
+6. Transfers to the same source account must be rejected.
+7. Transfers that exceed available balance must be rejected.

@@ -1,5 +1,6 @@
 {
   "requirement_id": "exchange_request_workflow_state",
+  "category": "workflow_state",
   "analysis": "- Requirement target: exchange_request_workflow_state\n- Rule: 1. An exchange request starts in Requested.\n- Rule: 2. Support may approve Requested to Approved or reject Requested to Rejected.\n- Rule: 3. After Approved, customer ships item back: Approved to ShippedBack.\n- Rule: 4. Warehouse receives item: ShippedBack to Received.\n- Rule: 5. Replacement shipment: Received to ReplacementShipped.\n- Rule: 6. Completion: ReplacementShipped to Completed.",
   "pattern": "- Selected techniques: Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

@@ -1,0 +1,9 @@
+Requirement ID: loyalty_points_redeem_limit
+Domain: e-commerce loyalty
+
+Rules:
+1. A user may redeem points in multiples of 100.
+2. 100 points equals 1 currency unit.
+3. redeem_points must not exceed user_points_balance.
+4. redemption value must not exceed 20% of order_total.
+5. If validation fails, redemption is rejected.

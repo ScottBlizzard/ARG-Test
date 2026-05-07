@@ -1,0 +1,8 @@
+Requirement ID: product_variant_selection_validation
+Domain: e-commerce product
+
+Rules:
+1. A configurable product defines options such as size and color.
+2. The selected option combination must match an existing variant.
+3. The selected variant must be available_for_sale.
+4. If selection is invalid, adding to cart is rejected.

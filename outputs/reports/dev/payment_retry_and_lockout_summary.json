@@ -16,6 +16,16 @@
       "illegal_transition_coverage": 0.0,
       "exception_coverage": 0.0
     },
+    "applicable_dimensions": [
+      "valid_partition_coverage",
+      "invalid_partition_coverage",
+      "boundary_coverage",
+      "decision_rule_coverage",
+      "state_coverage",
+      "illegal_transition_coverage",
+      "exception_coverage"
+    ],
+    "applicable_dimension_count": 7,
     "overall_coverage": 0.0,
     "checker_score": 0.9500000000000001,
     "repaired": false

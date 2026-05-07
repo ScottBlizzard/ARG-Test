@@ -1,0 +1,89 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background and Related Concepts}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Problem Definition and Scope}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Assignment-Compliant Problem Setting}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Input, Output, and Objectives}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Scope Boundaries}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Method Overview}{3}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Structured Testing Trace}{3}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Prompting Strategy}{3}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Parser and Schema Gate}{3}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Technique-Specific Contracts}{3}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Candidate Reranking and Repair}{3}{subsection.4.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The ARG-Test pipeline starts from requirement documents and gold specifications, produces multiple structured candidate traces, validates them with schema and technique-aware contracts, selects or repairs the best candidate, and exports final test artifacts together with experiment summaries.}}{4}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:architecture}{{1}{4}{The ARG-Test pipeline starts from requirement documents and gold specifications, produces multiple structured candidate traces, validates them with schema and technique-aware contracts, selects or repairs the best candidate, and exports final test artifacts together with experiment summaries}{figure.caption.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Implementation}{4}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Repository Modules}{4}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Tool Artifact Details}{4}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Prompt Artifacts}{4}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Exported Output Types}{4}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Experimental Setup}{4}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Requirement Dataset}{4}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Gold Specifications and Metrics}{4}{subsection.6.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Main implementation modules in ARG-Test.}}{5}{table.caption.2}\protected@file@percent }
+\newlabel{tab:modules}{{1}{5}{Main implementation modules in ARG-Test}{table.caption.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Final tool configuration used in the project.}}{5}{table.caption.3}\protected@file@percent }
+\newlabel{tab:toolconfig}{{2}{5}{Final tool configuration used in the project}{table.caption.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Dataset distribution by split and category.}}{5}{table.caption.4}\protected@file@percent }
+\newlabel{tab:dataset}{{3}{5}{Dataset distribution by split and category}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Baselines}{5}{subsection.6.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Compact overview of the final frozen result after targeted weak-case repair.}}{5}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:scorecard}{{2}{5}{Compact overview of the final frozen result after targeted weak-case repair}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Final Execution Configuration}{5}{subsection.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Results}{5}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Overall Scorecard}{5}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Main Comparison Against Baselines}{5}{subsection.7.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Main comparison on the frozen test split. The corresponding average test counts are 4.125, 7.250, 6.312, and 7.312.}}{6}{table.caption.7}\protected@file@percent }
+\newlabel{tab:maincomparison}{{4}{6}{Main comparison on the frozen test split. The corresponding average test counts are 4.125, 7.250, 6.312, and 7.312}{table.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces ARG-Test substantially improves coverage over rule-based and plain-LLM baselines, while also outperforming the structured-no-checker baseline from the standardized baseline run.}}{6}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:mainvsbase}{{3}{6}{ARG-Test substantially improves coverage over rule-based and plain-LLM baselines, while also outperforming the structured-no-checker baseline from the standardized baseline run}{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The full pipeline remains effective across business-rule, input-validation, and workflow-state requirements.}}{6}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:generalization}{{4}{6}{The full pipeline remains effective across business-rule, input-validation, and workflow-state requirements}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Generalization Across Requirement Categories}{6}{subsection.7.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Category-level generalization on the frozen test split. Average test counts are 7.714, 8.500, and 5.800 respectively.}}{6}{table.caption.9}\protected@file@percent }
+\newlabel{tab:generalization}{{5}{6}{Category-level generalization on the frozen test split. Average test counts are 7.714, 8.500, and 5.800 respectively}{table.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Checker-guided selection and repair strongly improve checker-aligned quality while preserving coverage at a comparable level.}}{6}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:ablation}{{5}{6}{Checker-guided selection and repair strongly improve checker-aligned quality while preserving coverage at a comparable level}{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Ablation}{6}{subsection.7.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Ablation using the refreshed formal directory.}}{6}{table.caption.11}\protected@file@percent }
+\newlabel{tab:ablation}{{6}{6}{Ablation using the refreshed formal directory}{table.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces A five-case sanity rerun reveals some stochastic variation, which is expected for LLM-based generation, but the frozen final run remains defensible.}}{7}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:stability}{{6}{7}{A five-case sanity rerun reveals some stochastic variation, which is expected for LLM-based generation, but the frozen final run remains defensible}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Stability Sanity Check}{7}{subsection.7.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Stability sanity check on five representative requirements.}}{7}{table.caption.13}\protected@file@percent }
+\newlabel{tab:stability}{{7}{7}{Stability sanity check on five representative requirements}{table.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Targeted Weak-Case Repair}{7}{subsection.7.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.7}Representative Case Study}{7}{subsection.7.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Comparison with a Traditional Non-AI Technique}{7}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Discussion}{7}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Why the Project Works}{7}{subsection.9.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Representative examples from business-rule, input-validation, and workflow-state settings.}}{8}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:casestudy}{{7}{8}{Representative examples from business-rule, input-validation, and workflow-state settings}{figure.caption.14}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Traditional non-AI rule-based baseline versus ARG-Test.}}{8}{table.caption.15}\protected@file@percent }
+\newlabel{tab:nonai}{{8}{8}{Traditional non-AI rule-based baseline versus ARG-Test}{table.caption.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}AI Limitations Encountered During Practice}{8}{subsection.9.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Threats to Validity}{8}{subsection.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Practical Interpretation}{8}{subsection.9.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{8}{section.10}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces AI limitations encountered and improvements introduced during development.}}{9}{table.caption.16}\protected@file@percent }
+\newlabel{tab:ailimit}{{9}{9}{AI limitations encountered and improvements introduced during development}{table.caption.16}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Prompt Artifacts}{10}{appendix.A}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}System Prompt Snippet}{10}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Generation Prompt Skeleton}{10}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Repair Prompt Skeleton}{10}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Plain Baseline Prompt}{10}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}Reproducibility Commands}{10}{appendix.B}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Runtime Check}{10}{subsection.B.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Main Formal Workflow}{11}{subsection.B.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.3}Targeted Weak-Case Repair}{11}{subsection.B.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.4}Stability Sanity Check}{11}{subsection.B.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.5}Figure Generation}{11}{subsection.B.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {C}Representative Generated Output Example}{11}{appendix.C}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Representative generated test cases for a workflow-state requirement.}}{11}{table.caption.17}\protected@file@percent }
+\newlabel{tab:outputexample}{{10}{11}{Representative generated test cases for a workflow-state requirement}{table.caption.17}{}}
+\gdef \@abspage@last{11}

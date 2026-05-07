@@ -1,5 +1,6 @@
 {
   "requirement_id": "product_variant_selection_validation",
+  "category": "input_validation",
   "analysis": "- Requirement target: product_variant_selection_validation\n- Rule: 1. A configurable product defines options such as size and color.\n- Rule: 2. The selected option combination must match an existing variant.\n- Rule: 3. The selected variant must be available_for_sale.\n- Rule: 4. If selection is invalid, adding to cart is rejected.",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

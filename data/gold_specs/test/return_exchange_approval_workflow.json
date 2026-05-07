@@ -1,0 +1,56 @@
+{
+  "requirement_id": "return_exchange_approval_workflow",
+  "recommended_techniques": [
+    "State Transition",
+    "Decision Table",
+    "BVA"
+  ],
+  "valid_partitions": [
+    "submitted -> reviewing -> approved -> label issued -> item received -> refunded",
+    "submitted -> reviewing -> approved -> label issued -> item received -> exchanged",
+    "submitted -> reviewing -> rejected",
+    "label issued and shipped within 14 days"
+  ],
+  "invalid_partitions": [
+    "refunded before item received",
+    "rejected directly to approved without new request",
+    "shipped after 14-day window but not expired"
+  ],
+  "boundaries": [
+    {
+      "field": "days_after_label",
+      "points": [
+        13,
+        14,
+        15
+      ]
+    }
+  ],
+  "decision_rules": [
+    "approved and method = return_by_mail -> LABEL_ISSUED before ITEM_RECEIVED",
+    "ITEM_RECEIVED and request_type = return -> REFUNDED",
+    "ITEM_RECEIVED and request_type = exchange -> EXCHANGED",
+    "days_after_label > 14 -> EXPIRED"
+  ],
+  "states": [
+    "SUBMITTED",
+    "REVIEWING",
+    "APPROVED",
+    "REJECTED",
+    "LABEL_ISSUED",
+    "ITEM_RECEIVED",
+    "REFUNDED",
+    "EXCHANGED",
+    "EXPIRED"
+  ],
+  "illegal_transitions": [
+    "APPROVED -> REFUNDED",
+    "REJECTED -> APPROVED",
+    "SUBMITTED -> REFUNDED"
+  ],
+  "exception_cases": [
+    "buyer uploads tracking twice",
+    "warehouse receives item after request already expired",
+    "request type changes after approval"
+  ]
+}

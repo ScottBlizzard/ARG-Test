@@ -1,6 +1,6 @@
 {
   "requirement_id": "payment_method_availability_by_country",
-  "score": 0.65,
+  "score": 0.8500000000000001,
   "repaired": true,
   "metrics": {
     "gold_spec_found": true,
@@ -10,14 +10,21 @@
     "coverage": {
       "valid_partition_coverage": 0.0,
       "invalid_partition_coverage": 0.0,
-      "boundary_coverage": 1.0,
+      "boundary_coverage": null,
       "decision_rule_coverage": 0.25,
-      "state_coverage": 1.0,
-      "illegal_transition_coverage": 1.0,
+      "state_coverage": null,
+      "illegal_transition_coverage": null,
       "exception_coverage": 0.0
     },
-    "overall_coverage": 0.464,
-    "checker_score": 0.65,
+    "applicable_dimensions": [
+      "valid_partition_coverage",
+      "invalid_partition_coverage",
+      "decision_rule_coverage",
+      "exception_coverage"
+    ],
+    "applicable_dimension_count": 4,
+    "overall_coverage": 0.062,
+    "checker_score": 0.8500000000000001,
     "repaired": true
   }
 }

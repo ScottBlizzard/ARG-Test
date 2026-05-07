@@ -1,5 +1,6 @@
 {
   "requirement_id": "order_status_fulfillment_state_machine",
+  "category": "workflow_state",
   "analysis": "- Requirement target: order_status_fulfillment_state_machine\n- Rule: 1. An order starts in Created.\n- Rule: 2. Payment success moves the order to Paid.\n- Rule: 3. Pack operation moves Paid to Packed.\n- Rule: 4. Ship operation moves Packed to Shipped.\n- Rule: 5. Delivery confirmation moves Shipped to Delivered.\n- Rule: 6. Cancellation is allowed only in Created or Paid or Packed.",
   "pattern": "- Selected techniques: Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

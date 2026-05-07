@@ -1,0 +1,8 @@
+Requirement ID: order_cancellation_window
+Domain: e-commerce order
+
+Rules:
+1. An order has status and paid_at timestamp.
+2. A paid order may be cancelled within 30 minutes of paid_at, only if it has not been Shipped.
+3. An unpaid order may be cancelled at any time.
+4. If cancellation is not allowed, the system returns an error and keeps the order unchanged.

@@ -1,5 +1,6 @@
 {
   "requirement_id": "return_request_eligibility",
+  "category": "business_rules",
   "analysis": "- Requirement target: return_request_eligibility\n- Rule: 1. A return request is allowed only when order_status is Delivered.\n- Rule: 2. Return_window_days is 30 from delivered_at.\n- Rule: 3. final_sale items are not returnable.\n- Rule: 4. digital-only orders are not returnable.\n- Rule: 5. If not eligible, return request is rejected.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

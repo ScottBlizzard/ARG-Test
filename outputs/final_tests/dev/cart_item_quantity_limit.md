@@ -23,9 +23,9 @@ Verification:
 FinalAnswer:
 | Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T01 | EP | cart_item_quantity_limit | None | representative valid input | request accepted | valid partition | High | repaired |
-| T02 | EP | cart_item_quantity_limit | None | representative invalid input | validation error | invalid partition | High | repaired |
-| T03 | BVA | cart_item_quantity_limit | None | quantity=0 | validation error | below lower boundary | High | repaired |
-| T04 | BVA | cart_item_quantity_limit | None | quantity=1 | boundary accepted | on lower boundary | High | repaired |
-| T05 | BVA | cart_item_quantity_limit | None | quantity=99 | boundary accepted | on upper boundary | Medium | repaired |
-| T06 | Decision Table | cart_item_quantity_limit | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | repaired |
+| T01 | EP | cart_item_quantity_limit | None | representative valid input | request accepted | valid partition | High | pending |
+| T02 | EP | cart_item_quantity_limit | None | representative invalid input | validation error | invalid partition | High | pending |
+| T03 | BVA | cart_item_quantity_limit | None | quantity=0 | validation error | below lower boundary | High | pending |
+| T04 | BVA | cart_item_quantity_limit | None | quantity=1 | boundary accepted | on lower boundary | High | pending |
+| T05 | BVA | cart_item_quantity_limit | None | quantity=99 | boundary accepted | on upper boundary | Medium | pending |
+| T06 | Decision Table | cart_item_quantity_limit | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | pending |

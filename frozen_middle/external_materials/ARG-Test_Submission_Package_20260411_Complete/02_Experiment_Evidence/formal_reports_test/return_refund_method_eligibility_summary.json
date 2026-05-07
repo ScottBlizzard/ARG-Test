@@ -1,0 +1,31 @@
+{
+  "requirement_id": "return_refund_method_eligibility",
+  "score": 0.75,
+  "repaired": true,
+  "metrics": {
+    "gold_spec_found": true,
+    "requirement_id": "return_refund_method_eligibility",
+    "test_count": 6,
+    "duplicate_count": 0,
+    "coverage": {
+      "valid_partition_coverage": 0.857,
+      "invalid_partition_coverage": 0.5,
+      "boundary_coverage": 0.0,
+      "decision_rule_coverage": 0.7,
+      "state_coverage": null,
+      "illegal_transition_coverage": null,
+      "exception_coverage": 0.0
+    },
+    "applicable_dimensions": [
+      "valid_partition_coverage",
+      "invalid_partition_coverage",
+      "boundary_coverage",
+      "decision_rule_coverage",
+      "exception_coverage"
+    ],
+    "applicable_dimension_count": 5,
+    "overall_coverage": 0.411,
+    "checker_score": 0.75,
+    "repaired": true
+  }
+}

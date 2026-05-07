@@ -1,5 +1,6 @@
 {
   "requirement_id": "gift_card_and_coupon_combination_rules",
+  "category": "business_rules",
   "analysis": "- Requirement target: gift_card_and_coupon_combination_rules\n- Rule: 1. Gift cards may be used together with at most one coupon.\n- Rule: 2. Coupon discount is applied to merchandise subtotal (excluding shipping and tax) before applying gift card balance.\n- Rule: 3. Gift card balance is applied after coupon and can cover shipping and tax.\n- Rule: 4. Coupons cannot discount gift card products.\n- Rule: 5. The final payable amount must never be negative.\n- Rule: 6. Invalid inputs: multiple coupons, expired coupon, gift card code invalid.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

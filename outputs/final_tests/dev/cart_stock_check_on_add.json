@@ -1,5 +1,6 @@
 {
   "requirement_id": "cart_stock_check_on_add",
+  "category": "business_rules",
   "analysis": "- Requirement target: cart_stock_check_on_add\n- Rule: 1. When adding to cart, the system checks current available_stock for the sku.\n- Rule: 2. If available_stock is 0, adding is rejected as out-of-stock.\n- Rule: 3. If requested quantity is less than or equal to available_stock, adding succeeds.\n- Rule: 4. If requested quantity is greater than available_stock, adding is rejected.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

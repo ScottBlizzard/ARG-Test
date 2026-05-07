@@ -1,32 +1,32 @@
-| requirement_id | split | baseline | checker_score | overall_coverage | duplicate_count | test_count | valid_partition_coverage | invalid_partition_coverage | boundary_coverage | decision_rule_coverage | state_coverage | illegal_transition_coverage | exception_coverage |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| address_international_format_validation | test | rule_based | 0.75 | 0.321 | 0 | 4 | 0.0 | 0.0 | 0.0 | 0.25 | 1.0 | 1.0 | 0.0 |
-| address_international_format_validation | test | plain_llm | 0.9 | 0.304 | 0 | 2 | 0.0 | 0.0 | 0.0 | 0.125 | 1.0 | 1.0 | 0.0 |
-| address_international_format_validation | test | structured_no_checker | 0.65 | 0.327 | 0 | 5 | 0.167 | 0.0 | 0.0 | 0.125 | 1.0 | 1.0 | 0.0 |
-| bank_transfer_rule_checker | test | rule_based | 0.75 | 0.381 | 0 | 4 | 0.667 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| bank_transfer_rule_checker | test | plain_llm | 0.9 | 0.286 | 0 | 2 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| bank_transfer_rule_checker | test | structured_no_checker | 0.65 | 0.449 | 0 | 5 | 1.0 | 0.143 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| checkout_promo_stack_and_priority | test | rule_based | 0.8 | 0.321 | 0 | 3 | 0.0 | 0.0 | 0.0 | 0.25 | 1.0 | 1.0 | 0.0 |
-| checkout_promo_stack_and_priority | test | plain_llm | 0.9 | 0.321 | 0 | 2 | 0.0 | 0.0 | 0.0 | 0.25 | 1.0 | 1.0 | 0.0 |
-| checkout_promo_stack_and_priority | test | structured_no_checker | 0.65 | 0.286 | 0 | 3 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| coupon_discount_engine | test | rule_based | 0.75 | 0.5 | 0 | 4 | 0.0 | 0.0 | 1.0 | 0.5 | 1.0 | 1.0 | 0.0 |
-| coupon_discount_engine | test | plain_llm | 0.9 | 0.286 | 0 | 2 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| coupon_discount_engine | test | structured_no_checker | 0.65 | 0.571 | 0 | 5 | 0.25 | 0.0 | 1.0 | 0.75 | 1.0 | 1.0 | 0.0 |
-| gift_card_and_coupon_combination_rules | test | rule_based | 0.8 | 0.333 | 0 | 3 | 0.0 | 0.0 | 0.0 | 0.333 | 1.0 | 1.0 | 0.0 |
-| gift_card_and_coupon_combination_rules | test | plain_llm | 0.9 | 0.333 | 0 | 2 | 0.0 | 0.0 | 0.0 | 0.333 | 1.0 | 1.0 | 0.0 |
-| gift_card_and_coupon_combination_rules | test | structured_no_checker | 0.65 | 0.286 | 0 | 3 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| order_approval_state_machine | test | rule_based | 0.75 | 0.31 | 0 | 5 | 0.0 | 0.0 | 1.0 | 1.0 | 0.167 | 0.0 | 0.0 |
-| order_approval_state_machine | test | plain_llm | 0.9 | 0.286 | 0 | 2 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 |
-| order_approval_state_machine | test | structured_no_checker | 0.8500000000000001 | 0.286 | 0 | 4 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 | 0.0 | 0.0 |
-| order_split_shipment_state_machine | test | rule_based | 0.65 | 0.143 | 0 | 5 | 0.0 | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| order_split_shipment_state_machine | test | plain_llm | 0.9 | 0.143 | 0 | 2 | 0.0 | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| order_split_shipment_state_machine | test | structured_no_checker | 0.75 | 0.143 | 0 | 4 | 0.0 | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| payment_3ds_authentication_flow | test | rule_based | 0.75 | 0.071 | 0 | 5 | 0.0 | 0.0 | 0.0 | 0.5 | 0.0 | 0.0 | 0.0 |
-| payment_3ds_authentication_flow | test | plain_llm | 0.9 | 0.0 | 0 | 2 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| payment_3ds_authentication_flow | test | structured_no_checker | 0.8500000000000001 | 0.071 | 0 | 4 | 0.0 | 0.0 | 0.0 | 0.5 | 0.0 | 0.0 | 0.0 |
-| return_refund_method_eligibility | test | rule_based | 0.8 | 0.286 | 0 | 3 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| return_refund_method_eligibility | test | plain_llm | 0.9 | 0.286 | 0 | 2 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| return_refund_method_eligibility | test | structured_no_checker | 0.65 | 0.286 | 0 | 3 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| ticket_booking_refund_rule | test | rule_based | 0.75 | 0.286 | 0 | 4 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| ticket_booking_refund_rule | test | plain_llm | 0.9 | 0.286 | 0 | 2 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
-| ticket_booking_refund_rule | test | structured_no_checker | 0.65 | 0.321 | 0 | 5 | 0.0 | 0.25 | 0.0 | 0.0 | 1.0 | 1.0 | 0.0 |
+| requirement_id | split | baseline | checker_score | overall_coverage | duplicate_count | test_count | applicable_dimension_count | valid_partition_coverage | invalid_partition_coverage | boundary_coverage | decision_rule_coverage | state_coverage | illegal_transition_coverage | exception_coverage |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| address_international_format_validation | test | rule_based | 0.75 | 0.321 | 0 | 4 |  | 0 | 0 | 0 | 0.25 | 1 | 1 | 0 |
+| address_international_format_validation | test | plain_llm | 0.9 | 0.304 | 0 | 2 |  | 0 | 0 | 0 | 0.125 | 1 | 1 | 0 |
+| address_international_format_validation | test | structured_no_checker | 0.65 | 0.327 | 0 | 5 |  | 0.167 | 0 | 0 | 0.125 | 1 | 1 | 0 |
+| bank_transfer_rule_checker | test | rule_based | 0.75 | 0.381 | 0 | 4 |  | 0.667 | 0 | 0 | 0 | 1 | 1 | 0 |
+| bank_transfer_rule_checker | test | plain_llm | 0.9 | 0.286 | 0 | 2 |  | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| bank_transfer_rule_checker | test | structured_no_checker | 0.65 | 0.449 | 0 | 5 |  | 1 | 0.143 | 0 | 0 | 1 | 1 | 0 |
+| checkout_promo_stack_and_priority | test | rule_based | 0.8 | 0.321 | 0 | 3 |  | 0 | 0 | 0 | 0.25 | 1 | 1 | 0 |
+| checkout_promo_stack_and_priority | test | plain_llm | 0.9 | 0.321 | 0 | 2 |  | 0 | 0 | 0 | 0.25 | 1 | 1 | 0 |
+| checkout_promo_stack_and_priority | test | structured_no_checker | 0.65 | 0.286 | 0 | 3 |  | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| coupon_discount_engine | test | rule_based | 0.75 | 0.5 | 0 | 4 |  | 0 | 0 | 1 | 0.5 | 1 | 1 | 0 |
+| coupon_discount_engine | test | plain_llm | 0.9 | 0.286 | 0 | 2 |  | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| coupon_discount_engine | test | structured_no_checker | 0.65 | 0.571 | 0 | 5 |  | 0.25 | 0 | 1 | 0.75 | 1 | 1 | 0 |
+| gift_card_and_coupon_combination_rules | test | rule_based | 0.8 | 0.333 | 0 | 3 |  | 0 | 0 | 0 | 0.333 | 1 | 1 | 0 |
+| gift_card_and_coupon_combination_rules | test | plain_llm | 0.9 | 0.333 | 0 | 2 |  | 0 | 0 | 0 | 0.333 | 1 | 1 | 0 |
+| gift_card_and_coupon_combination_rules | test | structured_no_checker | 0.65 | 0.286 | 0 | 3 |  | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| order_approval_state_machine | test | rule_based | 0.75 | 0.31 | 0 | 5 |  | 0 | 0 | 1 | 1 | 0.167 | 0 | 0 |
+| order_approval_state_machine | test | plain_llm | 0.9 | 0.286 | 0 | 2 |  | 0 | 0 | 1 | 1 | 0 | 0 | 0 |
+| order_approval_state_machine | test | structured_no_checker | 0.85 | 0.286 | 0 | 4 |  | 0 | 0 | 1 | 1 | 0 | 0 | 0 |
+| order_split_shipment_state_machine | test | rule_based | 0.65 | 0.143 | 0 | 5 |  | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| order_split_shipment_state_machine | test | plain_llm | 0.9 | 0.143 | 0 | 2 |  | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| order_split_shipment_state_machine | test | structured_no_checker | 0.75 | 0.143 | 0 | 4 |  | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| payment_3ds_authentication_flow | test | rule_based | 0.75 | 0.071 | 0 | 5 |  | 0 | 0 | 0 | 0.5 | 0 | 0 | 0 |
+| payment_3ds_authentication_flow | test | plain_llm | 0.9 | 0 | 0 | 2 |  | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| payment_3ds_authentication_flow | test | structured_no_checker | 0.85 | 0.071 | 0 | 4 |  | 0 | 0 | 0 | 0.5 | 0 | 0 | 0 |
+| return_refund_method_eligibility | test | rule_based | 0.8 | 0.286 | 0 | 3 |  | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| return_refund_method_eligibility | test | plain_llm | 0.9 | 0.286 | 0 | 2 |  | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| return_refund_method_eligibility | test | structured_no_checker | 0.65 | 0.286 | 0 | 3 |  | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| ticket_booking_refund_rule | test | rule_based | 0.75 | 0.286 | 0 | 4 |  | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| ticket_booking_refund_rule | test | plain_llm | 0.9 | 0.286 | 0 | 2 |  | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| ticket_booking_refund_rule | test | structured_no_checker | 0.65 | 0.321 | 0 | 5 |  | 0 | 0.25 | 0 | 0 | 1 | 1 | 0 |

@@ -1,0 +1,16 @@
+﻿The previous structured testing trace failed the contract checker.
+
+Requirement:
+{{REQUIREMENT_TEXT}}
+
+Previous trace:
+{{RAW_TRACE}}
+
+Diagnostics:
+{{DIAGNOSTICS}}
+
+Revise only the necessary parts.
+Keep the five-section structure unchanged.
+Preserve correct test cases.
+Remove duplicate or contradictory test cases.
+Return the full corrected trace.

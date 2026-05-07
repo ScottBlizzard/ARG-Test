@@ -1,0 +1,9 @@
+Requirement ID: flash_sale_stock_reservation
+Domain: e-commerce flash sale workflow
+
+Rules:
+1. Flash sale stock can be reserved for checkout.
+2. A reservation holds quantity for 5 minutes.
+3. If payment succeeds within 5 minutes, reserved stock becomes sold.
+4. If payment does not succeed within 5 minutes, the reservation expires and stock is released.
+5. If available_stock is insufficient, reservation is rejected.

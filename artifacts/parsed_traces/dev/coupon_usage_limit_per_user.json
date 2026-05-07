@@ -1,5 +1,6 @@
 {
   "requirement_id": "coupon_usage_limit_per_user",
+  "category": "business_rules",
   "analysis": "- Requirement target: coupon_usage_limit_per_user\n- Rule: 1. A coupon may define max_uses_per_user (positive integer).\n- Rule: 2. A user may apply and redeem the coupon at most max_uses_per_user times.\n- Rule: 3. If user_usage_count is at least max_uses_per_user, applying the coupon is rejected.\n- Rule: 4. Negative usage counts are invalid.",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

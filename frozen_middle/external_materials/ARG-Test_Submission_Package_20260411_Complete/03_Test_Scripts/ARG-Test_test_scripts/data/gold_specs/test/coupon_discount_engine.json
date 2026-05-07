@@ -1,0 +1,27 @@
+﻿{
+  "requirement_id": "coupon_discount_engine",
+  "recommended_techniques": ["Decision Table", "BVA"],
+  "valid_partitions": [
+    "SAVE10 valid",
+    "SAVE20 valid for premium",
+    "FREESHIP valid",
+    "no coupon"
+  ],
+  "invalid_partitions": [
+    "expired coupon",
+    "SAVE20 with sale items",
+    "multiple coupons"
+  ],
+  "boundaries": [
+    {"field": "subtotal", "points": [29, 30, 31, 49, 50, 51, 99, 100, 101]}
+  ],
+  "decision_rules": [
+    "SAVE10 and subtotal at least 50 -> reduce subtotal by 10 percent",
+    "SAVE20 and premium and subtotal at least 100 and no sale items -> reduce subtotal by 20 percent",
+    "FREESHIP and subtotal at least 30 -> shipping fee becomes 0",
+    "expired coupon -> reject coupon"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["subtotal negative", "coupon code unknown"]
+}

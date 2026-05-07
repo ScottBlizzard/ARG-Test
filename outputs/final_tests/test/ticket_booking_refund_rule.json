@@ -1,5 +1,6 @@
 {
   "requirement_id": "ticket_booking_refund_rule",
+  "category": "business_rules",
   "analysis": "- Requirement target: ticket_booking_refund_rule\n- Rule: 1. A booking is created only when seats are available and payment succeeds.\n- Rule: 2. Child tickets are for age 2 to 12 inclusive, adult tickets are for age 13 to 59 inclusive, and senior tickets are for age 60 and above.\n- Rule: 3. A standard ticket refund returns 90 percent when cancellation is more than 48 hours before departure.\n- Rule: 4. A standard ticket refund returns 50 percent when cancellation is 24 to 48 hours before departure inclusive.\n- Rule: 5. A standard ticket refund returns 0 percent when cancellation is less than 24 hours before departure.\n- Rule: 6. Promotional tickets are non-refundable.\n- Numeric constraint: child tickets -> 2 to 12\n- Numeric constraint: a standard ticket refund returns 50 percent when cancellation -> 24 to 48",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
@@ -18,7 +19,7 @@
       "expected_output": "request accepted",
       "covered_item": "valid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative valid input"
     },
     {
@@ -29,7 +30,7 @@
       "expected_output": "validation error",
       "covered_item": "invalid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative invalid input"
     },
     {
@@ -40,7 +41,7 @@
       "expected_output": "validation error",
       "covered_item": "below lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "child tickets=1"
     },
     {
@@ -51,7 +52,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "child tickets=2"
     },
     {
@@ -62,7 +63,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on upper boundary",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "child tickets=12"
     },
     {
@@ -73,7 +74,7 @@
       "expected_output": "rule-specific outcome",
       "covered_item": "decision rule coverage",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "rule trigger combination"
     }
   ]

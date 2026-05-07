@@ -1,0 +1,8 @@
+Requirement ID: checkout_address_required_fields
+Domain: e-commerce checkout
+
+Rules:
+1. A shipping address must include name, phone, country, city, street1, and postcode.
+2. street2 is optional.
+3. phone must be 7 to 15 digits.
+4. If any required field is missing or invalid, checkout validation fails and nothing is submitted.

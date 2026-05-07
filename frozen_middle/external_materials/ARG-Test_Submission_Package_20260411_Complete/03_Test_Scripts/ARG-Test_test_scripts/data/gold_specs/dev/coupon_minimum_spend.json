@@ -1,0 +1,26 @@
+{
+  "requirement_id": "coupon_minimum_spend",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "subtotal equals minimum",
+    "subtotal above minimum",
+    "minimum is 0"
+  ],
+  "invalid_partitions": [
+    "subtotal below minimum",
+    "negative subtotal",
+    "negative minimum"
+  ],
+  "boundaries": [
+    {"field": "cart_subtotal", "points": [-1, 0, 99, 100, 101]},
+    {"field": "minimum_subtotal", "points": [-1, 0, 100]}
+  ],
+  "decision_rules": [
+    "subtotal at least minimum -> allow coupon",
+    "subtotal below minimum -> reject coupon",
+    "negative values -> validation error"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["subtotal missing"]
+}

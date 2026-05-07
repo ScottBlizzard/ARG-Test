@@ -1,0 +1,30 @@
+{
+  "requirement_id": "delivery_slot_capacity_booking",
+  "recommended_techniques": ["EP", "BVA", "Decision Table"],
+  "valid_partitions": [
+    "requested units 1 to 5",
+    "remaining units sufficient -> confirm",
+    "remaining units insufficient -> reject",
+    "cancel at least 2 hours before start -> restore capacity"
+  ],
+  "invalid_partitions": [
+    "requested units 0",
+    "requested units above 5",
+    "negative remaining units",
+    "cancel too late"
+  ],
+  "boundaries": [
+    {"field": "requested_units", "points": [0, 1, 2, 5, 6]},
+    {"field": "remaining_units", "points": [-1, 0, 1, 4, 5]},
+    {"field": "hours_before_start", "points": [1, 2, 3]}
+  ],
+  "decision_rules": [
+    "requested within 1 to 5 and remaining at least requested -> confirm and decrement",
+    "remaining less than requested -> reject",
+    "cancel confirmed booking and hours_before_start at least 2 -> restore",
+    "cancel with hours_before_start less than 2 -> reject cancellation"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["slot not found", "concurrent booking race"]
+}

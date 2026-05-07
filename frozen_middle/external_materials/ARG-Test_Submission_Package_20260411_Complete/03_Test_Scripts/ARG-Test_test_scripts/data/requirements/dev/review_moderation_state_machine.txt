@@ -1,0 +1,9 @@
+Requirement ID: review_moderation_state_machine
+Domain: e-commerce reviews workflow
+
+Rules:
+1. A new review starts in Submitted.
+2. Submitted transitions to Pending when queued for moderation.
+3. A moderator may approve Pending to Approved or reject Pending to Rejected.
+4. A moderator may hide an Approved review, moving it to Hidden.
+5. Hidden reviews remain hidden until explicitly restored to Approved.

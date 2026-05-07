@@ -1,4 +1,4 @@
-﻿__pycache__/
+__pycache__/
 *.pyc
 *.pyo
 *.pyd
@@ -7,3 +7,5 @@
 .mypy_cache/
 .vscode/
 .idea/
+.local_runs/
+.coverage

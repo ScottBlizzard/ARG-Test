@@ -1,7 +1,7 @@
 test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
-T01,EP,cart_item_quantity_limit,None,request accepted,valid partition,High,repaired,representative valid input
-T02,EP,cart_item_quantity_limit,None,validation error,invalid partition,High,repaired,representative invalid input
-T03,BVA,cart_item_quantity_limit,None,validation error,below lower boundary,High,repaired,quantity=0
-T04,BVA,cart_item_quantity_limit,None,boundary accepted,on lower boundary,High,repaired,quantity=1
-T05,BVA,cart_item_quantity_limit,None,boundary accepted,on upper boundary,Medium,repaired,quantity=99
-T06,Decision Table,cart_item_quantity_limit,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination
+T01,EP,cart_item_quantity_limit,None,request accepted,valid partition,High,pending,representative valid input
+T02,EP,cart_item_quantity_limit,None,validation error,invalid partition,High,pending,representative invalid input
+T03,BVA,cart_item_quantity_limit,None,validation error,below lower boundary,High,pending,quantity=0
+T04,BVA,cart_item_quantity_limit,None,boundary accepted,on lower boundary,High,pending,quantity=1
+T05,BVA,cart_item_quantity_limit,None,boundary accepted,on upper boundary,Medium,pending,quantity=99
+T06,Decision Table,cart_item_quantity_limit,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination

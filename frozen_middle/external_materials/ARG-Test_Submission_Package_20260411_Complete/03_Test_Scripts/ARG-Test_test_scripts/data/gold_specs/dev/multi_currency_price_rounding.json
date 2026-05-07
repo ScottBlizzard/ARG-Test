@@ -1,0 +1,27 @@
+{
+  "requirement_id": "multi_currency_price_rounding",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "USD 2 decimal rounding half-up",
+    "EUR 2 decimal rounding half-up",
+    "JPY 0 decimal rounding half-up"
+  ],
+  "invalid_partitions": [
+    "negative exchange rate",
+    "unsupported currency",
+    "negative base amount"
+  ],
+  "boundaries": [
+    {"field": "converted_amount", "points": [9.994, 9.995, 9.996, 10.004, 10.005]},
+    {"field": "quantity", "points": [0, 1, 2]}
+  ],
+  "decision_rules": [
+    "USD/EUR -> round to 2 decimals",
+    "JPY -> round to 0 decimals",
+    "half-up rounding at 0.005 threshold",
+    "subtotal sums rounded line totals"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["exchange_rate missing", "currency missing"]
+}

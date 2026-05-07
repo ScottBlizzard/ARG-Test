@@ -14,8 +14,8 @@
     },
     {
       "split": "test",
-      "requirement_count": 10,
-      "gold_spec_count": 10,
+      "requirement_count": 16,
+      "gold_spec_count": 16,
       "missing_gold_specs": [],
       "orphan_gold_specs": [],
       "errors": [],

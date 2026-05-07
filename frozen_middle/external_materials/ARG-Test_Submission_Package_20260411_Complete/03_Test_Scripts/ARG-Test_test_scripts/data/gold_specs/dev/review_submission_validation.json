@@ -1,0 +1,30 @@
+{
+  "requirement_id": "review_submission_validation",
+  "recommended_techniques": ["EP", "BVA"],
+  "valid_partitions": [
+    "verified purchaser",
+    "rating 1 to 5",
+    "comment omitted",
+    "comment length within 500"
+  ],
+  "invalid_partitions": [
+    "not verified purchaser",
+    "rating below 1",
+    "rating above 5",
+    "rating not integer",
+    "comment length above 500"
+  ],
+  "boundaries": [
+    {"field": "rating", "points": [0, 1, 2, 5, 6]},
+    {"field": "comment_length", "points": [0, 1, 499, 500, 501]}
+  ],
+  "decision_rules": [
+    "not verified -> reject",
+    "rating must be integer 1 to 5",
+    "comment length above 500 -> reject",
+    "all checks pass -> accept"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["comment contains emoji"]
+}

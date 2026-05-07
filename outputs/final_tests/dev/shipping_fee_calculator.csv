@@ -1,7 +1,7 @@
 test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
-T01,EP,shipping_fee_calculator,None,request accepted,valid partition,High,repaired,representative valid input
-T02,EP,shipping_fee_calculator,None,validation error,invalid partition,High,repaired,representative invalid input
-T03,BVA,shipping_fee_calculator,None,validation error,below lower boundary,High,repaired,standard shipping=99
-T04,BVA,shipping_fee_calculator,None,boundary accepted,on lower boundary,High,repaired,standard shipping=100
-T05,BVA,shipping_fee_calculator,None,boundary accepted,on upper boundary,Medium,repaired,standard shipping=101
-T06,Decision Table,shipping_fee_calculator,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination
+T01,EP,shipping_fee_calculator,None,request accepted,valid partition,High,pending,representative valid input
+T02,EP,shipping_fee_calculator,None,validation error,invalid partition,High,pending,representative invalid input
+T03,BVA,shipping_fee_calculator,None,validation error,below lower boundary,High,pending,standard shipping=99
+T04,BVA,shipping_fee_calculator,None,boundary accepted,on lower boundary,High,pending,standard shipping=100
+T05,BVA,shipping_fee_calculator,None,boundary accepted,on upper boundary,Medium,pending,standard shipping=101
+T06,Decision Table,shipping_fee_calculator,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination

@@ -1,0 +1,10 @@
+﻿Requirement ID: ticket_booking_refund_rule
+Domain: transport booking
+
+Rules:
+1. A booking is created only when seats are available and payment succeeds.
+2. Child tickets are for age 2 to 12 inclusive, adult tickets are for age 13 to 59 inclusive, and senior tickets are for age 60 and above.
+3. A standard ticket refund returns 90 percent when cancellation is more than 48 hours before departure.
+4. A standard ticket refund returns 50 percent when cancellation is 24 to 48 hours before departure inclusive.
+5. A standard ticket refund returns 0 percent when cancellation is less than 24 hours before departure.
+6. Promotional tickets are non-refundable.

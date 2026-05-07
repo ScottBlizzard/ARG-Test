@@ -1,0 +1,11 @@
+Requirement ID: gift_order_recipient_contact_validation
+Domain: gift order delivery validation
+
+Rules:
+1. A gift order requires recipient_name.
+2. delivery_channel must be EMAIL or SMS.
+3. When delivery_channel = EMAIL, recipient_email is required and must be a valid email format with length 5 to 100.
+4. When delivery_channel = SMS, recipient_phone is required and must be in E.164 format (+ followed by 8 to 15 digits).
+5. scheduled_send_days_ahead is optional, but if provided it must be between 0 and 365 inclusive.
+6. gift_message is optional with maximum length 200.
+7. Illegal: both recipient_email and recipient_phone missing for the selected delivery channel.

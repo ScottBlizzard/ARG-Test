@@ -1,0 +1,12 @@
+Requirement ID: return_exchange_approval_workflow
+Domain: after-sales workflow
+
+Rules:
+1. A return or exchange request starts in SUBMITTED.
+2. Review staff may move SUBMITTED to REVIEWING.
+3. REVIEWING may transition to APPROVED or REJECTED.
+4. If APPROVED and method = return_by_mail, the request moves to LABEL_ISSUED before ITEM_RECEIVED.
+5. ITEM_RECEIVED may transition to REFUNDED for returns or EXCHANGED for exchanges.
+6. Illegal: REFUNDED before ITEM_RECEIVED.
+7. Illegal: REJECTED to APPROVED without a new request.
+8. If the buyer does not ship within 14 days after LABEL_ISSUED, the request becomes EXPIRED.

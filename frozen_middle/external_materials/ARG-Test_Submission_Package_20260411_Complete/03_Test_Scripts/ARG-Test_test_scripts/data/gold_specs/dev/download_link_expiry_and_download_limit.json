@@ -1,0 +1,26 @@
+{
+  "requirement_id": "download_link_expiry_and_download_limit",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "within 7 days and download count below 5",
+    "exactly 7 days boundary",
+    "download count exactly 5 blocks"
+  ],
+  "invalid_partitions": [
+    "after 7 days expired",
+    "download count above 5",
+    "negative download count"
+  ],
+  "boundaries": [
+    {"field": "days_since_issued", "points": [6, 7, 8]},
+    {"field": "download_count", "points": [4, 5, 6]}
+  ],
+  "decision_rules": [
+    "days_since_issued at most 7 and download_count less than 5 -> allow",
+    "days_since_issued above 7 -> reject",
+    "download_count at least 5 -> reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["issued_at missing"]
+}

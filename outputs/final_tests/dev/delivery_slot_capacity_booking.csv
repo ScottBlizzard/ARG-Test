@@ -1,7 +1,7 @@
 test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
-T01,EP,delivery_slot_capacity_booking,None,request accepted,valid partition,High,repaired,representative valid input
-T02,EP,delivery_slot_capacity_booking,None,validation error,invalid partition,High,repaired,representative invalid input
-T03,BVA,delivery_slot_capacity_booking,None,validation error,below lower boundary,High,repaired,a booking requests units between 1 and 5.=0
-T04,BVA,delivery_slot_capacity_booking,None,boundary accepted,on lower boundary,High,repaired,a booking requests units between 1 and 5.=1
-T05,BVA,delivery_slot_capacity_booking,None,boundary accepted,on upper boundary,Medium,repaired,a booking requests units between 1 and 5.=5
-T06,Decision Table,delivery_slot_capacity_booking,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,repaired,rule trigger combination
+T01,EP,delivery_slot_capacity_booking,None,request accepted,valid partition,High,pending,representative valid input
+T02,EP,delivery_slot_capacity_booking,None,validation error,invalid partition,High,pending,representative invalid input
+T03,BVA,delivery_slot_capacity_booking,None,validation error,below lower boundary,High,pending,a booking requests units between 1 and 5.=0
+T04,BVA,delivery_slot_capacity_booking,None,boundary accepted,on lower boundary,High,pending,a booking requests units between 1 and 5.=1
+T05,BVA,delivery_slot_capacity_booking,None,boundary accepted,on upper boundary,Medium,pending,a booking requests units between 1 and 5.=5
+T06,Decision Table,delivery_slot_capacity_booking,rule conditions satisfied,rule-specific outcome,decision rule coverage,Medium,pending,rule trigger combination

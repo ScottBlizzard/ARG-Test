@@ -1,5 +1,6 @@
 {
   "requirement_id": "shipping_fee_calculator",
+  "category": "business_rules",
   "analysis": "- Requirement target: shipping_fee_calculator\n- Rule: 1. destination zone is one of local, domestic, or international.\n- Rule: 2. order subtotal and package weight must be non-negative.\n- Rule: 3. For standard shipping, local fees are 5 for weight up to 1 kg, 8 for weight above 1 kg and up to 5 kg, and 12 for weight above 5 kg.\n- Rule: 4. For standard shipping, domestic fees are 8 for weight up to 1 kg, 12 for weight above 1 kg and up to 5 kg, and 18 for weight above 5 kg.\n- Rule: 5. For standard shipping, international fees are 20 for weight up to 1 kg, 35 for weight above 1 kg and up to 5 kg, and 50 for weight above 5 kg.\n- Rule: 6. Express shipping adds a surcharge of 10 for local or domestic and 25 for international.\n- Numeric constraint: standard shipping -> 100 to threshold",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
@@ -18,7 +19,7 @@
       "expected_output": "request accepted",
       "covered_item": "valid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative valid input"
     },
     {
@@ -29,7 +30,7 @@
       "expected_output": "validation error",
       "covered_item": "invalid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative invalid input"
     },
     {
@@ -40,7 +41,7 @@
       "expected_output": "validation error",
       "covered_item": "below lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "standard shipping=99"
     },
     {
@@ -51,7 +52,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "standard shipping=100"
     },
     {
@@ -62,7 +63,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on upper boundary",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "standard shipping=101"
     },
     {
@@ -73,7 +74,7 @@
       "expected_output": "rule-specific outcome",
       "covered_item": "decision rule coverage",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "rule trigger combination"
     }
   ]

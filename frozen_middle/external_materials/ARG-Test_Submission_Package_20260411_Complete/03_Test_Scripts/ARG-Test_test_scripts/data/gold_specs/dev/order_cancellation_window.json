@@ -1,0 +1,26 @@
+{
+  "requirement_id": "order_cancellation_window",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "unpaid order cancel anytime",
+    "paid and within 30 minutes not shipped",
+    "paid and over 30 minutes reject",
+    "shipped order reject"
+  ],
+  "invalid_partitions": [
+    "negative minutes since paid",
+    "missing paid_at for paid status"
+  ],
+  "boundaries": [
+    {"field": "minutes_since_paid", "points": [29, 30, 31]}
+  ],
+  "decision_rules": [
+    "unpaid -> allow cancel",
+    "paid and minutes_since_paid at most 30 and not shipped -> allow cancel",
+    "paid and minutes_since_paid above 30 -> reject",
+    "status shipped or later -> reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["clock skew between systems"]
+}

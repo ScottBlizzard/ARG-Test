@@ -1,0 +1,12 @@
+Requirement ID: address_international_format_validation
+Domain: shipping address validation
+
+Rules:
+1. Required fields: full_name, address_line1, city, country_code, phone.
+2. Postal code is required for US, CN, and UK.
+3. Postal code formats:
+   - US: 5 digits or 5+4 (NNNNN or NNNNN-NNNN)
+   - CN: 6 digits
+   - UK: non-empty, length 5 to 8, alphanumeric with optional space
+4. phone must be in E.164 format (+ followed by 8 to 15 digits).
+5. address_line1 length must be 1 to 80; address_line2 is optional with max length 80.

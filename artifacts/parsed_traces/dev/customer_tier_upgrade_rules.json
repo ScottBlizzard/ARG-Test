@@ -1,5 +1,6 @@
 {
   "requirement_id": "customer_tier_upgrade_rules",
+  "category": "business_rules",
   "analysis": "- Requirement target: customer_tier_upgrade_rules\n- Rule: 1. Tiers are Bronze, Silver, and Gold.\n- Rule: 2. Tier is determined by rolling_12m_spend.\n- Rule: 3. If rolling_12m_spend is at least 2000, tier is Gold.\n- Rule: 4. Else if rolling_12m_spend is at least 500, tier is Silver.\n- Rule: 5. Otherwise tier is Bronze.\n- Numeric constraint: if rolling_12m_spend -> 2000 to threshold\n- Numeric constraint: else if rolling_12m_spend -> 500 to threshold",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
@@ -18,7 +19,7 @@
       "expected_output": "request accepted",
       "covered_item": "valid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative valid input"
     },
     {
@@ -29,7 +30,7 @@
       "expected_output": "validation error",
       "covered_item": "invalid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative invalid input"
     },
     {
@@ -40,7 +41,7 @@
       "expected_output": "validation error",
       "covered_item": "below lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "if rolling_12m_spend=1999"
     },
     {
@@ -51,7 +52,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "if rolling_12m_spend=2000"
     },
     {
@@ -62,7 +63,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on upper boundary",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "if rolling_12m_spend=2001"
     },
     {
@@ -73,7 +74,7 @@
       "expected_output": "rule-specific outcome",
       "covered_item": "decision rule coverage",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "rule trigger combination"
     }
   ]

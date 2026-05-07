@@ -1,0 +1,36 @@
+﻿{
+  "requirement_id": "order_approval_state_machine",
+  "recommended_techniques": ["State Transition"],
+  "valid_partitions": [
+    "Draft submit",
+    "Submitted manager approve",
+    "Submitted manager reject",
+    "ManagerApproved finance approve",
+    "ManagerApproved finance reject",
+    "FinanceApproved close",
+    "Rejected edit and resubmit"
+  ],
+  "invalid_partitions": [
+    "submit outside Draft",
+    "manager approve outside Submitted",
+    "finance approve before manager approval",
+    "close outside FinanceApproved"
+  ],
+  "boundaries": [],
+  "decision_rules": [],
+  "states": [
+    "Draft",
+    "Submitted",
+    "ManagerApproved",
+    "FinanceApproved",
+    "Rejected",
+    "Closed"
+  ],
+  "illegal_transitions": [
+    "Draft -> FinanceApproved",
+    "Submitted -> Closed",
+    "Rejected -> FinanceApproved",
+    "Closed -> Draft"
+  ],
+  "exception_cases": ["unknown event", "duplicate close action"]
+}

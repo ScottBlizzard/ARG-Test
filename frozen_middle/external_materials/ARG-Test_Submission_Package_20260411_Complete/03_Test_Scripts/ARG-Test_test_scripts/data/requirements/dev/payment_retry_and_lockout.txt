@@ -1,0 +1,9 @@
+Requirement ID: payment_retry_and_lockout
+Domain: e-commerce payment workflow
+
+Rules:
+1. A payment attempt starts in Ready state.
+2. After 3 consecutive failed payment attempts within 5 minutes, the payment is Locked for 10 minutes.
+3. A successful payment in Ready resets the consecutive failure counter to 0.
+4. In Locked, any attempt returns "payment locked" without contacting the provider.
+5. After 10 minutes, the payment returns to Ready and the counter resets.

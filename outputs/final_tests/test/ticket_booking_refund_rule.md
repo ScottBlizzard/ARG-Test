@@ -26,9 +26,9 @@ Verification:
 FinalAnswer:
 | Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T01 | EP | ticket_booking_refund_rule | None | representative valid input | request accepted | valid partition | High | repaired |
-| T02 | EP | ticket_booking_refund_rule | None | representative invalid input | validation error | invalid partition | High | repaired |
-| T03 | BVA | ticket_booking_refund_rule | None | child tickets=1 | validation error | below lower boundary | High | repaired |
-| T04 | BVA | ticket_booking_refund_rule | None | child tickets=2 | boundary accepted | on lower boundary | High | repaired |
-| T05 | BVA | ticket_booking_refund_rule | None | child tickets=12 | boundary accepted | on upper boundary | Medium | repaired |
-| T06 | Decision Table | ticket_booking_refund_rule | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | repaired |
+| T01 | EP | ticket_booking_refund_rule | None | representative valid input | request accepted | valid partition | High | pending |
+| T02 | EP | ticket_booking_refund_rule | None | representative invalid input | validation error | invalid partition | High | pending |
+| T03 | BVA | ticket_booking_refund_rule | None | child tickets=1 | validation error | below lower boundary | High | pending |
+| T04 | BVA | ticket_booking_refund_rule | None | child tickets=2 | boundary accepted | on lower boundary | High | pending |
+| T05 | BVA | ticket_booking_refund_rule | None | child tickets=12 | boundary accepted | on upper boundary | Medium | pending |
+| T06 | Decision Table | ticket_booking_refund_rule | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | pending |

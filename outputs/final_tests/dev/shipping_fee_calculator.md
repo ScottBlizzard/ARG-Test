@@ -25,9 +25,9 @@ Verification:
 FinalAnswer:
 | Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T01 | EP | shipping_fee_calculator | None | representative valid input | request accepted | valid partition | High | repaired |
-| T02 | EP | shipping_fee_calculator | None | representative invalid input | validation error | invalid partition | High | repaired |
-| T03 | BVA | shipping_fee_calculator | None | standard shipping=99 | validation error | below lower boundary | High | repaired |
-| T04 | BVA | shipping_fee_calculator | None | standard shipping=100 | boundary accepted | on lower boundary | High | repaired |
-| T05 | BVA | shipping_fee_calculator | None | standard shipping=101 | boundary accepted | on upper boundary | Medium | repaired |
-| T06 | Decision Table | shipping_fee_calculator | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | repaired |
+| T01 | EP | shipping_fee_calculator | None | representative valid input | request accepted | valid partition | High | pending |
+| T02 | EP | shipping_fee_calculator | None | representative invalid input | validation error | invalid partition | High | pending |
+| T03 | BVA | shipping_fee_calculator | None | standard shipping=99 | validation error | below lower boundary | High | pending |
+| T04 | BVA | shipping_fee_calculator | None | standard shipping=100 | boundary accepted | on lower boundary | High | pending |
+| T05 | BVA | shipping_fee_calculator | None | standard shipping=101 | boundary accepted | on upper boundary | Medium | pending |
+| T06 | Decision Table | shipping_fee_calculator | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | pending |

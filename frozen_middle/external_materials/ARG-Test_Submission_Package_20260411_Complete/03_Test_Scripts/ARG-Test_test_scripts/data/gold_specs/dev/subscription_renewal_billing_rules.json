@@ -1,0 +1,25 @@
+{
+  "requirement_id": "subscription_renewal_billing_rules",
+  "recommended_techniques": ["Decision Table"],
+  "valid_partitions": [
+    "Active auto_renew true payment succeeds",
+    "Active auto_renew true payment fails -> PastDue",
+    "auto_renew false -> no billing",
+    "Cancelled -> no billing"
+  ],
+  "invalid_partitions": [
+    "renewal before period_end",
+    "missing period_end",
+    "status unknown"
+  ],
+  "boundaries": [],
+  "decision_rules": [
+    "Active and auto_renew true at period_end -> charge",
+    "charge success -> keep Active and extend period",
+    "charge failure or missing payment method -> PastDue",
+    "auto_renew false or Cancelled -> skip"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["period_end timezone mismatch"]
+}

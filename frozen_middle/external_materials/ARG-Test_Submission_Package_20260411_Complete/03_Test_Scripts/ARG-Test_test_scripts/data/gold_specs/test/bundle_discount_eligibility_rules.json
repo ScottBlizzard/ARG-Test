@@ -1,0 +1,53 @@
+{
+  "requirement_id": "bundle_discount_eligibility_rules",
+  "recommended_techniques": [
+    "Decision Table",
+    "BVA"
+  ],
+  "valid_partitions": [
+    "Bundle A with laptop and eligible mouse",
+    "Bundle B with console and exactly two eligible games",
+    "multiple bundles eligible and highest discount selected",
+    "Bundle A high-price laptop gets 120 discount",
+    "Bundle A lower-price laptop gets 80 discount"
+  ],
+  "invalid_partitions": [
+    "sale item included in bundle discount",
+    "console with one game for Bundle B",
+    "console with three games for Bundle B",
+    "same cart line receives two bundle discounts",
+    "bundle discount stacked with coupon BUNDLE-EXTRA"
+  ],
+  "boundaries": [
+    {
+      "field": "laptop_unit_price",
+      "points": [
+        3999,
+        4000,
+        4001
+      ]
+    },
+    {
+      "field": "eligible_game_count",
+      "points": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "decision_rules": [
+    "laptop >= 1 and eligible mouse >= 1 and no sale items -> Bundle A eligible",
+    "console >= 1 and eligible games = 2 and no sale items -> Bundle B eligible",
+    "multiple bundle discounts eligible -> apply highest absolute discount only",
+    "laptop unit price >= 4000 -> Bundle A discount 120; else 80",
+    "coupon code BUNDLE-EXTRA with bundle discount -> reject stacking"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": [
+    "bundle items split across multiple shipments",
+    "eligible mouse quantity greater than one",
+    "sale flag changes after bundle discount already computed"
+  ]
+}

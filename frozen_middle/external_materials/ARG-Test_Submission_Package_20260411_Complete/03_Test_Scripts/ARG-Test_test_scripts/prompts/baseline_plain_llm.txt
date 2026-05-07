@@ -1,0 +1,3 @@
+﻿Read the requirement and generate a set of black-box test cases.
+Return them as a markdown table with:
+Test ID, Technique, Requirement Target, Preconditions, Input, Expected Output, Covered Item, Priority.

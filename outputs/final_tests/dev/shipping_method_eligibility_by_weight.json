@@ -1,5 +1,6 @@
 {
   "requirement_id": "shipping_method_eligibility_by_weight",
+  "category": "business_rules",
   "analysis": "- Requirement target: shipping_method_eligibility_by_weight\n- Rule: 1. Supported methods are Standard, Express, and Freight.\n- Rule: 2. weight must be non-negative.\n- Rule: 3. Standard is available for weight up to 20 kg.\n- Rule: 4. Express is available for weight up to 5 kg and only when hazardous is false.\n- Rule: 5. Freight is required when weight is above 20 kg.",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

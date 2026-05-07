@@ -1,0 +1,25 @@
+{
+  "requirement_id": "customer_tier_upgrade_rules",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "Bronze below 500",
+    "Silver at least 500",
+    "Gold at least 2000"
+  ],
+  "invalid_partitions": [
+    "negative spend",
+    "missing spend"
+  ],
+  "boundaries": [
+    {"field": "rolling_12m_spend", "points": [-1, 0, 499.99, 500, 500.01, 1999.99, 2000, 2000.01]}
+  ],
+  "decision_rules": [
+    "spend at least 2000 -> Gold",
+    "else spend at least 500 -> Silver",
+    "else -> Bronze",
+    "negative -> error"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["spend includes refunds"]
+}

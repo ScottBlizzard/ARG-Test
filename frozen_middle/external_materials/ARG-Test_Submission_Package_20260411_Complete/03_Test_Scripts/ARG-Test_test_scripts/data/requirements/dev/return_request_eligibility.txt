@@ -1,0 +1,9 @@
+Requirement ID: return_request_eligibility
+Domain: e-commerce returns
+
+Rules:
+1. A return request is allowed only when order_status is Delivered.
+2. Return_window_days is 30 from delivered_at.
+3. final_sale items are not returnable.
+4. digital-only orders are not returnable.
+5. If not eligible, return request is rejected.

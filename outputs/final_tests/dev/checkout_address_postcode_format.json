@@ -1,5 +1,6 @@
 {
   "requirement_id": "checkout_address_postcode_format",
+  "category": "input_validation",
   "analysis": "- Requirement target: checkout_address_postcode_format\n- Rule: 1. postcode validation depends on country.\n- Rule: 2. US: either 5 digits (e.g., 12345) or 9 digits with dash (e.g., 12345-6789).\n- Rule: 3. CN: exactly 6 digits.\n- Rule: 4. UK: 5 to 8 alphanumeric characters, may contain a single space.\n- Rule: 5. For other countries, postcode must be non-empty and at most 12 characters.\n- Numeric constraint: uk: 5 to 8 alphanumeric characters, may contain a single space. -> 5 to 8",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
@@ -18,7 +19,7 @@
       "expected_output": "request accepted",
       "covered_item": "valid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative valid input"
     },
     {
@@ -29,7 +30,7 @@
       "expected_output": "validation error",
       "covered_item": "invalid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative invalid input"
     },
     {
@@ -40,7 +41,7 @@
       "expected_output": "validation error",
       "covered_item": "below lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "uk: 5 to 8 alphanumeric characters, may contain a single space.=4"
     },
     {
@@ -51,7 +52,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "uk: 5 to 8 alphanumeric characters, may contain a single space.=5"
     },
     {
@@ -62,7 +63,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on upper boundary",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "uk: 5 to 8 alphanumeric characters, may contain a single space.=8"
     },
     {
@@ -73,7 +74,7 @@
       "expected_output": "rule-specific outcome",
       "covered_item": "decision rule coverage",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "rule trigger combination"
     }
   ]

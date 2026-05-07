@@ -1,5 +1,6 @@
 {
   "requirement_id": "subscription_pause_resume_workflow",
+  "category": "workflow_state",
   "analysis": "- Requirement target: subscription_pause_resume_workflow\n- Rule: 1. An Active subscription may be paused and becomes Paused.\n- Rule: 2. While Paused, the subscription does not renew.\n- Rule: 3. A Paused subscription may be resumed and becomes Active.\n- Rule: 4. Resuming sets next_billing_date to today plus remaining_days.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

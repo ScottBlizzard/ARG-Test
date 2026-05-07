@@ -1,5 +1,6 @@
 {
   "requirement_id": "invoice_vat_number_validation",
+  "category": "input_validation",
   "analysis": "- Requirement target: invoice_vat_number_validation\n- Rule: 1. A business invoice request requires vat_number.\n- Rule: 2. vat_number must start with two uppercase letters followed by 8 to 12 digits.\n- Rule: 3. Personal invoice requests do not require vat_number.\n- Rule: 4. If vat_number is required but invalid, invoice request is rejected.\n- Numeric constraint: vat_number -> 8 to 12",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

@@ -1,5 +1,6 @@
 {
   "requirement_id": "gift_card_partial_redemption",
+  "category": "business_rules",
   "analysis": "- Requirement target: gift_card_partial_redemption\n- Rule: 1. A gift card has balance (non-negative).\n- Rule: 2. A user may redeem redeem_amount greater than 0.\n- Rule: 3. redeem_amount must not exceed gift card balance.\n- Rule: 4. redeem_amount must not exceed order_total.\n- Rule: 5. On success, new_balance equals balance minus redeem_amount, and the order payable amount reduces by redeem_amount.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

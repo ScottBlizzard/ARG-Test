@@ -1,5 +1,6 @@
 {
   "requirement_id": "order_approval_state_machine",
+  "category": "workflow_state",
   "analysis": "- Requirement target: order_approval_state_machine\n- Rule: 1. An order starts in Draft.\n- Rule: 2. Submit is allowed only from Draft and moves the order to Submitted.\n- Rule: 3. ManagerApprove is allowed only from Submitted and moves the order to ManagerApproved.\n- Rule: 4. ManagerReject is allowed only from Submitted and moves the order to Rejected.\n- Rule: 5. FinanceApprove is allowed only from ManagerApproved and moves the order to FinanceApproved.\n- Rule: 6. FinanceReject is allowed only from ManagerApproved and moves the order to Rejected.",
   "pattern": "- Selected techniques: Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

@@ -1,0 +1,12 @@
+﻿Requirement ID: shipping_fee_calculator
+Domain: e-commerce checkout
+
+Rules:
+1. destination zone is one of local, domestic, or international.
+2. order subtotal and package weight must be non-negative.
+3. For standard shipping, local fees are 5 for weight up to 1 kg, 8 for weight above 1 kg and up to 5 kg, and 12 for weight above 5 kg.
+4. For standard shipping, domestic fees are 8 for weight up to 1 kg, 12 for weight above 1 kg and up to 5 kg, and 18 for weight above 5 kg.
+5. For standard shipping, international fees are 20 for weight up to 1 kg, 35 for weight above 1 kg and up to 5 kg, and 50 for weight above 5 kg.
+6. Express shipping adds a surcharge of 10 for local or domestic and 25 for international.
+7. Express shipping is unavailable when weight is above 20 kg.
+8. Standard shipping is free for local or domestic orders when subtotal is at least 100.

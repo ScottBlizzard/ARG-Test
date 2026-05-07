@@ -1,0 +1,26 @@
+{
+  "requirement_id": "gift_card_code_validation",
+  "recommended_techniques": ["EP", "BVA"],
+  "valid_partitions": [
+    "valid GC-XXXX-XXXX format",
+    "status Active"
+  ],
+  "invalid_partitions": [
+    "missing code",
+    "wrong prefix",
+    "wrong segment length",
+    "contains lowercase",
+    "status not Active"
+  ],
+  "boundaries": [
+    {"field": "gift_card_code_length", "points": [10, 11, 12]}
+  ],
+  "decision_rules": [
+    "format invalid -> reject",
+    "format valid but status not Active -> reject",
+    "format valid and status Active -> accept"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["gift card not found"]
+}
