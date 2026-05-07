@@ -1,0 +1,10 @@
+requirement_id,split,requirement_text
+csv_coupon_rule,adhoc,"Requirement ID: csv_coupon_rule
+Rules:
+1. SAVE10 requires subtotal at least 50.
+2. Only one coupon can be applied."
+csv_order_workflow,adhoc,"Requirement ID: csv_order_workflow
+Rules:
+1. An order starts in Draft.
+2. Submit is allowed only from Draft and moves the order to Submitted.
+3. Approve is allowed only from Submitted and moves the order to Approved."

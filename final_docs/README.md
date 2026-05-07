@@ -14,6 +14,8 @@ Current structure:
 - `06_upgrade_backlog_cn.md`: high-impact upgrade backlog for the final phase.
 - `07_final_upgrade_report_cn.md`: complete final-upgrade report with best-version recommendations.
 - `08_upgrade_implementation_status_cn.md`: implementation-complete status after the core upgrade landed.
+- `09_nfr_validation_report_cn.md`: formalized non-functional validation report.
+- `10_feature_closure_status_cn.md`: closure report for the remaining strict-gap features and rerun policy.
 - `execution_evidence/`: saved execution evidence for the selected detailed module.
 
 Suggested next additions:

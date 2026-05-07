@@ -10,6 +10,8 @@
 - ablation：`<formal_root>/reports/test/ablation_summary.json`
 - generalization：`<formal_root>/reports/test/generalization_by_category.json`
 - case study raw evidence：`artifacts/raw_generations/`、`artifacts/parsed_traces/`、`artifacts/checker_logs/`、`outputs/final_tests/`
+- workflow state-model evidence：`outputs/state_models/`
+- detailed module defect-usefulness evidence：`final_docs/execution_evidence/coupon_discount_engine_mutation_demo.*`
 
 当前特别说明：
 

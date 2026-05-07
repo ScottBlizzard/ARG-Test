@@ -13,6 +13,7 @@ from .repair import local_repair
 from .risk import assess_requirement_risk, assign_case_priorities
 from .reranker import aggregate_score, select_best
 from .schemas import CandidateEvaluation, ParsedTrace
+from .state_model import build_state_model
 from .utils import extract_requirement_id, float_from_env, gold_spec_path, load_prompt, read_text, requirement_category
 
 
@@ -69,6 +70,7 @@ class ARGTestPipeline:
     def annotate_trace(self, parsed: ParsedTrace, split: str, requirement_text: str) -> ParsedTrace:
         parsed.category = requirement_category(self.config.paths.root, split, parsed.requirement_id)
         parsed.risk_assessment = assess_requirement_risk(requirement_text, parsed, parsed.category)
+        parsed.state_model = build_state_model(requirement_text, parsed)
         assign_case_priorities(parsed)
         return parsed
 
@@ -97,15 +99,14 @@ class ARGTestPipeline:
         candidate.score = aggregate_score(candidate)
         return candidate
 
-    def process_requirement_file(
+    def _process_requirement(
         self,
-        requirement_path: Path,
+        requirement_text: str,
+        requirement_id: str,
+        split: str,
         candidates: int | None = None,
         export: bool = True,
     ) -> dict:
-        requirement_text = read_text(requirement_path)
-        requirement_id = extract_requirement_id(requirement_text, requirement_path.stem)
-        split = self.detect_split(requirement_path)
         requested_candidates = candidates or self.config.candidates
         raw_candidates = self.client.generate_structured_candidates(
             requirement_id=requirement_id,
@@ -142,6 +143,29 @@ class ARGTestPipeline:
             'score': selected.score,
             'repaired': selected.repaired,
             'risk_assessment': selected.parsed_trace.risk_assessment.to_dict() if selected.parsed_trace.risk_assessment else None,
+            'state_model': selected.parsed_trace.state_model.to_dict() if selected.parsed_trace.state_model else None,
             'metrics': metrics,
             'diagnostics': selected.diagnostics(),
         }
+
+    def process_requirement_text(
+        self,
+        requirement_text: str,
+        requirement_id: str | None = None,
+        split: str = 'adhoc',
+        candidates: int | None = None,
+        export: bool = True,
+    ) -> dict:
+        resolved_id = extract_requirement_id(requirement_text, requirement_id or 'adhoc_requirement')
+        return self._process_requirement(requirement_text, resolved_id, split, candidates=candidates, export=export)
+
+    def process_requirement_file(
+        self,
+        requirement_path: Path,
+        candidates: int | None = None,
+        export: bool = True,
+    ) -> dict:
+        requirement_text = read_text(requirement_path)
+        requirement_id = extract_requirement_id(requirement_text, requirement_path.stem)
+        split = self.detect_split(requirement_path)
+        return self._process_requirement(requirement_text, requirement_id, split, candidates=candidates, export=export)

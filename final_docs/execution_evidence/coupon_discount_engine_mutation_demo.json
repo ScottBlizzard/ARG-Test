@@ -1,0 +1,112 @@
+{
+  "reference_case_count": 4,
+  "reference_failures": [],
+  "mutant_count": 4,
+  "killed_mutant_count": 4,
+  "kill_rate": 1.0,
+  "cases": [
+    {
+      "case_id": "BB01",
+      "description": "Multiple coupons must be rejected.",
+      "kwargs": {
+        "subtotal": 100,
+        "shipping_fee": 10,
+        "coupons": [
+          "SAVE10",
+          "FREESHIP"
+        ]
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "multiple coupons are not allowed"
+      }
+    },
+    {
+      "case_id": "BB02",
+      "description": "SAVE10 must be accepted on the subtotal=50 boundary.",
+      "kwargs": {
+        "subtotal": 50,
+        "shipping_fee": 8,
+        "coupons": [
+          "SAVE10"
+        ]
+      },
+      "expected": {
+        "status": "accepted",
+        "subtotal": 45.0,
+        "discount_amount": 5.0
+      }
+    },
+    {
+      "case_id": "BB03",
+      "description": "SAVE20 must be rejected when sale items are present.",
+      "kwargs": {
+        "subtotal": 120,
+        "shipping_fee": 10,
+        "coupons": [
+          "SAVE20"
+        ],
+        "is_premium": true,
+        "has_sale_items": true
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "SAVE20 cannot be used with sale items"
+      }
+    },
+    {
+      "case_id": "BB04",
+      "description": "FREESHIP must be accepted on the subtotal=30 boundary.",
+      "kwargs": {
+        "subtotal": 30,
+        "shipping_fee": 6,
+        "coupons": [
+          "FREESHIP"
+        ]
+      },
+      "expected": {
+        "status": "accepted",
+        "shipping_fee": 0.0
+      }
+    }
+  ],
+  "mutants": [
+    {
+      "mutant_id": "multiple_coupons_allowed",
+      "description": "Mutant ignores the one-coupon-only rule and silently uses the first coupon.",
+      "killed": true,
+      "killed_by": [
+        "BB01",
+        "BB03"
+      ],
+      "killed_case_count": 2
+    },
+    {
+      "mutant_id": "save10_boundary_bug",
+      "description": "Mutant rejects SAVE10 exactly at subtotal 50.",
+      "killed": true,
+      "killed_by": [
+        "BB02"
+      ],
+      "killed_case_count": 1
+    },
+    {
+      "mutant_id": "save20_sale_item_bug",
+      "description": "Mutant ignores the SAVE20 sale-item restriction.",
+      "killed": true,
+      "killed_by": [
+        "BB03"
+      ],
+      "killed_case_count": 1
+    },
+    {
+      "mutant_id": "freeship_boundary_bug",
+      "description": "Mutant rejects FREESHIP exactly at subtotal 30.",
+      "killed": true,
+      "killed_by": [
+        "BB04"
+      ],
+      "killed_case_count": 1
+    }
+  ]
+}

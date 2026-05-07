@@ -62,6 +62,20 @@ python experiments/run_baselines.py --split test
 python experiments/run_ablation.py --split test
 ```
 
+Direct text input and CSV import are also supported:
+
+```powershell
+@'
+Requirement ID: direct_text_demo
+Rules:
+1. A request starts in Draft.
+2. Submit is allowed only from Draft and moves the request to Submitted.
+'@ | python -m src.main run-text --requirement-id direct_text_demo --split adhoc --provider mock --output-root .local_runs/direct_input_demo
+
+python -m src.main batch-csv --input final_docs/execution_evidence/sample_requirement_batch.csv --provider mock --output-root .local_runs/csv_input_demo
+python -m src.main state-model --input data/requirements/test/order_approval_state_machine.txt --provider mock --output-root .local_runs/state_model_demo
+```
+
 ## Formal run workflow
 
 Use `.env` or explicit CLI flags for the real provider. The repository loads `.env` automatically from the project root.
@@ -133,6 +147,13 @@ Group main results by requirement category:
 
 ```powershell
 python experiments/run_generalization.py --split test
+```
+
+Generate mutation-demo and NFR evidence for the final report:
+
+```powershell
+python experiments/run_mutation_demo.py
+python experiments/run_nfr_checks.py
 ```
 
 ## Environment

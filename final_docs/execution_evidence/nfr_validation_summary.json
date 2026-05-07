@@ -1,0 +1,67 @@
+{
+  "performance": {
+    "sample_size": 5,
+    "average_seconds_per_requirement": 0.005,
+    "per_requirement": [
+      {
+        "requirement_id": "address_international_format_validation",
+        "seconds": 0.0071
+      },
+      {
+        "requirement_id": "bank_transfer_rule_checker",
+        "seconds": 0.004
+      },
+      {
+        "requirement_id": "bundle_discount_eligibility_rules",
+        "seconds": 0.0042
+      },
+      {
+        "requirement_id": "checkout_promo_stack_and_priority",
+        "seconds": 0.0056
+      },
+      {
+        "requirement_id": "coupon_discount_engine",
+        "seconds": 0.0042
+      }
+    ]
+  },
+  "usability": {
+    "supported_cli_commands": [
+      "batch",
+      "batch-csv",
+      "run",
+      "run-text",
+      "state-model"
+    ],
+    "has_quick_start": true,
+    "has_formal_run_workflow": true,
+    "supports_direct_text_input": true,
+    "supports_csv_input": true,
+    "export_formats": [
+      "JSON",
+      "CSV",
+      "Markdown"
+    ]
+  },
+  "security": {
+    "secret_scan_roots": [
+      "outputs",
+      "artifacts",
+      "final_docs",
+      ".local_runs\\formal_qwen_novpn\\outputs\\reports",
+      ".local_runs\\formal_qwen_upgrade_smoke\\outputs\\reports"
+    ],
+    "secret_findings": [],
+    "secret_leak_found": false,
+    "manifests_record_provider_but_not_api_key": true
+  },
+  "maintainability": {
+    "src_module_count": 27,
+    "experiment_script_count": 14,
+    "test_file_count": 5,
+    "test_case_count": 23,
+    "pytest_exit_code": 0,
+    "pytest_summary": "23 passed in 0.19s",
+    "runtime_output_isolation_supported": true
+  }
+}

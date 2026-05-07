@@ -11,6 +11,7 @@ if str(ROOT) not in sys.path:
 
 from src.risk import assess_requirement_risk, assign_case_priorities
 from src.schemas import ParsedTrace, TestCase
+from src.state_model import build_state_model
 from src.utils import build_run_manifest, list_requirement_files, read_text, requirement_category, write_json
 
 
@@ -63,6 +64,8 @@ def enrich_main_summary(
     tests_dir = runtime_root / "outputs" / "final_tests" / split
     parsed_dir = runtime_root / "artifacts" / "parsed_traces" / split
     checker_dir = runtime_root / "artifacts" / "checker_logs" / split
+    state_artifact_dir = runtime_root / "artifacts" / "state_models" / split
+    state_output_dir = runtime_root / "outputs" / "state_models" / split
     summary_path = report_dir / "run_main_summary.json"
     summaries = json.loads(summary_path.read_text(encoding="utf-8-sig"))
 
@@ -78,6 +81,7 @@ def enrich_main_summary(
         parsed = trace_from_payload(payload)
         parsed.category = requirement_category(ROOT, split, requirement_id)
         parsed.risk_assessment = assess_requirement_risk(texts[requirement_id], parsed, parsed.category)
+        parsed.state_model = build_state_model(texts[requirement_id], parsed)
         assign_case_priorities(parsed)
 
         trace_json = parsed.to_dict()
@@ -87,12 +91,21 @@ def enrich_main_summary(
         markdown_path = tests_dir / f"{requirement_id}.md"
         if markdown_path.exists():
             markdown_path.write_text(parsed.to_markdown(), encoding="utf-8")
+        if parsed.state_model:
+            write_json(state_artifact_dir / f"{requirement_id}.json", parsed.state_model.to_dict())
+            write_json(state_output_dir / f"{requirement_id}.json", parsed.state_model.to_dict())
+            (state_output_dir / f"{requirement_id}.md").write_text(
+                parsed.state_model.to_markdown(requirement_id),
+                encoding="utf-8",
+            )
 
         item["category"] = parsed.category
         item["risk_assessment"] = parsed.risk_assessment.to_dict()
+        item["state_model"] = parsed.state_model.to_dict() if parsed.state_model else None
         risk_by_id[requirement_id] = {
             "category": parsed.category,
             "risk_assessment": parsed.risk_assessment.to_dict(),
+            "state_model": parsed.state_model.to_dict() if parsed.state_model else None,
         }
 
         per_requirement_summary = report_dir / f"{requirement_id}_summary.json"
@@ -101,6 +114,7 @@ def enrich_main_summary(
             detail["split"] = split
             detail["category"] = parsed.category
             detail["risk_assessment"] = parsed.risk_assessment.to_dict()
+            detail["state_model"] = parsed.state_model.to_dict() if parsed.state_model else None
             detail["run_context"] = {
                 "split": split,
                 "provider": provider,
@@ -118,6 +132,7 @@ def enrich_main_summary(
             checker_payload = json.loads(checker_path.read_text(encoding="utf-8-sig"))
             checker_payload["category"] = parsed.category
             checker_payload["risk_assessment"] = parsed.risk_assessment.to_dict()
+            checker_payload["state_model"] = parsed.state_model.to_dict() if parsed.state_model else None
             checker_payload["run_context"] = {
                 "split": split,
                 "provider": provider,
@@ -171,6 +186,7 @@ def enrich_baseline_or_ablation(
         risk_info = risk_by_id.get(requirement_id, {})
         item["category"] = risk_info.get("category")
         item["risk_assessment"] = risk_info.get("risk_assessment")
+        item["state_model"] = risk_info.get("state_model")
     write_json(path, payload)
     write_json(
         report_dir / manifest_name,
