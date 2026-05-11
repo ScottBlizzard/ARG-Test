@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARG-Test Demo Console</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Software Testing Final Project</p>
+        <h1>ARG-Test Demo Console</h1>
+        <p class="hero-text">
+          A stable frontend/backend demo shell for requirement-driven test design, risk prioritization,
+          state-model extraction, and formal-result presentation.
+        </p>
+        <div class="hero-actions">
+          <a class="hero-link" href="#interactive">Interactive Run</a>
+          <a class="hero-link" href="#formal-evidence">Formal Evidence</a>
+          <a class="hero-link" href="#state-models">State Models</a>
+        </div>
+      </div>
+      <aside class="hero-panel">
+        <span class="panel-label">Recorded-demo policy</span>
+        <ul class="bullet-list">
+          <li>Use <code>mock</code> for the live interaction.</li>
+          <li>Use frozen official results for final claims.</li>
+          <li>Show risk, CSV input, and state models explicitly.</li>
+        </ul>
+      </aside>
+    </header>
+
+    <main class="content-grid">
+      <section class="control-card" id="interactive">
+        <div class="section-heading">
+          <p class="eyebrow">Live Interaction</p>
+          <h2>Direct Requirement Input</h2>
+        </div>
+        <form id="text-form" class="stack-form">
+          <div class="field-grid">
+            <label>
+              Requirement ID
+              <input type="text" id="text-requirement-id" value="ui_demo_requirement">
+            </label>
+            <label>
+              Split
+              <input type="text" id="text-split" value="adhoc">
+            </label>
+            <label>
+              Provider
+              <select id="text-provider">
+                <option value="mock" selected>mock</option>
+                <option value="openai">openai</option>
+              </select>
+            </label>
+            <label>
+              Model
+              <input type="text" id="text-model" value="mock-arg-test">
+            </label>
+            <label>
+              Candidates
+              <input type="number" id="text-candidates" value="3" min="1" max="5">
+            </label>
+            <label>
+              Seed
+              <input type="number" id="text-seed" value="202601">
+            </label>
+          </div>
+          <label>
+            Requirement Text
+            <textarea id="text-requirement" rows="10">Requirement ID: warehouse_pickup_ui_demo
+Rules:
+1. An order starts in Pending Confirmation.
+2. Confirm Pickup is allowed only after identity verification succeeds and moves the order to Ready for Pickup.
+3. Cancel is not allowed after the order is already Collected.
+4. Expired orders move from Ready for Pickup to Expired at the end of the hold window.</textarea>
+          </label>
+          <div class="form-actions">
+            <button type="submit">Generate Test Suite</button>
+            <span class="status-note" id="text-status">Idle</span>
+          </div>
+        </form>
+        <div id="text-result" class="result-shell"></div>
+      </section>
+
+      <section class="control-card" id="csv-batch">
+        <div class="section-heading">
+          <p class="eyebrow">FR 1.0</p>
+          <h2>CSV Batch Import</h2>
+        </div>
+        <form id="csv-form" class="stack-form">
+          <div class="field-grid">
+            <label>
+              Provider
+              <select id="csv-provider">
+                <option value="mock" selected>mock</option>
+                <option value="openai">openai</option>
+              </select>
+            </label>
+            <label>
+              Model
+              <input type="text" id="csv-model" value="mock-arg-test">
+            </label>
+            <label>
+              Candidates
+              <input type="number" id="csv-candidates" value="3" min="1" max="5">
+            </label>
+          </div>
+          <label class="upload-field">
+            Upload CSV
+            <input type="file" id="csv-file" accept=".csv">
+          </label>
+          <div class="form-actions">
+            <button type="button" id="download-sample-csv">Download Sample CSV</button>
+            <button type="submit">Run Batch Analysis</button>
+            <span class="status-note" id="csv-status">Idle</span>
+          </div>
+        </form>
+        <div id="csv-result" class="result-shell"></div>
+      </section>
+
+      <section class="control-card" id="state-models">
+        <div class="section-heading">
+          <p class="eyebrow">FR 4.0</p>
+          <h2>State-Model Extraction</h2>
+        </div>
+        <form id="state-form" class="stack-form">
+          <div class="field-grid">
+            <label>
+              Requirement ID
+              <input type="text" id="state-requirement-id" value="state_model_demo">
+            </label>
+            <label>
+              Split
+              <input type="text" id="state-split" value="adhoc">
+            </label>
+            <label>
+              Provider
+              <select id="state-provider">
+                <option value="mock" selected>mock</option>
+                <option value="openai">openai</option>
+              </select>
+            </label>
+            <label>
+              Model
+              <input type="text" id="state-model-name" value="mock-arg-test">
+            </label>
+          </div>
+          <label>
+            Workflow Requirement
+            <textarea id="state-requirement" rows="8">Requirement ID: pickup_station_contact_validation
+Rules:
+1. A pickup request starts in Draft.
+2. Submit is allowed only from Draft and moves the request to Submitted.
+3. Verify Contact is allowed only from Submitted and moves the request to Verified.
+4. Cancel is allowed from Draft or Submitted and moves the request to Cancelled.
+5. Collected is allowed only from Verified and is terminal.
+6. Submit is illegal from Verified, Cancelled, or Collected.</textarea>
+          </label>
+          <div class="form-actions">
+            <button type="submit">Build State Model</button>
+            <span class="status-note" id="state-status">Idle</span>
+          </div>
+        </form>
+        <div id="state-result" class="result-shell"></div>
+      </section>
+
+      <section class="control-card evidence-card" id="formal-evidence">
+        <div class="section-heading">
+          <p class="eyebrow">Frozen Official Results</p>
+          <h2>Formal Evidence Dashboard</h2>
+        </div>
+        <div id="formal-summary" class="result-shell loading-block">Loading formal summary...</div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -409,7 +409,7 @@ demo 只要证明三件事就够：
 一定要提：
 
 - `Performance`: what we measured and what remains provider-bound
-- `Usability`: current CLI-centered prototype interface
+- `Usability`: current lightweight web UI plus stable backend demo shell
 - `Security`: no secret leak found
 - `Maintainability`: modular structure and documentation
 
@@ -427,7 +427,7 @@ PPT 里最容易被老师追问的是：
 - dev/test split clarification
 - rule-based baseline clarification
 - gold-spec coverage clarification
-- why CLI-based prototype is the current interface
+- why the final demo uses a lightweight web UI backed by the existing pipeline
 
 ### 8.5 案例页最容易做坏
 
@@ -447,9 +447,9 @@ Requirement Specification 里写了 UI，这会被问。
 
 统一回答：
 
-- current final deliverable uses a CLI-centered prototype interface
+- current final deliverable includes a lightweight web UI backed by FastAPI plus the original CLI workflow
 - it already supports direct text input, CSV import, output viewing, and state-model generation
-- the project prioritizes core testing functionality and evidence completeness over a polished frontend
+- the project prioritizes stable feature demonstration and evidence completeness over building a large standalone product frontend
 
 ### 9.2 Performance 问题
 

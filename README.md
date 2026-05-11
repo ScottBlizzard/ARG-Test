@@ -76,6 +76,21 @@ python -m src.main batch-csv --input final_docs/execution_evidence/sample_requir
 python -m src.main state-model --input data/requirements/test/order_approval_state_machine.txt --provider mock --output-root .local_runs/state_model_demo
 ```
 
+## Web demo
+
+For the final presentation, the repository also includes a lightweight frontend/backend demo shell:
+
+```powershell
+python -m uvicorn demo_web.app:app --host 127.0.0.1 --port 8000
+```
+
+Then open `http://127.0.0.1:8000`.
+
+Recommended policy:
+
+- use `mock` for the recorded live interaction
+- use the frozen formal results in the dashboard for final-quality claims
+
 ## Formal run workflow
 
 Use `.env` or explicit CLI flags for the real provider. The repository loads `.env` automatically from the project root.
