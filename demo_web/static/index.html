@@ -42,11 +42,11 @@
           <div class="field-grid">
             <label>
               Requirement ID
-              <input type="text" id="text-requirement-id" value="ui_demo_requirement">
+              <input type="text" id="text-requirement-id" value="pickup_station_contact_validation">
             </label>
             <label>
               Split
-              <input type="text" id="text-split" value="adhoc">
+              <input type="text" id="text-split" value="test">
             </label>
             <label>
               Provider
@@ -71,12 +71,19 @@
           <label>
             Requirement Text
             <textarea id="text-requirement" rows="10">Requirement ID: warehouse_pickup_ui_demo
+Requirement ID: pickup_station_contact_validation
+Domain: pickup fulfillment validation
+
 Rules:
-1. An order starts in Pending Confirmation.
-2. Confirm Pickup is allowed only after identity verification succeeds and moves the order to Ready for Pickup.
-3. Cancel is not allowed after the order is already Collected.
-4. Expired orders move from Ready for Pickup to Expired at the end of the hold window.</textarea>
+1. Required fields: recipient_name, recipient_phone, pickup_station_id.
+2. pickup_station_id must match PS- followed by 6 digits.
+3. recipient_phone must be in E.164 format (+ followed by 8 to 15 digits).
+4. pickup_code is optional unless contactless_pickup is true.
+5. When contactless_pickup is true, pickup_code must be exactly 6 alphanumeric characters.
+6. recipient_name length must be 1 to 40 inclusive.
+7. note is optional with maximum length 120.</textarea>
           </label>
+          <p class="helper-note">For a meaningful coverage value, keep a real dataset requirement ID with <code>split=test</code>. For ad hoc inputs without a gold spec, the page will show <code>N/A</code> and the official coverage should be read from the Formal Evidence Dashboard.</p>
           <div class="form-actions">
             <button type="submit">Generate Test Suite</button>
             <span class="status-note" id="text-status">Idle</span>
@@ -130,11 +137,11 @@ Rules:
           <div class="field-grid">
             <label>
               Requirement ID
-              <input type="text" id="state-requirement-id" value="state_model_demo">
+              <input type="text" id="state-requirement-id" value="warehouse_pickup_order_workflow">
             </label>
             <label>
               Split
-              <input type="text" id="state-split" value="adhoc">
+              <input type="text" id="state-split" value="test">
             </label>
             <label>
               Provider
@@ -150,14 +157,18 @@ Rules:
           </div>
           <label>
             Workflow Requirement
-            <textarea id="state-requirement" rows="8">Requirement ID: pickup_station_contact_validation
+            <textarea id="state-requirement" rows="8">Requirement ID: warehouse_pickup_order_workflow
+Domain: pickup workflow
+
 Rules:
-1. A pickup request starts in Draft.
-2. Submit is allowed only from Draft and moves the request to Submitted.
-3. Verify Contact is allowed only from Submitted and moves the request to Verified.
-4. Cancel is allowed from Draft or Submitted and moves the request to Cancelled.
-5. Collected is allowed only from Verified and is terminal.
-6. Submit is illegal from Verified, Cancelled, or Collected.</textarea>
+1. A pickup order starts in READY_FOR_PICKUP after parcel arrival.
+2. If the customer provides the correct pickup code within the pickup window, the order moves to PICKED_UP.
+3. If the pickup window expires before pickup, the order moves to EXPIRED.
+4. From EXPIRED, staff may transition the order to RETURN_IN_TRANSIT.
+5. If station staff report parcel damage, the order moves to HOLD_FOR_REVIEW.
+6. Illegal: PICKED_UP back to READY_FOR_PICKUP.
+7. Illegal: EXPIRED directly to PICKED_UP.
+8. pickup_attempt_count must not exceed 3 before HOLD_FOR_REVIEW.</textarea>
           </label>
           <div class="form-actions">
             <button type="submit">Build State Model</button>

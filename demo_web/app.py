@@ -19,7 +19,9 @@ from src.pipeline import ARGTestPipeline
 BASE_DIR = Path(__file__).resolve().parents[1]
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 FIGURES_DIR = BASE_DIR / "report_assets" / "figures"
-FORMAL_REPORT_DIR = BASE_DIR / ".local_runs" / "formal_qwen_novpn" / "outputs" / "reports" / "test"
+FRONTEND_FOCUS_DIR = BASE_DIR / "report_assets" / "final_demo_package" / "frontend_focus"
+TRACKED_FORMAL_SNAPSHOT_DIR = FRONTEND_FOCUS_DIR / "formal_results_snapshot"
+TRACKED_FORMAL_REPORT_DIR = TRACKED_FORMAL_SNAPSHOT_DIR / "reports" / "test"
 SAMPLE_CSV_PATH = BASE_DIR / "final_docs" / "execution_evidence" / "sample_requirement_batch.csv"
 WEB_RUNS_ROOT = BASE_DIR / ".local_runs" / "web_demo_sessions"
 DEFAULT_PROVIDER = "mock"
@@ -29,6 +31,33 @@ DEFAULT_API_MODE = "chat_completions"
 DEFAULT_SEED = 202601
 DEFAULT_TEMPERATURE = 0.0
 DEFAULT_TOP_P = 1.0
+
+
+def _prefer_existing_path(*candidates: Path) -> Path:
+    for path in candidates:
+        if path.exists():
+            return path
+    return candidates[0]
+
+
+FORMAL_REPORT_DIR = _prefer_existing_path(
+    TRACKED_FORMAL_REPORT_DIR,
+    BASE_DIR / ".local_runs" / "formal_qwen_novpn" / "outputs" / "reports" / "test",
+)
+REPEATABILITY_PATHS = {
+    "Mock 3-seed": _prefer_existing_path(
+        TRACKED_FORMAL_SNAPSHOT_DIR / "repeatability" / "repro_multi_seed_mock_repeatability_summary.json",
+        BASE_DIR / ".local_runs" / "repro_multi_seed_mock" / "outputs" / "reports" / "test" / "repeatability_summary.json",
+    ),
+    "Live multi-seed": _prefer_existing_path(
+        TRACKED_FORMAL_SNAPSHOT_DIR / "repeatability" / "repro_live_qwen_5case_repeatability_summary.json",
+        BASE_DIR / ".local_runs" / "repro_live_qwen_5case" / "outputs" / "reports" / "test" / "repeatability_summary.json",
+    ),
+    "Live same-seed": _prefer_existing_path(
+        TRACKED_FORMAL_SNAPSHOT_DIR / "repeatability" / "repro_live_same_seed_3case_repeatability_summary.json",
+        BASE_DIR / ".local_runs" / "repro_live_same_seed_3case" / "outputs" / "reports" / "test" / "repeatability_summary.json",
+    ),
+}
 
 app = FastAPI(
     title="ARG-Test Demo Web UI",
@@ -133,6 +162,7 @@ def _load_repeatability_snapshot(path: Path, label: str) -> dict[str, Any] | Non
     stable_rate = round(stable_case_count / requirement_count, 3) if requirement_count else 0.0
     return {
         "label": label,
+        "source_path": _relative(path),
         "provider": payload.get("provider"),
         "model": payload.get("model"),
         "requirement_count": requirement_count,
@@ -198,21 +228,12 @@ def _build_formal_summary() -> dict[str, Any]:
         }
 
     reproducibility = [
-        _load_repeatability_snapshot(
-            BASE_DIR / ".local_runs" / "repro_multi_seed_mock" / "outputs" / "reports" / "test" / "repeatability_summary.json",
-            "Mock 3-seed",
-        ),
-        _load_repeatability_snapshot(
-            BASE_DIR / ".local_runs" / "repro_live_qwen_5case" / "outputs" / "reports" / "test" / "repeatability_summary.json",
-            "Live multi-seed",
-        ),
-        _load_repeatability_snapshot(
-            BASE_DIR / ".local_runs" / "repro_live_same_seed_3case" / "outputs" / "reports" / "test" / "repeatability_summary.json",
-            "Live same-seed",
-        ),
+        _load_repeatability_snapshot(path, label)
+        for label, path in REPEATABILITY_PATHS.items()
     ]
 
     return {
+        "formal_report_source": _relative(FORMAL_REPORT_DIR),
         "official_run": {
             "requirement_count": len(main_items),
             "avg_checker_score": _mean([float(item.get("score", 0.0)) for item in main_items]),
@@ -261,6 +282,7 @@ def health() -> dict[str, Any]:
         "status": "ok",
         "repo_root": str(BASE_DIR),
         "formal_results_available": FORMAL_REPORT_DIR.exists(),
+        "formal_results_source": _relative(FORMAL_REPORT_DIR),
         "sample_csv_available": SAMPLE_CSV_PATH.exists(),
     }
 

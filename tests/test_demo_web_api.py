@@ -21,6 +21,7 @@ def test_demo_web_health() -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["status"] == "ok"
+    assert "frontend_focus" in payload["formal_results_source"]
 
 
 def test_demo_web_formal_summary() -> None:
@@ -29,6 +30,7 @@ def test_demo_web_formal_summary() -> None:
     payload = response.json()
     assert payload["official_run"]["requirement_count"] >= 1
     assert "baseline_averages" in payload
+    assert "frontend_focus" in payload["formal_report_source"]
 
 
 def test_demo_web_analyze_text_mock() -> None:
@@ -48,6 +50,7 @@ def test_demo_web_analyze_text_mock() -> None:
     payload = response.json()
     assert payload["summary"]["requirement_id"] == "demo_web_smoke"
     assert payload["parsed_trace"]["test_cases"]
+    assert payload["summary"]["metrics"]["gold_spec_found"] is False
 
 
 def test_demo_web_analyze_csv_mock() -> None:

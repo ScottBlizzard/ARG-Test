@@ -125,10 +125,12 @@ function renderDirectResult(payload) {
   const summary = payload.summary || {};
   const parsed = payload.parsed_trace || {};
   const metrics = summary.metrics || {};
+  const goldSpecFound = Boolean(metrics.gold_spec_found);
+  const categoryLabel = summary.category || (summary.split === "adhoc" ? "adhoc demo input" : "dataset category unavailable");
   textResult.innerHTML = `
     ${renderMetricGrid([
-      { label: "Checker Score", value: num(summary.score), note: `Category: ${summary.category || "n/a"}` },
-      { label: "Overall Coverage", value: pct(metrics.overall_coverage), note: `${metrics.test_count || 0} test cases` },
+      { label: "Checker Score", value: num(summary.score), note: `Category: ${categoryLabel}` },
+      { label: "Overall Coverage", value: goldSpecFound ? pct(metrics.overall_coverage) : "N/A", note: goldSpecFound ? `${metrics.test_count || 0} test cases` : "No gold spec for this live input. Use the Formal Evidence Dashboard for official coverage." },
       { label: "Selected Candidate", value: summary.candidate_index || "n/a", note: summary.repaired ? "Repaired version accepted" : "Original candidate kept" },
     ])}
     ${renderRiskBlock(summary.risk_assessment)}
@@ -201,15 +203,17 @@ function renderCsvBatch(payload) {
       ${records.map((record) => {
         const summary = record.summary || {};
         const metrics = summary.metrics || {};
+        const goldSpecFound = Boolean(metrics.gold_spec_found);
         return `
           <div class="result-card">
             <h3>${escapeHtml(summary.requirement_id || "unknown requirement")}</h3>
             <p>
               Category: <strong>${escapeHtml(summary.category || "n/a")}</strong> |
               Checker: <strong>${escapeHtml(num(summary.score))}</strong> |
-              Coverage: <strong>${escapeHtml(pct(metrics.overall_coverage))}</strong> |
+              Coverage: <strong>${escapeHtml(goldSpecFound ? pct(metrics.overall_coverage) : "N/A")}</strong> |
               Risk: <strong>${escapeHtml((summary.risk_assessment || {}).level || "n/a")}</strong>
             </p>
+            ${goldSpecFound ? "" : "<p>This row has no gold spec. Official coverage should be interpreted from the frozen dashboard, not from an adhoc live input.</p>"}
           </div>
         `;
       }).join("")}
@@ -219,6 +223,10 @@ function renderCsvBatch(payload) {
 
 function renderFormalEvidence(payload) {
   formalSummary.innerHTML = `
+    <div class="panel-card">
+      <h3>Tracked Formal Data Source</h3>
+      <p><code>${escapeHtml(payload.formal_report_source || "n/a")}</code></p>
+    </div>
     ${renderMetricGrid([
       { label: "Official Test Requirements", value: payload.official_run.requirement_count, note: "Frozen held-out split" },
       { label: "Avg Checker Score", value: num(payload.official_run.avg_checker_score), note: "Main pipeline" },

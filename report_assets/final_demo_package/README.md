@@ -2,6 +2,12 @@
 
 This package is the recording-ready bundle for the final project video demonstration.
 
+If you are the teammate responsible for the web demo UI, use:
+
+- `frontend_focus/README.md`
+
+first. It is the simplified frontend-only entry point.
+
 Contents:
 
 - `final_demo_plan_cn.md`: overall demo design and rationale
@@ -18,12 +24,13 @@ Contents:
 
 Recommended use:
 
-1. Read `demo_handoff_cn.md`
-2. Read `demo_ui_handoff_cn.md` if you are polishing the web UI
-3. Read `final_demo_recording_checklist_cn.md`
-4. Run `prepare_demo_workspace.ps1`
-5. Follow `final_demo_script_cn.md` or `final_demo_script_en.md` while recording
-6. Use `demo_asset_map_cn.md` if you need to reopen assets manually
+1. If you are the frontend/demo teammate, start from `frontend_focus/README.md`
+2. Read `demo_handoff_cn.md`
+3. Read `demo_ui_handoff_cn.md` if you are polishing the web UI
+4. Read `final_demo_recording_checklist_cn.md`
+5. Run `prepare_demo_workspace.ps1`
+6. Follow `final_demo_script_cn.md` or `final_demo_script_en.md` while recording
+7. Use `demo_asset_map_cn.md` if you need to reopen assets manually
 
 Recommended demo style:
 

@@ -1,0 +1,1564 @@
+[
+  {
+    "requirement_id": "address_international_format_validation",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": true,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "address_international_format_validation",
+      "test_count": 9,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 0.167,
+        "invalid_partition_coverage": 0.25,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 0.875,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.667
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.392,
+      "checker_score": 0.9500000000000001,
+      "repaired": true
+    },
+    "diagnostics": [
+      "decision_contract: pattern or steps do not explain rule mapping",
+      "state_contract: not applicable"
+    ],
+    "category": "input_validation",
+    "risk_assessment": {
+      "level": "High",
+      "score": 7.1,
+      "rule_count": 5,
+      "numeric_constraint_count": 2,
+      "technique_count": 3,
+      "drivers": [
+        "category=input_validation",
+        "5 explicit rule lines",
+        "2 numeric constraints",
+        "decision-table logic",
+        "business impact keywords: shipping",
+        "strict rejection/constraint language: required"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "boundary coverage",
+        "decision combinations",
+        "invalid partitions",
+        "business-critical rules",
+        "negative/error handling"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "bank_transfer_rule_checker",
+    "split": "test",
+    "score": 1.0,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "bank_transfer_rule_checker",
+      "test_count": 12,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 1.0,
+        "invalid_partition_coverage": 0.429,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.0
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.486,
+      "checker_score": 1.0,
+      "repaired": false
+    },
+    "diagnostics": [
+      "state_contract: not applicable"
+    ],
+    "category": "business_rules",
+    "risk_assessment": {
+      "level": "High",
+      "score": 9.1,
+      "rule_count": 7,
+      "numeric_constraint_count": 2,
+      "technique_count": 4,
+      "drivers": [
+        "category=business_rules",
+        "7 explicit rule lines",
+        "2 numeric constraints",
+        "decision-table logic",
+        "stateful workflow behavior",
+        "business impact keywords: balance",
+        "strict rejection/constraint language: must not, reject, rejected"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "boundary coverage",
+        "decision combinations",
+        "legal transitions",
+        "illegal transitions",
+        "invalid partitions",
+        "business-critical rules",
+        "negative/error handling"
+      ]
+    },
+    "state_model": {
+      "states": [
+        "The"
+      ],
+      "start_states": [],
+      "legal_transitions": [],
+      "illegal_transitions": [],
+      "coverage_plans": [
+        {
+          "coverage_goal": "All States",
+          "sequence_count": 1,
+          "fully_covered": true,
+          "sequences": [
+            {
+              "sequence_id": "AS01",
+              "coverage_goal": "All States",
+              "steps": [
+                "Start in The"
+              ],
+              "covered_states": [
+                "The"
+              ],
+              "covered_transitions": []
+            }
+          ]
+        },
+        {
+          "coverage_goal": "All Transitions",
+          "sequence_count": 0,
+          "fully_covered": true,
+          "sequences": []
+        }
+      ],
+      "notes": [
+        "No explicit start state was detected from the requirement text.",
+        "No explicit legal transitions were extracted from the requirement text."
+      ]
+    }
+  },
+  {
+    "requirement_id": "bundle_discount_eligibility_rules",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "bundle_discount_eligibility_rules",
+      "test_count": 7,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 1.0,
+        "invalid_partition_coverage": 0.8,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.333
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.627,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
+    },
+    "diagnostics": [
+      "bva_contract: missing lower-boundary or just-below case",
+      "bva_contract: missing upper-boundary or just-above case",
+      "state_contract: not applicable"
+    ],
+    "category": "business_rules",
+    "risk_assessment": {
+      "level": "High",
+      "score": 8.2,
+      "rule_count": 8,
+      "numeric_constraint_count": 3,
+      "technique_count": 2,
+      "drivers": [
+        "category=business_rules",
+        "8 explicit rule lines",
+        "3 numeric constraints",
+        "decision-table logic",
+        "business impact keywords: coupon, discount, price",
+        "strict rejection/constraint language: at least, only one"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "boundary coverage",
+        "decision combinations",
+        "business-critical rules",
+        "negative/error handling"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "checkout_promo_stack_and_priority",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "checkout_promo_stack_and_priority",
+      "test_count": 5,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 1.0,
+        "invalid_partition_coverage": 0.6,
+        "boundary_coverage": 0.333,
+        "decision_rule_coverage": 0.875,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.667
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.695,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
+    },
+    "diagnostics": [
+      "decision_contract: decision table coverage appears shallow",
+      "state_contract: not applicable"
+    ],
+    "category": "business_rules",
+    "risk_assessment": {
+      "level": "Medium",
+      "score": 6.7,
+      "rule_count": 6,
+      "numeric_constraint_count": 0,
+      "technique_count": 2,
+      "drivers": [
+        "category=business_rules",
+        "6 explicit rule lines",
+        "business impact keywords: coupon, discount, shipping",
+        "strict rejection/constraint language: cannot, invalid, reject",
+        "workflow cues: after, expired"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "invalid partitions",
+        "business-critical rules",
+        "negative/error handling",
+        "state-dependent behavior"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "coupon_discount_engine",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": true,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "coupon_discount_engine",
+      "test_count": 9,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 0.25,
+        "invalid_partition_coverage": 0.667,
+        "boundary_coverage": 1.0,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.5
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.683,
+      "checker_score": 0.9500000000000001,
+      "repaired": true
+    },
+    "diagnostics": [
+      "ep_contract: not applicable",
+      "bva_contract: missing lower-boundary or just-below case",
+      "bva_contract: missing upper-boundary or just-above case",
+      "state_contract: not applicable"
+    ],
+    "category": "business_rules",
+    "risk_assessment": {
+      "level": "High",
+      "score": 8.85,
+      "rule_count": 7,
+      "numeric_constraint_count": 3,
+      "technique_count": 3,
+      "drivers": [
+        "category=business_rules",
+        "7 explicit rule lines",
+        "3 numeric constraints",
+        "decision-table logic",
+        "business impact keywords: coupon, discount, shipping",
+        "strict rejection/constraint language: at least, cannot, invalid, only one",
+        "workflow cues: expired"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "boundary coverage",
+        "decision combinations",
+        "invalid partitions",
+        "business-critical rules",
+        "negative/error handling",
+        "state-dependent behavior"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "gift_card_and_coupon_combination_rules",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "gift_card_and_coupon_combination_rules",
+      "test_count": 6,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 0.8,
+        "invalid_partition_coverage": 0.6,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 0.833,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.333
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.513,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
+    },
+    "diagnostics": [
+      "bva_contract: not applicable",
+      "decision_contract: pattern or steps do not explain rule mapping",
+      "state_contract: not applicable"
+    ],
+    "category": "business_rules",
+    "risk_assessment": {
+      "level": "High",
+      "score": 7.15,
+      "rule_count": 6,
+      "numeric_constraint_count": 0,
+      "technique_count": 2,
+      "drivers": [
+        "category=business_rules",
+        "6 explicit rule lines",
+        "decision-table logic",
+        "business impact keywords: balance, card, coupon, discount",
+        "strict rejection/constraint language: cannot, invalid",
+        "workflow cues: after, before, expired"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "decision combinations",
+        "invalid partitions",
+        "business-critical rules",
+        "negative/error handling",
+        "state-dependent behavior"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "gift_order_recipient_contact_validation",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": true,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "gift_order_recipient_contact_validation",
+      "test_count": 8,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 0.8,
+        "invalid_partition_coverage": 0.889,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.333
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.604,
+      "checker_score": 0.9500000000000001,
+      "repaired": true
+    },
+    "diagnostics": [
+      "bva_contract: missing lower-boundary or just-below case",
+      "bva_contract: missing upper-boundary or just-above case",
+      "state_contract: not applicable"
+    ],
+    "category": "input_validation",
+    "risk_assessment": {
+      "level": "Medium",
+      "score": 6.85,
+      "rule_count": 7,
+      "numeric_constraint_count": 3,
+      "technique_count": 3,
+      "drivers": [
+        "category=input_validation",
+        "7 explicit rule lines",
+        "3 numeric constraints",
+        "decision-table logic",
+        "strict rejection/constraint language: required"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "boundary coverage",
+        "decision combinations",
+        "invalid partitions",
+        "negative/error handling"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "order_approval_state_machine",
+    "split": "test",
+    "score": 1.0,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "order_approval_state_machine",
+      "test_count": 7,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 0.714,
+        "invalid_partition_coverage": 0.75,
+        "boundary_coverage": null,
+        "decision_rule_coverage": null,
+        "state_coverage": 1.0,
+        "illegal_transition_coverage": 0.0,
+        "exception_coverage": 0.0
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.493,
+      "checker_score": 1.0,
+      "repaired": false
+    },
+    "diagnostics": [
+      "bva_contract: not applicable",
+      "decision_contract: not applicable"
+    ],
+    "category": "workflow_state",
+    "risk_assessment": {
+      "level": "Medium",
+      "score": 6.2,
+      "rule_count": 8,
+      "numeric_constraint_count": 0,
+      "technique_count": 1,
+      "drivers": [
+        "category=workflow_state",
+        "8 explicit rule lines",
+        "stateful workflow behavior",
+        "strict rejection/constraint language: reject, rejected"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "legal transitions",
+        "illegal transitions",
+        "negative/error handling"
+      ]
+    },
+    "state_model": {
+      "states": [
+        "Draft",
+        "Submitted",
+        "ManagerApproved",
+        "FinanceApproved",
+        "Rejected",
+        "Closed"
+      ],
+      "start_states": [
+        "Draft"
+      ],
+      "legal_transitions": [
+        {
+          "source_state": "Draft",
+          "trigger": "Submit",
+          "target_state": "Submitted",
+          "legal": true,
+          "source_rule": "Submit is allowed only from Draft and moves the order to Submitted."
+        },
+        {
+          "source_state": "Submitted",
+          "trigger": "ManagerApprove",
+          "target_state": "ManagerApproved",
+          "legal": true,
+          "source_rule": "ManagerApprove is allowed only from Submitted and moves the order to ManagerApproved."
+        },
+        {
+          "source_state": "Submitted",
+          "trigger": "ManagerReject",
+          "target_state": "Rejected",
+          "legal": true,
+          "source_rule": "ManagerReject is allowed only from Submitted and moves the order to Rejected."
+        },
+        {
+          "source_state": "ManagerApproved",
+          "trigger": "FinanceApprove",
+          "target_state": "FinanceApproved",
+          "legal": true,
+          "source_rule": "FinanceApprove is allowed only from ManagerApproved and moves the order to FinanceApproved."
+        },
+        {
+          "source_state": "ManagerApproved",
+          "trigger": "FinanceReject",
+          "target_state": "Rejected",
+          "legal": true,
+          "source_rule": "FinanceReject is allowed only from ManagerApproved and moves the order to Rejected."
+        },
+        {
+          "source_state": "FinanceApproved",
+          "trigger": "Close",
+          "target_state": "Closed",
+          "legal": true,
+          "source_rule": "Close is allowed only from FinanceApproved and moves the order to Closed."
+        },
+        {
+          "source_state": "Rejected",
+          "trigger": "EditAndResubmit",
+          "target_state": "Draft",
+          "legal": true,
+          "source_rule": "EditAndResubmit is allowed only from Rejected and moves the order to Draft."
+        }
+      ],
+      "illegal_transitions": [],
+      "coverage_plans": [
+        {
+          "coverage_goal": "All States",
+          "sequence_count": 2,
+          "fully_covered": true,
+          "sequences": [
+            {
+              "sequence_id": "AS01",
+              "coverage_goal": "All States",
+              "steps": [
+                "Start in Draft",
+                "Trigger `Submit`: Draft -> Submitted",
+                "Trigger `ManagerApprove`: Submitted -> ManagerApproved",
+                "Trigger `FinanceApprove`: ManagerApproved -> FinanceApproved",
+                "Trigger `Close`: FinanceApproved -> Closed"
+              ],
+              "covered_states": [
+                "Draft",
+                "Submitted",
+                "ManagerApproved",
+                "FinanceApproved",
+                "Closed"
+              ],
+              "covered_transitions": [
+                "Draft -> Submitted [Submit]",
+                "Submitted -> ManagerApproved [ManagerApprove]",
+                "ManagerApproved -> FinanceApproved [FinanceApprove]",
+                "FinanceApproved -> Closed [Close]"
+              ]
+            },
+            {
+              "sequence_id": "AS02",
+              "coverage_goal": "All States",
+              "steps": [
+                "Start in Draft",
+                "Trigger `Submit`: Draft -> Submitted",
+                "Trigger `ManagerReject`: Submitted -> Rejected"
+              ],
+              "covered_states": [
+                "Draft",
+                "Submitted",
+                "Rejected"
+              ],
+              "covered_transitions": [
+                "Draft -> Submitted [Submit]",
+                "Submitted -> Rejected [ManagerReject]"
+              ]
+            }
+          ]
+        },
+        {
+          "coverage_goal": "All Transitions",
+          "sequence_count": 3,
+          "fully_covered": true,
+          "sequences": [
+            {
+              "sequence_id": "AT01",
+              "coverage_goal": "All Transitions",
+              "steps": [
+                "Start in Draft",
+                "Trigger `Submit`: Draft -> Submitted",
+                "Trigger `ManagerApprove`: Submitted -> ManagerApproved",
+                "Trigger `FinanceApprove`: ManagerApproved -> FinanceApproved",
+                "Trigger `Close`: FinanceApproved -> Closed"
+              ],
+              "covered_states": [
+                "Draft",
+                "Submitted",
+                "ManagerApproved",
+                "FinanceApproved",
+                "Closed"
+              ],
+              "covered_transitions": [
+                "Draft -> Submitted [Submit]",
+                "Submitted -> ManagerApproved [ManagerApprove]",
+                "ManagerApproved -> FinanceApproved [FinanceApprove]",
+                "FinanceApproved -> Closed [Close]"
+              ]
+            },
+            {
+              "sequence_id": "AT02",
+              "coverage_goal": "All Transitions",
+              "steps": [
+                "Start in Draft",
+                "Trigger `Submit`: Draft -> Submitted",
+                "Trigger `ManagerApprove`: Submitted -> ManagerApproved",
+                "Trigger `FinanceReject`: ManagerApproved -> Rejected",
+                "Trigger `EditAndResubmit`: Rejected -> Draft"
+              ],
+              "covered_states": [
+                "Draft",
+                "Submitted",
+                "ManagerApproved",
+                "Rejected"
+              ],
+              "covered_transitions": [
+                "Draft -> Submitted [Submit]",
+                "Submitted -> ManagerApproved [ManagerApprove]",
+                "ManagerApproved -> Rejected [FinanceReject]",
+                "Rejected -> Draft [EditAndResubmit]"
+              ]
+            },
+            {
+              "sequence_id": "AT03",
+              "coverage_goal": "All Transitions",
+              "steps": [
+                "Start in Draft",
+                "Trigger `Submit`: Draft -> Submitted",
+                "Trigger `ManagerReject`: Submitted -> Rejected"
+              ],
+              "covered_states": [
+                "Draft",
+                "Submitted",
+                "Rejected"
+              ],
+              "covered_transitions": [
+                "Draft -> Submitted [Submit]",
+                "Submitted -> Rejected [ManagerReject]"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": []
+    }
+  },
+  {
+    "requirement_id": "order_split_shipment_state_machine",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "order_split_shipment_state_machine",
+      "test_count": 5,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 1.0,
+        "invalid_partition_coverage": 1.0,
+        "boundary_coverage": null,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": 0.875,
+        "illegal_transition_coverage": 0.5,
+        "exception_coverage": 0.667
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 6,
+      "overall_coverage": 0.84,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
+    },
+    "diagnostics": [
+      "ep_contract: not applicable",
+      "bva_contract: not applicable",
+      "decision_contract: decision table coverage appears shallow"
+    ],
+    "category": "workflow_state",
+    "risk_assessment": {
+      "level": "Medium",
+      "score": 6.75,
+      "rule_count": 5,
+      "numeric_constraint_count": 0,
+      "technique_count": 2,
+      "drivers": [
+        "category=workflow_state",
+        "5 explicit rule lines",
+        "decision-table logic",
+        "stateful workflow behavior",
+        "strict rejection/constraint language: at least, cannot"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "decision combinations",
+        "legal transitions",
+        "illegal transitions",
+        "negative/error handling"
+      ]
+    },
+    "state_model": {
+      "states": [
+        "Multiple",
+        "Packed"
+      ],
+      "start_states": [],
+      "legal_transitions": [],
+      "illegal_transitions": [],
+      "coverage_plans": [
+        {
+          "coverage_goal": "All States",
+          "sequence_count": 1,
+          "fully_covered": false,
+          "sequences": [
+            {
+              "sequence_id": "AS01",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `Packed` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            }
+          ]
+        },
+        {
+          "coverage_goal": "All Transitions",
+          "sequence_count": 0,
+          "fully_covered": true,
+          "sequences": []
+        }
+      ],
+      "notes": [
+        "No explicit start state was detected from the requirement text.",
+        "No explicit legal transitions were extracted from the requirement text."
+      ]
+    }
+  },
+  {
+    "requirement_id": "payment_3ds_authentication_flow",
+    "split": "test",
+    "score": 1.0,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "payment_3ds_authentication_flow",
+      "test_count": 5,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 1.0,
+        "invalid_partition_coverage": 0.75,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": 0.5,
+        "illegal_transition_coverage": 1.0,
+        "exception_coverage": 0.333
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
+      "overall_coverage": 0.655,
+      "checker_score": 1.0,
+      "repaired": false
+    },
+    "diagnostics": [
+      "ep_contract: not applicable",
+      "bva_contract: not applicable",
+      "decision_contract: not applicable"
+    ],
+    "category": "workflow_state",
+    "risk_assessment": {
+      "level": "High",
+      "score": 7.15,
+      "rule_count": 7,
+      "numeric_constraint_count": 0,
+      "technique_count": 1,
+      "drivers": [
+        "category=workflow_state",
+        "7 explicit rule lines",
+        "stateful workflow behavior",
+        "business impact keywords: authentication, card, payment",
+        "strict rejection/constraint language: must not, required"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "legal transitions",
+        "illegal transitions",
+        "business-critical rules",
+        "negative/error handling"
+      ]
+    },
+    "state_model": {
+      "states": [
+        "INITIATED",
+        "AUTH_REQUIRED",
+        "FAILED",
+        "AUTHENTICATED",
+        "PENDING_REVIEW"
+      ],
+      "start_states": [
+        "INITIATED"
+      ],
+      "legal_transitions": [
+        {
+          "source_state": "AUTH_REQUIRED",
+          "trigger": "3DS fails or the customer cancels",
+          "target_state": "FAILED",
+          "legal": true,
+          "source_rule": "If 3DS fails or the customer cancels, the payment becomes FAILED."
+        }
+      ],
+      "illegal_transitions": [
+        {
+          "source_state": "AUTH_REQUIRED",
+          "trigger": "CAPTURE",
+          "target_state": "CAPTURED",
+          "legal": false,
+          "source_rule": "Illegal: capture before authentication when 3DS is required."
+        }
+      ],
+      "coverage_plans": [
+        {
+          "coverage_goal": "All States",
+          "sequence_count": 4,
+          "fully_covered": false,
+          "sequences": [
+            {
+              "sequence_id": "AS01",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `AUTHENTICATED` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            },
+            {
+              "sequence_id": "AS02",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `AUTH_REQUIRED` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            },
+            {
+              "sequence_id": "AS03",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `FAILED` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            },
+            {
+              "sequence_id": "AS04",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `PENDING_REVIEW` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            }
+          ]
+        },
+        {
+          "coverage_goal": "All Transitions",
+          "sequence_count": 1,
+          "fully_covered": true,
+          "sequences": [
+            {
+              "sequence_id": "AT01",
+              "coverage_goal": "All Transitions",
+              "steps": [
+                "Start in AUTH_REQUIRED",
+                "Trigger `3DS fails or the customer cancels`: AUTH_REQUIRED -> FAILED"
+              ],
+              "covered_states": [
+                "AUTH_REQUIRED",
+                "FAILED"
+              ],
+              "covered_transitions": [
+                "AUTH_REQUIRED -> FAILED [3DS fails or the customer cancels]"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": []
+    }
+  },
+  {
+    "requirement_id": "payment_card_expiry_and_cvv_validation",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "payment_card_expiry_and_cvv_validation",
+      "test_count": 8,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 0.833,
+        "invalid_partition_coverage": 0.727,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 0.8,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.667
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.605,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
+    },
+    "diagnostics": [
+      "decision_contract: pattern or steps do not explain rule mapping",
+      "decision_contract: decision table coverage appears shallow",
+      "state_contract: not applicable"
+    ],
+    "category": "input_validation",
+    "risk_assessment": {
+      "level": "High",
+      "score": 8.35,
+      "rule_count": 8,
+      "numeric_constraint_count": 3,
+      "technique_count": 3,
+      "drivers": [
+        "category=input_validation",
+        "8 explicit rule lines",
+        "3 numeric constraints",
+        "decision-table logic",
+        "business impact keywords: card, cvv, payment",
+        "strict rejection/constraint language: invalid, required",
+        "workflow cues: after"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "boundary coverage",
+        "decision combinations",
+        "invalid partitions",
+        "business-critical rules",
+        "negative/error handling",
+        "state-dependent behavior"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "pickup_station_contact_validation",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "pickup_station_contact_validation",
+      "test_count": 9,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 0.667,
+        "invalid_partition_coverage": 0.9,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 1.0
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.713,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
+    },
+    "diagnostics": [
+      "bva_contract: missing on-boundary case",
+      "state_contract: not applicable"
+    ],
+    "category": "input_validation",
+    "risk_assessment": {
+      "level": "Medium",
+      "score": 6.7,
+      "rule_count": 7,
+      "numeric_constraint_count": 2,
+      "technique_count": 3,
+      "drivers": [
+        "category=input_validation",
+        "7 explicit rule lines",
+        "2 numeric constraints",
+        "decision-table logic",
+        "strict rejection/constraint language: required, unless"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "boundary coverage",
+        "decision combinations",
+        "invalid partitions",
+        "negative/error handling"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "return_exchange_approval_workflow",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "return_exchange_approval_workflow",
+      "test_count": 5,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 1.0,
+        "invalid_partition_coverage": 1.0,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": 1.0,
+        "illegal_transition_coverage": 1.0,
+        "exception_coverage": 0.0
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
+      "overall_coverage": 0.714,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
+    },
+    "diagnostics": [
+      "bva_contract: missing lower-boundary or just-below case",
+      "bva_contract: missing upper-boundary or just-above case"
+    ],
+    "category": "workflow_state",
+    "risk_assessment": {
+      "level": "High",
+      "score": 7.4,
+      "rule_count": 8,
+      "numeric_constraint_count": 0,
+      "technique_count": 2,
+      "drivers": [
+        "category=workflow_state",
+        "8 explicit rule lines",
+        "stateful workflow behavior",
+        "business impact keywords: refund",
+        "strict rejection/constraint language: reject, rejected"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "legal transitions",
+        "illegal transitions",
+        "business-critical rules",
+        "negative/error handling"
+      ]
+    },
+    "state_model": {
+      "states": [
+        "SUBMITTED",
+        "REVIEWING",
+        "APPROVED",
+        "LABEL_ISSUED",
+        "REFUNDED",
+        "EXPIRED"
+      ],
+      "start_states": [
+        "SUBMITTED"
+      ],
+      "legal_transitions": [],
+      "illegal_transitions": [],
+      "coverage_plans": [
+        {
+          "coverage_goal": "All States",
+          "sequence_count": 5,
+          "fully_covered": false,
+          "sequences": [
+            {
+              "sequence_id": "AS01",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `APPROVED` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            },
+            {
+              "sequence_id": "AS02",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `EXPIRED` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            },
+            {
+              "sequence_id": "AS03",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `LABEL_ISSUED` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            },
+            {
+              "sequence_id": "AS04",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `REFUNDED` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            },
+            {
+              "sequence_id": "AS05",
+              "coverage_goal": "All States",
+              "steps": [
+                "Target state `REVIEWING` is currently unreachable from the declared start states."
+              ],
+              "covered_states": [],
+              "covered_transitions": []
+            }
+          ]
+        },
+        {
+          "coverage_goal": "All Transitions",
+          "sequence_count": 0,
+          "fully_covered": true,
+          "sequences": []
+        }
+      ],
+      "notes": [
+        "No explicit legal transitions were extracted from the requirement text."
+      ]
+    }
+  },
+  {
+    "requirement_id": "return_refund_method_eligibility",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": true,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "return_refund_method_eligibility",
+      "test_count": 9,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 0.857,
+        "invalid_partition_coverage": 0.75,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 0.9,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.333
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.568,
+      "checker_score": 0.9500000000000001,
+      "repaired": true
+    },
+    "diagnostics": [
+      "ep_contract: not applicable",
+      "bva_contract: missing lower-boundary or just-below case",
+      "bva_contract: missing upper-boundary or just-above case",
+      "state_contract: not applicable"
+    ],
+    "category": "business_rules",
+    "risk_assessment": {
+      "level": "Medium",
+      "score": 6.45,
+      "rule_count": 4,
+      "numeric_constraint_count": 0,
+      "technique_count": 2,
+      "drivers": [
+        "category=business_rules",
+        "4 explicit rule lines",
+        "decision-table logic",
+        "business impact keywords: balance, card, payment, refund",
+        "strict rejection/constraint language: required"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "decision combinations",
+        "business-critical rules",
+        "negative/error handling"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "ticket_booking_refund_rule",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "ticket_booking_refund_rule",
+      "test_count": 6,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 0.571,
+        "invalid_partition_coverage": 0.25,
+        "boundary_coverage": 0.5,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
+        "exception_coverage": 0.0
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.464,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
+    },
+    "diagnostics": [
+      "ep_contract: not applicable",
+      "bva_contract: missing lower-boundary or just-below case",
+      "bva_contract: missing upper-boundary or just-above case",
+      "state_contract: not applicable"
+    ],
+    "category": "business_rules",
+    "risk_assessment": {
+      "level": "High",
+      "score": 7.65,
+      "rule_count": 6,
+      "numeric_constraint_count": 2,
+      "technique_count": 2,
+      "drivers": [
+        "category=business_rules",
+        "6 explicit rule lines",
+        "2 numeric constraints",
+        "decision-table logic",
+        "business impact keywords: payment, refund",
+        "workflow cues: before"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "boundary coverage",
+        "decision combinations",
+        "business-critical rules",
+        "state-dependent behavior"
+      ]
+    },
+    "state_model": null
+  },
+  {
+    "requirement_id": "warehouse_pickup_order_workflow",
+    "split": "test",
+    "score": 0.9500000000000001,
+    "repaired": false,
+    "metrics": {
+      "gold_spec_found": true,
+      "requirement_id": "warehouse_pickup_order_workflow",
+      "test_count": 7,
+      "duplicate_count": 0,
+      "coverage": {
+        "valid_partition_coverage": 1.0,
+        "invalid_partition_coverage": 1.0,
+        "boundary_coverage": 0.0,
+        "decision_rule_coverage": 1.0,
+        "state_coverage": 0.8,
+        "illegal_transition_coverage": 1.0,
+        "exception_coverage": 0.667
+      },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
+      "overall_coverage": 0.781,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
+    },
+    "diagnostics": [
+      "bva_contract: missing lower-boundary or just-below case",
+      "bva_contract: missing upper-boundary or just-above case",
+      "decision_contract: not applicable"
+    ],
+    "category": "workflow_state",
+    "risk_assessment": {
+      "level": "Medium",
+      "score": 6.55,
+      "rule_count": 8,
+      "numeric_constraint_count": 0,
+      "technique_count": 3,
+      "drivers": [
+        "category=workflow_state",
+        "8 explicit rule lines",
+        "stateful workflow behavior",
+        "strict rejection/constraint language: must not"
+      ],
+      "recommended_focus": [
+        "core happy path",
+        "rule combination coverage",
+        "legal transitions",
+        "illegal transitions",
+        "invalid partitions",
+        "negative/error handling"
+      ]
+    },
+    "state_model": {
+      "states": [
+        "READY_FOR_PICKUP",
+        "PICKED_UP",
+        "EXPIRED",
+        "RETURN_IN_TRANSIT",
+        "HOLD_FOR_REVIEW"
+      ],
+      "start_states": [
+        "READY_FOR_PICKUP"
+      ],
+      "legal_transitions": [
+        {
+          "source_state": "READY_FOR_PICKUP",
+          "trigger": "the customer provides the correct pickup code within the pickup window",
+          "target_state": "PICKED_UP",
+          "legal": true,
+          "source_rule": "If the customer provides the correct pickup code within the pickup window, the order moves to PICKED_UP."
+        },
+        {
+          "source_state": "PICKED_UP",
+          "trigger": "the pickup window expires before pickup",
+          "target_state": "EXPIRED",
+          "legal": true,
+          "source_rule": "If the pickup window expires before pickup, the order moves to EXPIRED."
+        },
+        {
+          "source_state": "EXPIRED",
+          "trigger": "staff may",
+          "target_state": "RETURN_IN_TRANSIT",
+          "legal": true,
+          "source_rule": "From EXPIRED, staff may transition the order to RETURN_IN_TRANSIT."
+        },
+        {
+          "source_state": "RETURN_IN_TRANSIT",
+          "trigger": "station staff report parcel damage",
+          "target_state": "HOLD_FOR_REVIEW",
+          "legal": true,
+          "source_rule": "If station staff report parcel damage, the order moves to HOLD_FOR_REVIEW."
+        }
+      ],
+      "illegal_transitions": [
+        {
+          "source_state": "Illegal",
+          "trigger": "ILLEGAL",
+          "target_state": "PICKED_UP",
+          "legal": false,
+          "source_rule": "Illegal: PICKED_UP back to READY_FOR_PICKUP."
+        }
+      ],
+      "coverage_plans": [
+        {
+          "coverage_goal": "All States",
+          "sequence_count": 2,
+          "fully_covered": true,
+          "sequences": [
+            {
+              "sequence_id": "AS01",
+              "coverage_goal": "All States",
+              "steps": [
+                "Start in READY_FOR_PICKUP",
+                "Trigger `the customer provides the correct pickup code within the pickup window`: READY_FOR_PICKUP -> PICKED_UP",
+                "Trigger `the pickup window expires before pickup`: PICKED_UP -> EXPIRED"
+              ],
+              "covered_states": [
+                "READY_FOR_PICKUP",
+                "PICKED_UP",
+                "EXPIRED"
+              ],
+              "covered_transitions": [
+                "READY_FOR_PICKUP -> PICKED_UP [the customer provides the correct pickup code within the pickup window]",
+                "PICKED_UP -> EXPIRED [the pickup window expires before pickup]"
+              ]
+            },
+            {
+              "sequence_id": "AS02",
+              "coverage_goal": "All States",
+              "steps": [
+                "Start in READY_FOR_PICKUP",
+                "Trigger `the customer provides the correct pickup code within the pickup window`: READY_FOR_PICKUP -> PICKED_UP",
+                "Trigger `the pickup window expires before pickup`: PICKED_UP -> EXPIRED",
+                "Trigger `staff may`: EXPIRED -> RETURN_IN_TRANSIT",
+                "Trigger `station staff report parcel damage`: RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW"
+              ],
+              "covered_states": [
+                "READY_FOR_PICKUP",
+                "PICKED_UP",
+                "EXPIRED",
+                "RETURN_IN_TRANSIT",
+                "HOLD_FOR_REVIEW"
+              ],
+              "covered_transitions": [
+                "READY_FOR_PICKUP -> PICKED_UP [the customer provides the correct pickup code within the pickup window]",
+                "PICKED_UP -> EXPIRED [the pickup window expires before pickup]",
+                "EXPIRED -> RETURN_IN_TRANSIT [staff may]",
+                "RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW [station staff report parcel damage]"
+              ]
+            }
+          ]
+        },
+        {
+          "coverage_goal": "All Transitions",
+          "sequence_count": 1,
+          "fully_covered": true,
+          "sequences": [
+            {
+              "sequence_id": "AT01",
+              "coverage_goal": "All Transitions",
+              "steps": [
+                "Start in READY_FOR_PICKUP",
+                "Trigger `the customer provides the correct pickup code within the pickup window`: READY_FOR_PICKUP -> PICKED_UP",
+                "Trigger `the pickup window expires before pickup`: PICKED_UP -> EXPIRED",
+                "Trigger `staff may`: EXPIRED -> RETURN_IN_TRANSIT",
+                "Trigger `station staff report parcel damage`: RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW"
+              ],
+              "covered_states": [
+                "READY_FOR_PICKUP",
+                "PICKED_UP",
+                "EXPIRED",
+                "RETURN_IN_TRANSIT",
+                "HOLD_FOR_REVIEW"
+              ],
+              "covered_transitions": [
+                "READY_FOR_PICKUP -> PICKED_UP [the customer provides the correct pickup code within the pickup window]",
+                "PICKED_UP -> EXPIRED [the pickup window expires before pickup]",
+                "EXPIRED -> RETURN_IN_TRANSIT [staff may]",
+                "RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW [station staff report parcel damage]"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": []
+    }
+  }
+]

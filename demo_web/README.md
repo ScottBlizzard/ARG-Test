@@ -20,6 +20,12 @@ Instead, they should polish this stable shell:
 - formal-result dashboard based on frozen official outputs
 - figure gallery for the final presentation
 
+The formal dashboard now prefers the tracked snapshot under:
+
+- `report_assets/final_demo_package/frontend_focus/formal_results_snapshot/`
+
+This avoids depending on ignored `.local_runs/` data for cloned teammates.
+
 ## Recommended teammate scope
 
 The demo teammate should focus on:
