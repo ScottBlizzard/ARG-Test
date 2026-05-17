@@ -310,8 +310,7 @@ async function postJson(url, body) {
   return response.json();
 }
 
-textForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+async function runDirectAnalysis() {
   setStatus("text-status", "Running...");
   textResult.innerHTML = "";
   try {
@@ -330,10 +329,9 @@ textForm.addEventListener("submit", async (event) => {
     textResult.innerHTML = `<div class="panel-card"><p>${escapeHtml(error.message)}</p></div>`;
     setStatus("text-status", "Failed.");
   }
-});
+}
 
-stateForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+async function runStateModelAnalysis() {
   setStatus("state-status", "Running...");
   stateResult.innerHTML = "";
   try {
@@ -352,10 +350,9 @@ stateForm.addEventListener("submit", async (event) => {
     stateResult.innerHTML = `<div class="panel-card"><p>${escapeHtml(error.message)}</p></div>`;
     setStatus("state-status", "Failed.");
   }
-});
+}
 
-csvForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+async function runCsvAnalysis() {
   setStatus("csv-status", "Running...");
   csvResult.innerHTML = "";
   const fileInput = document.getElementById("csv-file");
@@ -381,6 +378,21 @@ csvForm.addEventListener("submit", async (event) => {
     csvResult.innerHTML = `<div class="panel-card"><p>${escapeHtml(error.message)}</p></div>`;
     setStatus("csv-status", "Failed.");
   }
+}
+
+textForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  await runDirectAnalysis();
+});
+
+stateForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  await runStateModelAnalysis();
+});
+
+csvForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  await runCsvAnalysis();
 });
 
 document.getElementById("download-sample-csv").addEventListener("click", () => {
@@ -397,4 +409,19 @@ async function loadFormalSummary() {
   }
 }
 
+async function maybeAutorun() {
+  const params = new URLSearchParams(window.location.search);
+  const autorun = params.get("autorun");
+  if (autorun === "direct") {
+    setStatus("text-status", "Auto-running...");
+    await runDirectAnalysis();
+  } else if (autorun === "state") {
+    setStatus("state-status", "Auto-running...");
+    await runStateModelAnalysis();
+  } else if (autorun === "csv") {
+    setStatus("csv-status", "Choose a CSV file to continue.");
+  }
+}
+
 loadFormalSummary();
+maybeAutorun();
