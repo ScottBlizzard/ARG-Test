@@ -28,6 +28,21 @@ body {
     linear-gradient(180deg, #f6f1e8 0%, #efe7d8 100%);
 }
 
+body.focus-formal .hero,
+body.focus-formal #interactive,
+body.focus-formal #csv-batch,
+body.focus-formal #state-models {
+  display: none;
+}
+
+body.focus-formal .content-grid {
+  display: block;
+}
+
+body.focus-formal .evidence-card {
+  margin-top: 0;
+}
+
 code {
   font-family: "Consolas", "Courier New", monospace;
   font-size: 0.94em;

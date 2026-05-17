@@ -412,6 +412,13 @@ async function loadFormalSummary() {
 async function maybeAutorun() {
   const params = new URLSearchParams(window.location.search);
   const autorun = params.get("autorun");
+  const focus = params.get("focus");
+  if (focus === "formal") {
+    document.body.classList.add("focus-formal");
+    setTimeout(() => {
+      document.getElementById("formal-evidence")?.scrollIntoView({ behavior: "instant", block: "start" });
+    }, 50);
+  }
   if (autorun === "direct") {
     setStatus("text-status", "Auto-running...");
     await runDirectAnalysis();
