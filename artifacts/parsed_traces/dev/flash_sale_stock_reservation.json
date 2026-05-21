@@ -1,5 +1,6 @@
 {
   "requirement_id": "flash_sale_stock_reservation",
+  "category": "workflow_state",
   "analysis": "- Requirement target: flash_sale_stock_reservation\n- Rule: 1. Flash sale stock can be reserved for checkout.\n- Rule: 2. A reservation holds quantity for 5 minutes.\n- Rule: 3. If payment succeeds within 5 minutes, reserved stock becomes sold.\n- Rule: 4. If payment does not succeed within 5 minutes, the reservation expires and stock is released.\n- Rule: 5. If available_stock is insufficient, reservation is rejected.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

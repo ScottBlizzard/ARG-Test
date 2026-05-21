@@ -1,5 +1,6 @@
 {
   "requirement_id": "checkout_promo_stack_and_priority",
+  "category": "business_rules",
   "analysis": "- Requirement target: checkout_promo_stack_and_priority\n- Rule: 1. At most one coupon code may be applied to an order.\n- Rule: 2. Supported coupons:\n- Rule: 3. Coupons never apply to tax; percent/fixed coupons apply only to merchandise subtotal (excluding shipping and tax).\n- Rule: 4. Loyalty points may be redeemed after coupon discount; points redemption is capped by the remaining payable amount (cannot make payable negative).\n- Rule: 5. Expired/unknown coupon codes are invalid.\n- Rule: 6. If multiple coupons are provided, the checkout must reject the promotion input.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

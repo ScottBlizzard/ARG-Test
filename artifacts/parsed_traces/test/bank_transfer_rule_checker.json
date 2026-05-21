@@ -1,5 +1,6 @@
 {
   "requirement_id": "bank_transfer_rule_checker",
+  "category": "business_rules",
   "analysis": "- Requirement target: bank_transfer_rule_checker\n- Rule: 1. transfer amount must be between 1 and 5000 inclusive for standard users.\n- Rule: 2. transfer amount must be between 1 and 20000 inclusive for verified users.\n- Rule: 3. daily transferred total must not exceed 10000 for standard users and 50000 for verified users.\n- Rule: 4. Transfers above 2000 require a valid one-time password.\n- Rule: 5. Transfers to a blacklisted account must be rejected.\n- Rule: 6. Transfers to the same source account must be rejected.\n- Numeric constraint: transfer amount -> 1 to 5000\n- Numeric constraint: transfer amount -> 1 to 20000",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
@@ -18,7 +19,7 @@
       "expected_output": "request accepted",
       "covered_item": "valid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative valid input"
     },
     {
@@ -29,7 +30,7 @@
       "expected_output": "validation error",
       "covered_item": "invalid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative invalid input"
     },
     {
@@ -40,7 +41,7 @@
       "expected_output": "validation error",
       "covered_item": "below lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "transfer amount=0"
     },
     {
@@ -51,7 +52,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "transfer amount=1"
     },
     {
@@ -62,7 +63,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on upper boundary",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "transfer amount=5000"
     },
     {
@@ -73,7 +74,7 @@
       "expected_output": "rule-specific outcome",
       "covered_item": "decision rule coverage",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "rule trigger combination"
     }
   ]

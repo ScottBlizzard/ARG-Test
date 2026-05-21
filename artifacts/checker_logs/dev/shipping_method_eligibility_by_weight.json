@@ -1,6 +1,6 @@
 {
   "requirement_id": "shipping_method_eligibility_by_weight",
-  "score": 0.65,
+  "score": 0.8500000000000001,
   "repaired": true,
   "checks": [
     {
@@ -34,12 +34,10 @@
     },
     {
       "name": "state_contract",
-      "passed": false,
-      "score": 0.0,
+      "passed": true,
+      "score": 1.0,
       "diagnostics": [
-        "analysis and steps do not clearly model states or transitions",
-        "missing legal transition test",
-        "missing illegal transition test"
+        "not applicable"
       ]
     }
   ],
@@ -47,8 +45,6 @@
     "bva_contract: missing lower-boundary or just-below case",
     "bva_contract: missing upper-boundary or just-above case",
     "decision_contract: decision table coverage appears shallow",
-    "state_contract: analysis and steps do not clearly model states or transitions",
-    "state_contract: missing legal transition test",
-    "state_contract: missing illegal transition test"
+    "state_contract: not applicable"
   ]
 }

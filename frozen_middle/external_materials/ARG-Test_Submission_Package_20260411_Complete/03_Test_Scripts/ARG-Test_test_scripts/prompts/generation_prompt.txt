@@ -1,0 +1,25 @@
+﻿Requirement:
+{{REQUIREMENT_TEXT}}
+
+Task:
+Generate black-box test cases using a structured testing trace.
+
+Output format:
+Analysis:
+...
+
+Pattern:
+...
+
+Steps:
+1. ...
+2. ...
+
+Verification:
+- Verified against Step 1 and Step 2.
+- ...
+
+FinalAnswer:
+| Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| T01 | ... | ... | ... | ... | ... | ... | ... | pending |

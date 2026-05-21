@@ -1,5 +1,6 @@
 {
   "requirement_id": "order_cancellation_window",
+  "category": "business_rules",
   "analysis": "- Requirement target: order_cancellation_window\n- Rule: 1. An order has status and paid_at timestamp.\n- Rule: 2. A paid order may be cancelled within 30 minutes of paid_at, only if it has not been Shipped.\n- Rule: 3. An unpaid order may be cancelled at any time.\n- Rule: 4. If cancellation is not allowed, the system returns an error and keeps the order unchanged.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

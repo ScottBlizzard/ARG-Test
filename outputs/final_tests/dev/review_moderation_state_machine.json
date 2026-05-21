@@ -1,5 +1,6 @@
 {
   "requirement_id": "review_moderation_state_machine",
+  "category": "workflow_state",
   "analysis": "- Requirement target: review_moderation_state_machine\n- Rule: 1. A new review starts in Submitted.\n- Rule: 2. Submitted transitions to Pending when queued for moderation.\n- Rule: 3. A moderator may approve Pending to Approved or reject Pending to Rejected.\n- Rule: 4. A moderator may hide an Approved review, moving it to Hidden.\n- Rule: 5. Hidden reviews remain hidden until explicitly restored to Approved.",
   "pattern": "- Selected techniques: Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

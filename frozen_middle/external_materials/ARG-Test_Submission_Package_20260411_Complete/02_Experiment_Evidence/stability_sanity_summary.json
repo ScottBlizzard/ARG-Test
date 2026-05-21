@@ -1,0 +1,85 @@
+{
+  "split": "test",
+  "selected_ids": [
+    "bundle_discount_eligibility_rules",
+    "return_refund_method_eligibility",
+    "pickup_station_contact_validation",
+    "payment_card_expiry_and_cvv_validation",
+    "payment_3ds_authentication_flow"
+  ],
+  "count": 5,
+  "stable_case_count": 2,
+  "formal_avg_score": 0.94,
+  "rerun_avg_score": 0.89,
+  "formal_avg_coverage": 0.63,
+  "rerun_avg_coverage": 0.561,
+  "avg_abs_score_delta": 0.05,
+  "avg_abs_coverage_delta": 0.129,
+  "comparisons": [
+    {
+      "requirement_id": "bundle_discount_eligibility_rules",
+      "category": "business_rules",
+      "formal_score": 0.95,
+      "rerun_score": 0.85,
+      "score_delta": -0.1,
+      "formal_coverage": 0.627,
+      "rerun_coverage": 0.427,
+      "coverage_delta": -0.2,
+      "formal_test_count": 7,
+      "rerun_test_count": 7,
+      "stable": false
+    },
+    {
+      "requirement_id": "return_refund_method_eligibility",
+      "category": "business_rules",
+      "formal_score": 0.95,
+      "rerun_score": 0.95,
+      "score_delta": 0.0,
+      "formal_coverage": 0.568,
+      "rerun_coverage": 0.449,
+      "coverage_delta": -0.119,
+      "formal_test_count": 9,
+      "rerun_test_count": 5,
+      "stable": false
+    },
+    {
+      "requirement_id": "pickup_station_contact_validation",
+      "category": "input_validation",
+      "formal_score": 0.95,
+      "rerun_score": 0.85,
+      "score_delta": -0.1,
+      "formal_coverage": 0.713,
+      "rerun_coverage": 0.537,
+      "coverage_delta": -0.176,
+      "formal_test_count": 9,
+      "rerun_test_count": 6,
+      "stable": false
+    },
+    {
+      "requirement_id": "payment_card_expiry_and_cvv_validation",
+      "category": "input_validation",
+      "formal_score": 0.85,
+      "rerun_score": 0.85,
+      "score_delta": 0.0,
+      "formal_coverage": 0.587,
+      "rerun_coverage": 0.664,
+      "coverage_delta": 0.077,
+      "formal_test_count": 15,
+      "rerun_test_count": 11,
+      "stable": true
+    },
+    {
+      "requirement_id": "payment_3ds_authentication_flow",
+      "category": "workflow_state",
+      "formal_score": 1.0,
+      "rerun_score": 0.95,
+      "score_delta": -0.05,
+      "formal_coverage": 0.655,
+      "rerun_coverage": 0.726,
+      "coverage_delta": 0.071,
+      "formal_test_count": 5,
+      "rerun_test_count": 9,
+      "stable": true
+    }
+  ]
+}

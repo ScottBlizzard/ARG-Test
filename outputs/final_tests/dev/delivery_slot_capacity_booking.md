@@ -25,9 +25,9 @@ Verification:
 FinalAnswer:
 | Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T01 | EP | delivery_slot_capacity_booking | None | representative valid input | request accepted | valid partition | High | repaired |
-| T02 | EP | delivery_slot_capacity_booking | None | representative invalid input | validation error | invalid partition | High | repaired |
-| T03 | BVA | delivery_slot_capacity_booking | None | a booking requests units between 1 and 5.=0 | validation error | below lower boundary | High | repaired |
-| T04 | BVA | delivery_slot_capacity_booking | None | a booking requests units between 1 and 5.=1 | boundary accepted | on lower boundary | High | repaired |
-| T05 | BVA | delivery_slot_capacity_booking | None | a booking requests units between 1 and 5.=5 | boundary accepted | on upper boundary | Medium | repaired |
-| T06 | Decision Table | delivery_slot_capacity_booking | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | repaired |
+| T01 | EP | delivery_slot_capacity_booking | None | representative valid input | request accepted | valid partition | High | pending |
+| T02 | EP | delivery_slot_capacity_booking | None | representative invalid input | validation error | invalid partition | High | pending |
+| T03 | BVA | delivery_slot_capacity_booking | None | a booking requests units between 1 and 5.=0 | validation error | below lower boundary | High | pending |
+| T04 | BVA | delivery_slot_capacity_booking | None | a booking requests units between 1 and 5.=1 | boundary accepted | on lower boundary | High | pending |
+| T05 | BVA | delivery_slot_capacity_booking | None | a booking requests units between 1 and 5.=5 | boundary accepted | on upper boundary | Medium | pending |
+| T06 | Decision Table | delivery_slot_capacity_booking | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | pending |

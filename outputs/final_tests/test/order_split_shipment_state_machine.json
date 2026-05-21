@@ -1,5 +1,6 @@
 {
   "requirement_id": "order_split_shipment_state_machine",
+  "category": "workflow_state",
   "analysis": "- Requirement target: order_split_shipment_state_machine\n- Rule: 1. An order may be split into multiple shipments.\n- Rule: 2. Shipment states: PENDING -> PACKED -> SHIPPED -> DELIVERED.\n- Rule: 3. Order state is derived:\n- Rule: 4. Cancellation is allowed only for shipments that are still PENDING.\n- Rule: 5. Illegal: delivered shipment cannot return to packed/shipped.",
   "pattern": "- Selected techniques: EP, BVA, Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

@@ -1,0 +1,1346 @@
+{
+  "split": "test",
+  "provider": "openai",
+  "model": "qwen3.5-flash",
+  "openai_api_mode": "chat_completions",
+  "seed_schedule": [
+    202601,
+    202601,
+    202601
+  ],
+  "candidates": 3,
+  "repeats": 3,
+  "requirement_count": 3,
+  "selected_ids": [
+    "bundle_discount_eligibility_rules",
+    "payment_3ds_authentication_flow",
+    "payment_card_expiry_and_cvv_validation"
+  ],
+  "requirements": [
+    {
+      "requirement_id": "bundle_discount_eligibility_rules",
+      "category": "business_rules",
+      "risk_level": "High",
+      "score_mean": 0.917,
+      "score_std": 0.047,
+      "max_score_delta": 0.1,
+      "coverage_mean": 0.622,
+      "coverage_std": 0.05,
+      "max_coverage_delta": 0.106,
+      "stable": false
+    },
+    {
+      "requirement_id": "payment_3ds_authentication_flow",
+      "category": "workflow_state",
+      "risk_level": "High",
+      "score_mean": 0.967,
+      "score_std": 0.024,
+      "max_score_delta": 0.05,
+      "coverage_mean": 0.574,
+      "coverage_std": 0.077,
+      "max_coverage_delta": 0.184,
+      "stable": false
+    },
+    {
+      "requirement_id": "payment_card_expiry_and_cvv_validation",
+      "category": "input_validation",
+      "risk_level": "High",
+      "score_mean": 0.933,
+      "score_std": 0.062,
+      "max_score_delta": 0.15,
+      "coverage_mean": 0.613,
+      "coverage_std": 0.154,
+      "max_coverage_delta": 0.369,
+      "stable": false
+    }
+  ],
+  "stable_case_count": 0,
+  "avg_score_mean": 0.939,
+  "avg_coverage_mean": 0.603,
+  "avg_max_score_delta": 0.1,
+  "avg_max_coverage_delta": 0.22,
+  "runs": [
+    {
+      "repeat_index": 1,
+      "seed": 202601,
+      "runtime_root": "D:\\软件测试\\Final\\ARG-Test\\.local_runs\\repro_live_same_seed_3case\\rerun_1",
+      "summaries": [
+        {
+          "requirement_id": "bundle_discount_eligibility_rules",
+          "split": "test",
+          "category": "business_rules",
+          "score": 0.8500000000000001,
+          "repaired": true,
+          "candidate_index": 1,
+          "generation_metadata": {
+            "operation": "structured_generation",
+            "api_mode": "chat_completions",
+            "model": "qwen3.5-flash",
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "seed": 1328935238,
+            "seed_applied": true,
+            "candidate_index": 1,
+            "profile_label": "balanced_coverage",
+            "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case.",
+            "response_id": "chatcmpl-daaa9a3a-ed17-936a-9b9c-3791f3ff7da3",
+            "system_fingerprint": null,
+            "finish_reason": "stop"
+          },
+          "candidate_controls": [
+            {
+              "stage": "structured_generation",
+              "seed": 1328935238,
+              "candidate_index": 1,
+              "profile_label": "balanced_coverage",
+              "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 213641616,
+              "candidate_index": 2,
+              "profile_label": "boundary_and_rules",
+              "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1773456765,
+              "candidate_index": 3,
+              "profile_label": "negative_and_state_stress",
+              "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete."
+            }
+          ],
+          "risk_assessment": {
+            "level": "High",
+            "score": 7.75,
+            "rule_count": 8,
+            "numeric_constraint_count": 3,
+            "technique_count": 2,
+            "drivers": [
+              "category=business_rules",
+              "8 explicit rule lines",
+              "3 numeric constraints",
+              "decision-table logic",
+              "business impact keywords: coupon, discount, price",
+              "strict rejection/constraint language: at least, only one"
+            ],
+            "recommended_focus": [
+              "core happy path",
+              "rule combination coverage",
+              "boundary coverage",
+              "decision combinations",
+              "invalid partitions",
+              "business-critical rules",
+              "negative/error handling"
+            ]
+          },
+          "state_model": null,
+          "metrics": {
+            "gold_spec_found": true,
+            "requirement_id": "bundle_discount_eligibility_rules",
+            "test_count": 5,
+            "duplicate_count": 0,
+            "coverage": {
+              "valid_partition_coverage": 0.8,
+              "invalid_partition_coverage": 0.8,
+              "boundary_coverage": 0.0,
+              "decision_rule_coverage": 1.0,
+              "state_coverage": null,
+              "illegal_transition_coverage": null,
+              "exception_coverage": 0.333
+            },
+            "applicable_dimensions": [
+              "valid_partition_coverage",
+              "invalid_partition_coverage",
+              "boundary_coverage",
+              "decision_rule_coverage",
+              "exception_coverage"
+            ],
+            "applicable_dimension_count": 5,
+            "overall_coverage": 0.587,
+            "checker_score": 0.8500000000000001,
+            "repaired": true
+          },
+          "diagnostics": [
+            "ep_contract: no representative valid partition was found",
+            "bva_contract: not applicable",
+            "decision_contract: decision table coverage appears shallow",
+            "state_contract: not applicable"
+          ]
+        },
+        {
+          "requirement_id": "payment_3ds_authentication_flow",
+          "split": "test",
+          "category": "workflow_state",
+          "score": 0.9500000000000001,
+          "repaired": false,
+          "candidate_index": 1,
+          "generation_metadata": {
+            "operation": "structured_generation",
+            "api_mode": "chat_completions",
+            "model": "qwen3.5-flash",
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "seed": 793767450,
+            "seed_applied": true,
+            "candidate_index": 1,
+            "profile_label": "balanced_coverage",
+            "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case.",
+            "response_id": "chatcmpl-06bea9b6-3720-943a-aa4a-b74c2ab52660",
+            "system_fingerprint": null,
+            "finish_reason": "stop"
+          },
+          "candidate_controls": [
+            {
+              "stage": "structured_generation",
+              "seed": 793767450,
+              "candidate_index": 1,
+              "profile_label": "balanced_coverage",
+              "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 28921172,
+              "candidate_index": 2,
+              "profile_label": "boundary_and_rules",
+              "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1187786299,
+              "candidate_index": 3,
+              "profile_label": "negative_and_state_stress",
+              "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete."
+            }
+          ],
+          "risk_assessment": {
+            "level": "High",
+            "score": 7.6,
+            "rule_count": 7,
+            "numeric_constraint_count": 0,
+            "technique_count": 2,
+            "drivers": [
+              "category=workflow_state",
+              "7 explicit rule lines",
+              "stateful workflow behavior",
+              "business impact keywords: authentication, card, payment",
+              "strict rejection/constraint language: must not, required"
+            ],
+            "recommended_focus": [
+              "core happy path",
+              "rule combination coverage",
+              "legal transitions",
+              "illegal transitions",
+              "business-critical rules",
+              "negative/error handling"
+            ]
+          },
+          "state_model": {
+            "states": [
+              "INITIATED",
+              "AUTH_REQUIRED",
+              "FAILED",
+              "AUTHENTICATED",
+              "PENDING_REVIEW"
+            ],
+            "start_states": [
+              "INITIATED"
+            ],
+            "legal_transitions": [
+              {
+                "source_state": "AUTH_REQUIRED",
+                "trigger": "3DS fails or the customer cancels",
+                "target_state": "FAILED",
+                "legal": true,
+                "source_rule": "If 3DS fails or the customer cancels, the payment becomes FAILED."
+              }
+            ],
+            "illegal_transitions": [
+              {
+                "source_state": "AUTH_REQUIRED",
+                "trigger": "CAPTURE",
+                "target_state": "CAPTURED",
+                "legal": false,
+                "source_rule": "Illegal: capture before authentication when 3DS is required."
+              }
+            ],
+            "coverage_plans": [
+              {
+                "coverage_goal": "All States",
+                "sequence_count": 4,
+                "fully_covered": false,
+                "sequences": [
+                  {
+                    "sequence_id": "AS01",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `AUTHENTICATED` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  },
+                  {
+                    "sequence_id": "AS02",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `AUTH_REQUIRED` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  },
+                  {
+                    "sequence_id": "AS03",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `FAILED` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  },
+                  {
+                    "sequence_id": "AS04",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `PENDING_REVIEW` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  }
+                ]
+              },
+              {
+                "coverage_goal": "All Transitions",
+                "sequence_count": 1,
+                "fully_covered": true,
+                "sequences": [
+                  {
+                    "sequence_id": "AT01",
+                    "coverage_goal": "All Transitions",
+                    "steps": [
+                      "Start in AUTH_REQUIRED",
+                      "Trigger `3DS fails or the customer cancels`: AUTH_REQUIRED -> FAILED"
+                    ],
+                    "covered_states": [
+                      "AUTH_REQUIRED",
+                      "FAILED"
+                    ],
+                    "covered_transitions": [
+                      "AUTH_REQUIRED -> FAILED [3DS fails or the customer cancels]"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "notes": []
+          },
+          "metrics": {
+            "gold_spec_found": true,
+            "requirement_id": "payment_3ds_authentication_flow",
+            "test_count": 4,
+            "duplicate_count": 0,
+            "coverage": {
+              "valid_partition_coverage": 1.0,
+              "invalid_partition_coverage": 0.75,
+              "boundary_coverage": 0.0,
+              "decision_rule_coverage": 1.0,
+              "state_coverage": 0.5,
+              "illegal_transition_coverage": 0.25,
+              "exception_coverage": 0.333
+            },
+            "applicable_dimensions": [
+              "valid_partition_coverage",
+              "invalid_partition_coverage",
+              "boundary_coverage",
+              "decision_rule_coverage",
+              "state_coverage",
+              "illegal_transition_coverage",
+              "exception_coverage"
+            ],
+            "applicable_dimension_count": 7,
+            "overall_coverage": 0.548,
+            "checker_score": 0.9500000000000001,
+            "repaired": false
+          },
+          "diagnostics": [
+            "ep_contract: not applicable",
+            "bva_contract: missing lower-boundary or just-below case",
+            "bva_contract: missing upper-boundary or just-above case",
+            "decision_contract: not applicable"
+          ]
+        },
+        {
+          "requirement_id": "payment_card_expiry_and_cvv_validation",
+          "split": "test",
+          "category": "input_validation",
+          "score": 0.9500000000000001,
+          "repaired": false,
+          "candidate_index": 3,
+          "generation_metadata": {
+            "operation": "structured_generation",
+            "api_mode": "chat_completions",
+            "model": "qwen3.5-flash",
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "seed": 1732463634,
+            "seed_applied": true,
+            "candidate_index": 3,
+            "profile_label": "negative_and_state_stress",
+            "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete.",
+            "response_id": "chatcmpl-567f0317-e047-974e-a156-81f919c43569",
+            "system_fingerprint": null,
+            "finish_reason": "stop"
+          },
+          "candidate_controls": [
+            {
+              "stage": "structured_generation",
+              "seed": 1294276579,
+              "candidate_index": 1,
+              "profile_label": "balanced_coverage",
+              "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1701439370,
+              "candidate_index": 2,
+              "profile_label": "boundary_and_rules",
+              "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1732463634,
+              "candidate_index": 3,
+              "profile_label": "negative_and_state_stress",
+              "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete."
+            }
+          ],
+          "risk_assessment": {
+            "level": "High",
+            "score": 9.15,
+            "rule_count": 8,
+            "numeric_constraint_count": 3,
+            "technique_count": 4,
+            "drivers": [
+              "category=input_validation",
+              "8 explicit rule lines",
+              "3 numeric constraints",
+              "decision-table logic",
+              "stateful workflow behavior",
+              "business impact keywords: card, cvv, payment",
+              "strict rejection/constraint language: invalid, required"
+            ],
+            "recommended_focus": [
+              "core happy path",
+              "rule combination coverage",
+              "boundary coverage",
+              "decision combinations",
+              "legal transitions",
+              "illegal transitions",
+              "invalid partitions",
+              "business-critical rules",
+              "negative/error handling"
+            ]
+          },
+          "state_model": {
+            "states": [],
+            "start_states": [],
+            "legal_transitions": [],
+            "illegal_transitions": [],
+            "coverage_plans": [
+              {
+                "coverage_goal": "All States",
+                "sequence_count": 0,
+                "fully_covered": true,
+                "sequences": []
+              },
+              {
+                "coverage_goal": "All Transitions",
+                "sequence_count": 0,
+                "fully_covered": true,
+                "sequences": []
+              }
+            ],
+            "notes": [
+              "No explicit start state was detected from the requirement text.",
+              "No explicit legal transitions were extracted from the requirement text."
+            ]
+          },
+          "metrics": {
+            "gold_spec_found": true,
+            "requirement_id": "payment_card_expiry_and_cvv_validation",
+            "test_count": 5,
+            "duplicate_count": 0,
+            "coverage": {
+              "valid_partition_coverage": 1.0,
+              "invalid_partition_coverage": 0.636,
+              "boundary_coverage": 0.0,
+              "decision_rule_coverage": 1.0,
+              "state_coverage": null,
+              "illegal_transition_coverage": null,
+              "exception_coverage": 0.667
+            },
+            "applicable_dimensions": [
+              "valid_partition_coverage",
+              "invalid_partition_coverage",
+              "boundary_coverage",
+              "decision_rule_coverage",
+              "exception_coverage"
+            ],
+            "applicable_dimension_count": 5,
+            "overall_coverage": 0.661,
+            "checker_score": 0.9500000000000001,
+            "repaired": false
+          },
+          "diagnostics": [
+            "bva_contract: missing on-boundary case",
+            "state_contract: not applicable"
+          ]
+        }
+      ]
+    },
+    {
+      "repeat_index": 2,
+      "seed": 202601,
+      "runtime_root": "D:\\软件测试\\Final\\ARG-Test\\.local_runs\\repro_live_same_seed_3case\\rerun_2",
+      "summaries": [
+        {
+          "requirement_id": "bundle_discount_eligibility_rules",
+          "split": "test",
+          "category": "business_rules",
+          "score": 0.9500000000000001,
+          "repaired": false,
+          "candidate_index": 3,
+          "generation_metadata": {
+            "operation": "structured_generation",
+            "api_mode": "chat_completions",
+            "model": "qwen3.5-flash",
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "seed": 1773456765,
+            "seed_applied": true,
+            "candidate_index": 3,
+            "profile_label": "negative_and_state_stress",
+            "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete.",
+            "response_id": "chatcmpl-586b55e6-389b-91ce-a2d5-8482aa8ff86e",
+            "system_fingerprint": null,
+            "finish_reason": "stop"
+          },
+          "candidate_controls": [
+            {
+              "stage": "structured_generation",
+              "seed": 1328935238,
+              "candidate_index": 1,
+              "profile_label": "balanced_coverage",
+              "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 213641616,
+              "candidate_index": 2,
+              "profile_label": "boundary_and_rules",
+              "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1773456765,
+              "candidate_index": 3,
+              "profile_label": "negative_and_state_stress",
+              "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete."
+            }
+          ],
+          "risk_assessment": {
+            "level": "High",
+            "score": 7.75,
+            "rule_count": 8,
+            "numeric_constraint_count": 3,
+            "technique_count": 2,
+            "drivers": [
+              "category=business_rules",
+              "8 explicit rule lines",
+              "3 numeric constraints",
+              "decision-table logic",
+              "business impact keywords: coupon, discount, price",
+              "strict rejection/constraint language: at least, only one"
+            ],
+            "recommended_focus": [
+              "core happy path",
+              "rule combination coverage",
+              "boundary coverage",
+              "decision combinations",
+              "invalid partitions",
+              "business-critical rules",
+              "negative/error handling"
+            ]
+          },
+          "state_model": null,
+          "metrics": {
+            "gold_spec_found": true,
+            "requirement_id": "bundle_discount_eligibility_rules",
+            "test_count": 5,
+            "duplicate_count": 0,
+            "coverage": {
+              "valid_partition_coverage": 1.0,
+              "invalid_partition_coverage": 0.8,
+              "boundary_coverage": 0.0,
+              "decision_rule_coverage": 1.0,
+              "state_coverage": null,
+              "illegal_transition_coverage": null,
+              "exception_coverage": 0.667
+            },
+            "applicable_dimensions": [
+              "valid_partition_coverage",
+              "invalid_partition_coverage",
+              "boundary_coverage",
+              "decision_rule_coverage",
+              "exception_coverage"
+            ],
+            "applicable_dimension_count": 5,
+            "overall_coverage": 0.693,
+            "checker_score": 0.9500000000000001,
+            "repaired": false
+          },
+          "diagnostics": [
+            "bva_contract: not applicable",
+            "decision_contract: pattern or steps do not explain rule mapping",
+            "state_contract: not applicable"
+          ]
+        },
+        {
+          "requirement_id": "payment_3ds_authentication_flow",
+          "split": "test",
+          "category": "workflow_state",
+          "score": 1.0,
+          "repaired": true,
+          "candidate_index": 1,
+          "generation_metadata": {
+            "operation": "structured_generation",
+            "api_mode": "chat_completions",
+            "model": "qwen3.5-flash",
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "seed": 793767450,
+            "seed_applied": true,
+            "candidate_index": 1,
+            "profile_label": "balanced_coverage",
+            "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case.",
+            "response_id": "chatcmpl-299188e8-8563-976c-87e8-e3d4c5d3e0fb",
+            "system_fingerprint": null,
+            "finish_reason": "stop"
+          },
+          "candidate_controls": [
+            {
+              "stage": "structured_generation",
+              "seed": 793767450,
+              "candidate_index": 1,
+              "profile_label": "balanced_coverage",
+              "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 28921172,
+              "candidate_index": 2,
+              "profile_label": "boundary_and_rules",
+              "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1187786299,
+              "candidate_index": 3,
+              "profile_label": "negative_and_state_stress",
+              "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete."
+            }
+          ],
+          "risk_assessment": {
+            "level": "High",
+            "score": 7.15,
+            "rule_count": 7,
+            "numeric_constraint_count": 0,
+            "technique_count": 1,
+            "drivers": [
+              "category=workflow_state",
+              "7 explicit rule lines",
+              "stateful workflow behavior",
+              "business impact keywords: authentication, card, payment",
+              "strict rejection/constraint language: must not, required"
+            ],
+            "recommended_focus": [
+              "core happy path",
+              "rule combination coverage",
+              "legal transitions",
+              "illegal transitions",
+              "business-critical rules",
+              "negative/error handling"
+            ]
+          },
+          "state_model": {
+            "states": [
+              "INITIATED",
+              "AUTH_REQUIRED",
+              "FAILED",
+              "AUTHENTICATED",
+              "PENDING_REVIEW"
+            ],
+            "start_states": [
+              "INITIATED"
+            ],
+            "legal_transitions": [
+              {
+                "source_state": "AUTH_REQUIRED",
+                "trigger": "3DS fails or the customer cancels",
+                "target_state": "FAILED",
+                "legal": true,
+                "source_rule": "If 3DS fails or the customer cancels, the payment becomes FAILED."
+              }
+            ],
+            "illegal_transitions": [
+              {
+                "source_state": "AUTH_REQUIRED",
+                "trigger": "CAPTURE",
+                "target_state": "CAPTURED",
+                "legal": false,
+                "source_rule": "Illegal: capture before authentication when 3DS is required."
+              }
+            ],
+            "coverage_plans": [
+              {
+                "coverage_goal": "All States",
+                "sequence_count": 4,
+                "fully_covered": false,
+                "sequences": [
+                  {
+                    "sequence_id": "AS01",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `AUTHENTICATED` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  },
+                  {
+                    "sequence_id": "AS02",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `AUTH_REQUIRED` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  },
+                  {
+                    "sequence_id": "AS03",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `FAILED` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  },
+                  {
+                    "sequence_id": "AS04",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `PENDING_REVIEW` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  }
+                ]
+              },
+              {
+                "coverage_goal": "All Transitions",
+                "sequence_count": 1,
+                "fully_covered": true,
+                "sequences": [
+                  {
+                    "sequence_id": "AT01",
+                    "coverage_goal": "All Transitions",
+                    "steps": [
+                      "Start in AUTH_REQUIRED",
+                      "Trigger `3DS fails or the customer cancels`: AUTH_REQUIRED -> FAILED"
+                    ],
+                    "covered_states": [
+                      "AUTH_REQUIRED",
+                      "FAILED"
+                    ],
+                    "covered_transitions": [
+                      "AUTH_REQUIRED -> FAILED [3DS fails or the customer cancels]"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "notes": []
+          },
+          "metrics": {
+            "gold_spec_found": true,
+            "requirement_id": "payment_3ds_authentication_flow",
+            "test_count": 6,
+            "duplicate_count": 0,
+            "coverage": {
+              "valid_partition_coverage": 1.0,
+              "invalid_partition_coverage": 0.75,
+              "boundary_coverage": 0.0,
+              "decision_rule_coverage": 1.0,
+              "state_coverage": 0.667,
+              "illegal_transition_coverage": 1.0,
+              "exception_coverage": 0.333
+            },
+            "applicable_dimensions": [
+              "valid_partition_coverage",
+              "invalid_partition_coverage",
+              "boundary_coverage",
+              "decision_rule_coverage",
+              "state_coverage",
+              "illegal_transition_coverage",
+              "exception_coverage"
+            ],
+            "applicable_dimension_count": 7,
+            "overall_coverage": 0.679,
+            "checker_score": 1.0,
+            "repaired": true
+          },
+          "diagnostics": [
+            "bva_contract: not applicable",
+            "decision_contract: not applicable"
+          ]
+        },
+        {
+          "requirement_id": "payment_card_expiry_and_cvv_validation",
+          "split": "test",
+          "category": "input_validation",
+          "score": 0.8500000000000001,
+          "repaired": true,
+          "candidate_index": 2,
+          "generation_metadata": {
+            "operation": "structured_generation",
+            "api_mode": "chat_completions",
+            "model": "qwen3.5-flash",
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "seed": 1701439370,
+            "seed_applied": true,
+            "candidate_index": 2,
+            "profile_label": "boundary_and_rules",
+            "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format.",
+            "response_id": "chatcmpl-97b47a8d-df0d-98fe-8509-93871a2ccbe9",
+            "system_fingerprint": null,
+            "finish_reason": "stop"
+          },
+          "candidate_controls": [
+            {
+              "stage": "structured_generation",
+              "seed": 1294276579,
+              "candidate_index": 1,
+              "profile_label": "balanced_coverage",
+              "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1701439370,
+              "candidate_index": 2,
+              "profile_label": "boundary_and_rules",
+              "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1732463634,
+              "candidate_index": 3,
+              "profile_label": "negative_and_state_stress",
+              "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete."
+            }
+          ],
+          "risk_assessment": {
+            "level": "High",
+            "score": 7.55,
+            "rule_count": 8,
+            "numeric_constraint_count": 3,
+            "technique_count": 2,
+            "drivers": [
+              "category=input_validation",
+              "8 explicit rule lines",
+              "3 numeric constraints",
+              "business impact keywords: card, cvv, payment",
+              "strict rejection/constraint language: invalid, required",
+              "workflow cues: after"
+            ],
+            "recommended_focus": [
+              "core happy path",
+              "rule combination coverage",
+              "boundary coverage",
+              "invalid partitions",
+              "business-critical rules",
+              "negative/error handling",
+              "state-dependent behavior"
+            ]
+          },
+          "state_model": null,
+          "metrics": {
+            "gold_spec_found": true,
+            "requirement_id": "payment_card_expiry_and_cvv_validation",
+            "test_count": 11,
+            "duplicate_count": 0,
+            "coverage": {
+              "valid_partition_coverage": 0.833,
+              "invalid_partition_coverage": 0.455,
+              "boundary_coverage": 0.0,
+              "decision_rule_coverage": 0.4,
+              "state_coverage": null,
+              "illegal_transition_coverage": null,
+              "exception_coverage": 0.333
+            },
+            "applicable_dimensions": [
+              "valid_partition_coverage",
+              "invalid_partition_coverage",
+              "boundary_coverage",
+              "decision_rule_coverage",
+              "exception_coverage"
+            ],
+            "applicable_dimension_count": 5,
+            "overall_coverage": 0.404,
+            "checker_score": 0.8500000000000001,
+            "repaired": true
+          },
+          "diagnostics": [
+            "decision_contract: no rule-oriented test case was found",
+            "decision_contract: decision table coverage appears shallow",
+            "state_contract: not applicable"
+          ]
+        }
+      ]
+    },
+    {
+      "repeat_index": 3,
+      "seed": 202601,
+      "runtime_root": "D:\\软件测试\\Final\\ARG-Test\\.local_runs\\repro_live_same_seed_3case\\rerun_3",
+      "summaries": [
+        {
+          "requirement_id": "bundle_discount_eligibility_rules",
+          "split": "test",
+          "category": "business_rules",
+          "score": 0.9500000000000001,
+          "repaired": false,
+          "candidate_index": 3,
+          "generation_metadata": {
+            "operation": "structured_generation",
+            "api_mode": "chat_completions",
+            "model": "qwen3.5-flash",
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "seed": 1773456765,
+            "seed_applied": true,
+            "candidate_index": 3,
+            "profile_label": "negative_and_state_stress",
+            "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete.",
+            "response_id": "chatcmpl-b7417057-65ee-9e7d-a910-51c5c2d01bc8",
+            "system_fingerprint": null,
+            "finish_reason": "stop"
+          },
+          "candidate_controls": [
+            {
+              "stage": "structured_generation",
+              "seed": 1328935238,
+              "candidate_index": 1,
+              "profile_label": "balanced_coverage",
+              "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 213641616,
+              "candidate_index": 2,
+              "profile_label": "boundary_and_rules",
+              "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1773456765,
+              "candidate_index": 3,
+              "profile_label": "negative_and_state_stress",
+              "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete."
+            }
+          ],
+          "risk_assessment": {
+            "level": "High",
+            "score": 7.75,
+            "rule_count": 8,
+            "numeric_constraint_count": 3,
+            "technique_count": 2,
+            "drivers": [
+              "category=business_rules",
+              "8 explicit rule lines",
+              "3 numeric constraints",
+              "decision-table logic",
+              "business impact keywords: coupon, discount, price",
+              "strict rejection/constraint language: at least, only one"
+            ],
+            "recommended_focus": [
+              "core happy path",
+              "rule combination coverage",
+              "boundary coverage",
+              "decision combinations",
+              "invalid partitions",
+              "business-critical rules",
+              "negative/error handling"
+            ]
+          },
+          "state_model": null,
+          "metrics": {
+            "gold_spec_found": true,
+            "requirement_id": "bundle_discount_eligibility_rules",
+            "test_count": 5,
+            "duplicate_count": 0,
+            "coverage": {
+              "valid_partition_coverage": 0.8,
+              "invalid_partition_coverage": 0.8,
+              "boundary_coverage": 0.0,
+              "decision_rule_coverage": 1.0,
+              "state_coverage": null,
+              "illegal_transition_coverage": null,
+              "exception_coverage": 0.333
+            },
+            "applicable_dimensions": [
+              "valid_partition_coverage",
+              "invalid_partition_coverage",
+              "boundary_coverage",
+              "decision_rule_coverage",
+              "exception_coverage"
+            ],
+            "applicable_dimension_count": 5,
+            "overall_coverage": 0.587,
+            "checker_score": 0.9500000000000001,
+            "repaired": false
+          },
+          "diagnostics": [
+            "ep_contract: no representative valid partition was found",
+            "bva_contract: not applicable",
+            "state_contract: not applicable"
+          ]
+        },
+        {
+          "requirement_id": "payment_3ds_authentication_flow",
+          "split": "test",
+          "category": "workflow_state",
+          "score": 0.9500000000000001,
+          "repaired": true,
+          "candidate_index": 1,
+          "generation_metadata": {
+            "operation": "structured_generation",
+            "api_mode": "chat_completions",
+            "model": "qwen3.5-flash",
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "seed": 793767450,
+            "seed_applied": true,
+            "candidate_index": 1,
+            "profile_label": "balanced_coverage",
+            "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case.",
+            "response_id": "chatcmpl-70353aea-f031-9606-a3a4-dec026045e63",
+            "system_fingerprint": null,
+            "finish_reason": "stop"
+          },
+          "candidate_controls": [
+            {
+              "stage": "structured_generation",
+              "seed": 793767450,
+              "candidate_index": 1,
+              "profile_label": "balanced_coverage",
+              "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 28921172,
+              "candidate_index": 2,
+              "profile_label": "boundary_and_rules",
+              "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1187786299,
+              "candidate_index": 3,
+              "profile_label": "negative_and_state_stress",
+              "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete."
+            }
+          ],
+          "risk_assessment": {
+            "level": "High",
+            "score": 7.95,
+            "rule_count": 7,
+            "numeric_constraint_count": 0,
+            "technique_count": 2,
+            "drivers": [
+              "category=workflow_state",
+              "7 explicit rule lines",
+              "decision-table logic",
+              "stateful workflow behavior",
+              "business impact keywords: authentication, card, payment",
+              "strict rejection/constraint language: must not, required"
+            ],
+            "recommended_focus": [
+              "core happy path",
+              "rule combination coverage",
+              "decision combinations",
+              "legal transitions",
+              "illegal transitions",
+              "business-critical rules",
+              "negative/error handling"
+            ]
+          },
+          "state_model": {
+            "states": [
+              "INITIATED",
+              "AUTH_REQUIRED",
+              "FAILED",
+              "AUTHENTICATED",
+              "PENDING_REVIEW"
+            ],
+            "start_states": [
+              "INITIATED"
+            ],
+            "legal_transitions": [
+              {
+                "source_state": "AUTH_REQUIRED",
+                "trigger": "3DS fails or the customer cancels",
+                "target_state": "FAILED",
+                "legal": true,
+                "source_rule": "If 3DS fails or the customer cancels, the payment becomes FAILED."
+              }
+            ],
+            "illegal_transitions": [
+              {
+                "source_state": "AUTH_REQUIRED",
+                "trigger": "CAPTURE",
+                "target_state": "CAPTURED",
+                "legal": false,
+                "source_rule": "Illegal: capture before authentication when 3DS is required."
+              }
+            ],
+            "coverage_plans": [
+              {
+                "coverage_goal": "All States",
+                "sequence_count": 4,
+                "fully_covered": false,
+                "sequences": [
+                  {
+                    "sequence_id": "AS01",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `AUTHENTICATED` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  },
+                  {
+                    "sequence_id": "AS02",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `AUTH_REQUIRED` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  },
+                  {
+                    "sequence_id": "AS03",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `FAILED` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  },
+                  {
+                    "sequence_id": "AS04",
+                    "coverage_goal": "All States",
+                    "steps": [
+                      "Target state `PENDING_REVIEW` is currently unreachable from the declared start states."
+                    ],
+                    "covered_states": [],
+                    "covered_transitions": []
+                  }
+                ]
+              },
+              {
+                "coverage_goal": "All Transitions",
+                "sequence_count": 1,
+                "fully_covered": true,
+                "sequences": [
+                  {
+                    "sequence_id": "AT01",
+                    "coverage_goal": "All Transitions",
+                    "steps": [
+                      "Start in AUTH_REQUIRED",
+                      "Trigger `3DS fails or the customer cancels`: AUTH_REQUIRED -> FAILED"
+                    ],
+                    "covered_states": [
+                      "AUTH_REQUIRED",
+                      "FAILED"
+                    ],
+                    "covered_transitions": [
+                      "AUTH_REQUIRED -> FAILED [3DS fails or the customer cancels]"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "notes": []
+          },
+          "metrics": {
+            "gold_spec_found": true,
+            "requirement_id": "payment_3ds_authentication_flow",
+            "test_count": 6,
+            "duplicate_count": 0,
+            "coverage": {
+              "valid_partition_coverage": 0.8,
+              "invalid_partition_coverage": 0.75,
+              "boundary_coverage": 0.0,
+              "decision_rule_coverage": 1.0,
+              "state_coverage": 0.667,
+              "illegal_transition_coverage": 0.25,
+              "exception_coverage": 0.0
+            },
+            "applicable_dimensions": [
+              "valid_partition_coverage",
+              "invalid_partition_coverage",
+              "boundary_coverage",
+              "decision_rule_coverage",
+              "state_coverage",
+              "illegal_transition_coverage",
+              "exception_coverage"
+            ],
+            "applicable_dimension_count": 7,
+            "overall_coverage": 0.495,
+            "checker_score": 0.9500000000000001,
+            "repaired": true
+          },
+          "diagnostics": [
+            "ep_contract: not applicable",
+            "bva_contract: not applicable",
+            "decision_contract: decision table coverage appears shallow"
+          ]
+        },
+        {
+          "requirement_id": "payment_card_expiry_and_cvv_validation",
+          "split": "test",
+          "category": "input_validation",
+          "score": 1.0,
+          "repaired": true,
+          "candidate_index": 2,
+          "generation_metadata": {
+            "operation": "structured_generation",
+            "api_mode": "chat_completions",
+            "model": "qwen3.5-flash",
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "seed": 1701439370,
+            "seed_applied": true,
+            "candidate_index": 2,
+            "profile_label": "boundary_and_rules",
+            "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format.",
+            "response_id": "chatcmpl-6dc2295a-c87e-911b-a9d5-1b37ede727d6",
+            "system_fingerprint": null,
+            "finish_reason": "stop"
+          },
+          "candidate_controls": [
+            {
+              "stage": "structured_generation",
+              "seed": 1294276579,
+              "candidate_index": 1,
+              "profile_label": "balanced_coverage",
+              "profile_instruction": "Prioritize balanced black-box coverage with at least one strong happy path and one representative negative case."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1701439370,
+              "candidate_index": 2,
+              "profile_label": "boundary_and_rules",
+              "profile_instruction": "Emphasize boundary values, threshold-adjacent cases, and tight decision-rule mapping without changing the output format."
+            },
+            {
+              "stage": "structured_generation",
+              "seed": 1732463634,
+              "candidate_index": 3,
+              "profile_label": "negative_and_state_stress",
+              "profile_instruction": "Emphasize invalid partitions, illegal transitions, and failure-path coverage while keeping expected outputs concrete."
+            }
+          ],
+          "risk_assessment": {
+            "level": "High",
+            "score": 9.15,
+            "rule_count": 8,
+            "numeric_constraint_count": 3,
+            "technique_count": 4,
+            "drivers": [
+              "category=input_validation",
+              "8 explicit rule lines",
+              "3 numeric constraints",
+              "decision-table logic",
+              "stateful workflow behavior",
+              "business impact keywords: card, cvv, payment",
+              "strict rejection/constraint language: invalid, required"
+            ],
+            "recommended_focus": [
+              "core happy path",
+              "rule combination coverage",
+              "boundary coverage",
+              "decision combinations",
+              "legal transitions",
+              "illegal transitions",
+              "invalid partitions",
+              "business-critical rules",
+              "negative/error handling"
+            ]
+          },
+          "state_model": {
+            "states": [],
+            "start_states": [],
+            "legal_transitions": [],
+            "illegal_transitions": [],
+            "coverage_plans": [
+              {
+                "coverage_goal": "All States",
+                "sequence_count": 0,
+                "fully_covered": true,
+                "sequences": []
+              },
+              {
+                "coverage_goal": "All Transitions",
+                "sequence_count": 0,
+                "fully_covered": true,
+                "sequences": []
+              }
+            ],
+            "notes": [
+              "No explicit start state was detected from the requirement text.",
+              "No explicit legal transitions were extracted from the requirement text."
+            ]
+          },
+          "metrics": {
+            "gold_spec_found": true,
+            "requirement_id": "payment_card_expiry_and_cvv_validation",
+            "test_count": 15,
+            "duplicate_count": 0,
+            "coverage": {
+              "valid_partition_coverage": 0.667,
+              "invalid_partition_coverage": 1.0,
+              "boundary_coverage": 0.2,
+              "decision_rule_coverage": 1.0,
+              "state_coverage": null,
+              "illegal_transition_coverage": null,
+              "exception_coverage": 1.0
+            },
+            "applicable_dimensions": [
+              "valid_partition_coverage",
+              "invalid_partition_coverage",
+              "boundary_coverage",
+              "decision_rule_coverage",
+              "exception_coverage"
+            ],
+            "applicable_dimension_count": 5,
+            "overall_coverage": 0.773,
+            "checker_score": 1.0,
+            "repaired": true
+          },
+          "diagnostics": [
+            "state_contract: not applicable"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 {
   "requirement_id": "return_refund_method_eligibility",
+  "category": "business_rules",
   "analysis": "- Requirement target: return_refund_method_eligibility\n- Rule: 1. A return is eligible only if requested within 30 days of delivery and the item is not marked final-sale.\n- Rule: 2. Refund method depends on original payment method:\n- Rule: 3. Shipping fee is refundable only when the return reason is SELLER_FAULT.\n- Rule: 4. Refund amount must never exceed the amount paid for the returned items.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

@@ -1,0 +1,31 @@
+{
+  "requirement_id": "address_international_format_validation",
+  "score": 0.9500000000000001,
+  "repaired": true,
+  "metrics": {
+    "gold_spec_found": true,
+    "requirement_id": "address_international_format_validation",
+    "test_count": 9,
+    "duplicate_count": 0,
+    "coverage": {
+      "valid_partition_coverage": 0.167,
+      "invalid_partition_coverage": 0.25,
+      "boundary_coverage": 0.0,
+      "decision_rule_coverage": 0.875,
+      "state_coverage": null,
+      "illegal_transition_coverage": null,
+      "exception_coverage": 0.667
+    },
+    "applicable_dimensions": [
+      "valid_partition_coverage",
+      "invalid_partition_coverage",
+      "boundary_coverage",
+      "decision_rule_coverage",
+      "exception_coverage"
+    ],
+    "applicable_dimension_count": 5,
+    "overall_coverage": 0.392,
+    "checker_score": 0.9500000000000001,
+    "repaired": true
+  }
+}

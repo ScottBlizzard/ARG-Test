@@ -1,5 +1,6 @@
 {
   "requirement_id": "seller_payout_fee_calculation",
+  "category": "business_rules",
   "analysis": "- Requirement target: seller_payout_fee_calculation\n- Rule: 1. commission_rate depends on category: electronics 0.05, fashion 0.10, other 0.08.\n- Rule: 2. payment_processor_fee equals 0.02 * paid_amount + 0.30.\n- Rule: 3. net_payout equals paid_amount minus refunds minus commission_fee minus processor_fee.\n- Rule: 4. net_payout must not be negative; if negative, it becomes 0.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

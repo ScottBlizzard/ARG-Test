@@ -1,0 +1,8 @@
+Requirement ID: digital_product_instant_delivery
+Domain: e-commerce digital fulfillment
+
+Rules:
+1. Digital products are delivered only after payment is Captured.
+2. After capture, the system generates a license key and sends a delivery email.
+3. Delivery must happen within 5 minutes of capture.
+4. If payment is not captured, no license is generated.

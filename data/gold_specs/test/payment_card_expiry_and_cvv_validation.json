@@ -1,0 +1,90 @@
+{
+  "requirement_id": "payment_card_expiry_and_cvv_validation",
+  "recommended_techniques": [
+    "EP",
+    "BVA",
+    "Decision Table"
+  ],
+  "valid_partitions": [
+    "Visa valid with 3-digit cvv",
+    "Mastercard valid with 3-digit cvv",
+    "American Express valid with 4-digit cvv",
+    "cardholder name allowed characters only",
+    "card number length within 13 to 19 digits",
+    "expiry in current or future valid month"
+  ],
+  "invalid_partitions": [
+    "missing required card field",
+    "cardholder name too short or too long",
+    "cardholder name contains disallowed symbols",
+    "card number shorter than 13 digits",
+    "card number longer than 19 digits",
+    "expiry month outside 1 to 12",
+    "expiry year outside allowed window",
+    "expired month/year combination",
+    "Visa/Mastercard cvv not 3 digits",
+    "AmEx cvv not 4 digits",
+    "masked card number contains star"
+  ],
+  "boundaries": [
+    {
+      "field": "cardholder_name_length",
+      "points": [
+        1,
+        2,
+        40,
+        41
+      ]
+    },
+    {
+      "field": "card_number_digits",
+      "points": [
+        12,
+        13,
+        19,
+        20
+      ]
+    },
+    {
+      "field": "expiry_month",
+      "points": [
+        0,
+        1,
+        12,
+        13
+      ]
+    },
+    {
+      "field": "expiry_year_offset",
+      "points": [
+        -1,
+        0,
+        15,
+        16
+      ]
+    },
+    {
+      "field": "cvv_length",
+      "points": [
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  ],
+  "decision_rules": [
+    "card_brand in {Visa, Mastercard} and cvv length = 3 -> cvv valid; else reject",
+    "card_brand = American Express and cvv length = 4 -> cvv valid; else reject",
+    "expiry earlier than current month/year -> reject",
+    "card_number contains star -> reject",
+    "all required fields valid -> accept"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": [
+    "card number includes spaces between groups",
+    "card_brand provided in lowercase",
+    "cardholder name has leading/trailing spaces"
+  ]
+}

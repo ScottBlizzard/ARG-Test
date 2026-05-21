@@ -1,0 +1,8 @@
+Requirement ID: subscription_pause_resume_workflow
+Domain: e-commerce subscription workflow
+
+Rules:
+1. An Active subscription may be paused and becomes Paused.
+2. While Paused, the subscription does not renew.
+3. A Paused subscription may be resumed and becomes Active.
+4. Resuming sets next_billing_date to today plus remaining_days.

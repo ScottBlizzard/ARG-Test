@@ -1,5 +1,6 @@
 {
   "requirement_id": "subscription_trial_to_paid_workflow",
+  "category": "workflow_state",
   "analysis": "- Requirement target: subscription_trial_to_paid_workflow\n- Rule: 1. A subscription starts in Trial and trial_days is 14.\n- Rule: 2. At trial end, the system attempts to charge the customer.\n- Rule: 3. If charge succeeds, status becomes Active.\n- Rule: 4. If charge fails, status becomes PastDue and the system retries daily up to 3 times.\n- Rule: 5. If all retries fail, status becomes Cancelled.\n- Rule: 6. The customer may cancel at any time.",
   "pattern": "- Selected techniques: EP, BVA, Decision Table, State Transition\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

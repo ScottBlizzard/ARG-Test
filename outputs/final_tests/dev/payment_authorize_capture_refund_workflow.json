@@ -1,5 +1,6 @@
 {
   "requirement_id": "payment_authorize_capture_refund_workflow",
+  "category": "workflow_state",
   "analysis": "- Requirement target: payment_authorize_capture_refund_workflow\n- Rule: 1. Card payments start as Authorized.\n- Rule: 2. Authorized may transition to Captured exactly once.\n- Rule: 3. Authorized may transition to Voided; void is not allowed after capture.\n- Rule: 4. Refunds are allowed only after Captured.\n- Rule: 5. Multiple refunds may occur, but total_refunded must not exceed captured_amount.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

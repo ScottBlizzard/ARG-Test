@@ -1,0 +1,8 @@
+Requirement ID: gift_card_code_validation
+Domain: e-commerce payment
+
+Rules:
+1. gift_card_code is required.
+2. gift_card_code must match pattern GC-XXXX-XXXX where X is an uppercase letter or digit.
+3. gift card status must be Active.
+4. If format is invalid or status is not Active, applying the gift card is rejected.

@@ -1,5 +1,6 @@
 {
   "requirement_id": "user_registration_validation",
+  "category": "input_validation",
   "analysis": "- Requirement target: user_registration_validation\n- Rule: 1. username is required and must be 3 to 20 characters.\n- Rule: 2. username may contain only letters, digits, and underscore.\n- Rule: 3. username must not start or end with underscore.\n- Rule: 4. email is required and must contain exactly one @ and a domain suffix.\n- Rule: 5. age is optional. If provided, age must be an integer between 13 and 120 inclusive.\n- Rule: 6. If any field is invalid, the system shows a field-level validation error and does not create the account.\n- Numeric constraint: username -> 3 to 20\n- Numeric constraint: age -> 13 to 120",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
@@ -18,7 +19,7 @@
       "expected_output": "request accepted",
       "covered_item": "valid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative valid input"
     },
     {
@@ -29,7 +30,7 @@
       "expected_output": "validation error",
       "covered_item": "invalid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative invalid input"
     },
     {
@@ -40,7 +41,7 @@
       "expected_output": "validation error",
       "covered_item": "below lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "username=2"
     },
     {
@@ -51,7 +52,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "username=3"
     },
     {
@@ -62,7 +63,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on upper boundary",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "username=20"
     },
     {
@@ -73,7 +74,7 @@
       "expected_output": "rule-specific outcome",
       "covered_item": "decision rule coverage",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "rule trigger combination"
     }
   ]

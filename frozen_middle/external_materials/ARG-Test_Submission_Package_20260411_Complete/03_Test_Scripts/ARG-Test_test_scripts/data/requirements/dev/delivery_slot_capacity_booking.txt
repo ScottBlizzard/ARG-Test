@@ -1,0 +1,9 @@
+Requirement ID: delivery_slot_capacity_booking
+Domain: e-commerce delivery scheduling
+
+Rules:
+1. Each delivery slot has capacity_units (non-negative integer).
+2. A booking requests units between 1 and 5.
+3. If remaining_units is at least requested_units, booking is confirmed and remaining_units decreases.
+4. Otherwise booking is rejected.
+5. A confirmed booking may be cancelled; if cancelled at least 2 hours before slot start, remaining_units is restored.

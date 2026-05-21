@@ -1,0 +1,29 @@
+{
+  "requirement_id": "refund_amount_calculation_rules",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "not opened no restocking fee",
+    "opened restocking 10 percent",
+    "restocking fee capped at 50",
+    "refund floored at 0"
+  ],
+  "invalid_partitions": [
+    "negative paid amount",
+    "non_refundable_fees above paid",
+    "negative fees"
+  ],
+  "boundaries": [
+    {"field": "paid_amount", "points": [0, 0.01, 100, 500]},
+    {"field": "non_refundable_fees", "points": [0, 0.01, 50, 100]},
+    {"field": "restocking_fee", "points": [49.99, 50, 50.01]}
+  ],
+  "decision_rules": [
+    "refund_base equals paid minus non_refundable_fees",
+    "if opened -> restocking equals min(10% of refund_base, 50)",
+    "refund equals refund_base minus restocking",
+    "refund floored at 0 and capped by paid_amount"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["partial refund already issued"]
+}

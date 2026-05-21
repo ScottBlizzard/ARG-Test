@@ -1,0 +1,30 @@
+﻿{
+  "requirement_id": "shipping_fee_calculator",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "local zone",
+    "domestic zone",
+    "international zone",
+    "standard shipping",
+    "express shipping available",
+    "free standard shipping for subtotal at least 100"
+  ],
+  "invalid_partitions": [
+    "negative subtotal",
+    "negative weight",
+    "express shipping weight above 20"
+  ],
+  "boundaries": [
+    {"field": "weight", "points": [0, 1, 2, 5, 6, 20, 21]},
+    {"field": "subtotal", "points": [99, 100, 101]}
+  ],
+  "decision_rules": [
+    "zone + weight tier -> standard fee",
+    "express selected and weight within limit -> add surcharge",
+    "local or domestic and subtotal at least 100 -> standard fee becomes 0",
+    "international never gets free standard shipping"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["negative subtotal", "negative weight", "unsupported zone"]
+}

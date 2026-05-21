@@ -1,5 +1,6 @@
 {
   "requirement_id": "order_total_tax_calculation",
+  "category": "business_rules",
   "analysis": "- Requirement target: order_total_tax_calculation\n- Rule: 1. net_subtotal equals sum(item_price * quantity) minus item_discounts.\n- Rule: 2. shipping_fee is taxable only for US orders.\n- Rule: 3. tax_rate is: US 0.08, CN 0.13, other countries 0.\n- Rule: 4. tax_amount equals taxable_amount * tax_rate rounded to 2 decimals (half-up).\n- Rule: 5. order_total equals net_subtotal + shipping_fee + tax_amount.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

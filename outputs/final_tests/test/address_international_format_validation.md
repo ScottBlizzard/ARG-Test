@@ -25,9 +25,9 @@ Verification:
 FinalAnswer:
 | Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T01 | EP | address_international_format_validation | None | representative valid input | request accepted | valid partition | High | repaired |
-| T02 | EP | address_international_format_validation | None | representative invalid input | validation error | invalid partition | High | repaired |
-| T03 | BVA | address_international_format_validation | None | phone=7 | validation error | below lower boundary | High | repaired |
-| T04 | BVA | address_international_format_validation | None | phone=8 | boundary accepted | on lower boundary | High | repaired |
-| T05 | BVA | address_international_format_validation | None | phone=15 | boundary accepted | on upper boundary | Medium | repaired |
-| T06 | Decision Table | address_international_format_validation | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | repaired |
+| T01 | EP | address_international_format_validation | None | representative valid input | request accepted | valid partition | High | pending |
+| T02 | EP | address_international_format_validation | None | representative invalid input | validation error | invalid partition | High | pending |
+| T03 | BVA | address_international_format_validation | None | phone=7 | validation error | below lower boundary | High | pending |
+| T04 | BVA | address_international_format_validation | None | phone=8 | boundary accepted | on lower boundary | High | pending |
+| T05 | BVA | address_international_format_validation | None | phone=15 | boundary accepted | on upper boundary | Medium | pending |
+| T06 | Decision Table | address_international_format_validation | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | pending |

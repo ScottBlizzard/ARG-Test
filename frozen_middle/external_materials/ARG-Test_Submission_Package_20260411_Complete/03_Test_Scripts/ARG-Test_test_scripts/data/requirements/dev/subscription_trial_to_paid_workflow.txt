@@ -1,0 +1,10 @@
+Requirement ID: subscription_trial_to_paid_workflow
+Domain: e-commerce subscription workflow
+
+Rules:
+1. A subscription starts in Trial and trial_days is 14.
+2. At trial end, the system attempts to charge the customer.
+3. If charge succeeds, status becomes Active.
+4. If charge fails, status becomes PastDue and the system retries daily up to 3 times.
+5. If all retries fail, status becomes Cancelled.
+6. The customer may cancel at any time.

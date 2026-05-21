@@ -1,5 +1,6 @@
 {
   "requirement_id": "free_shipping_threshold_by_member_tier",
+  "category": "business_rules",
   "analysis": "- Requirement target: free_shipping_threshold_by_member_tier\n- Rule: 1. member_tier is one of Guest, Silver, or Gold.\n- Rule: 2. For local or domestic orders, Standard shipping becomes free when subtotal reaches the tier threshold.\n- Rule: 3. Thresholds are: Guest 120, Silver 100, Gold 80.\n- Rule: 4. Express shipping is never free.\n- Rule: 5. International orders never get free shipping.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

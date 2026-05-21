@@ -1,7 +1,7 @@
 {
   "requirement_id": "delivery_slot_capacity_booking",
-  "score": 0.75,
-  "repaired": true,
+  "score": 0.9500000000000001,
+  "repaired": false,
   "checks": [
     {
       "name": "schema",
@@ -31,17 +31,15 @@
     },
     {
       "name": "state_contract",
-      "passed": false,
-      "score": 0.0,
+      "passed": true,
+      "score": 1.0,
       "diagnostics": [
-        "missing legal transition test",
-        "missing illegal transition test"
+        "not applicable"
       ]
     }
   ],
   "diagnostics": [
     "decision_contract: decision table coverage appears shallow",
-    "state_contract: missing legal transition test",
-    "state_contract: missing illegal transition test"
+    "state_contract: not applicable"
   ]
 }

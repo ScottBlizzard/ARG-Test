@@ -1,0 +1,30 @@
+﻿{
+  "requirement_id": "user_registration_validation",
+  "recommended_techniques": ["EP", "BVA"],
+  "valid_partitions": [
+    "username valid format",
+    "email valid format",
+    "age omitted",
+    "age between 13 and 120 inclusive"
+  ],
+  "invalid_partitions": [
+    "username too short",
+    "username too long",
+    "username invalid characters",
+    "username starts with underscore",
+    "username ends with underscore",
+    "missing email",
+    "invalid email format",
+    "age below minimum",
+    "age above maximum",
+    "age non-integer"
+  ],
+  "boundaries": [
+    {"field": "username_length", "points": [2, 3, 4, 19, 20, 21]},
+    {"field": "age", "points": [12, 13, 14, 119, 120, 121]}
+  ],
+  "decision_rules": [],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["missing username", "missing email", "age non-integer"]
+}

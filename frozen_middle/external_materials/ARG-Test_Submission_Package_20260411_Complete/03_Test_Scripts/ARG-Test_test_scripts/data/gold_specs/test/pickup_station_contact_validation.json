@@ -1,0 +1,77 @@
+{
+  "requirement_id": "pickup_station_contact_validation",
+  "recommended_techniques": [
+    "EP",
+    "BVA",
+    "Decision Table"
+  ],
+  "valid_partitions": [
+    "required fields present",
+    "pickup_station_id matches PS-XXXXXX",
+    "recipient_phone valid E.164",
+    "contactless false and pickup_code omitted",
+    "contactless true and pickup_code valid",
+    "optional note omitted"
+  ],
+  "invalid_partitions": [
+    "missing recipient_name",
+    "missing recipient_phone",
+    "missing pickup_station_id",
+    "pickup_station_id wrong prefix or wrong digit count",
+    "recipient_phone not E.164",
+    "contactless true and pickup_code missing",
+    "pickup_code wrong length",
+    "pickup_code non-alphanumeric",
+    "recipient_name empty or too long",
+    "note too long"
+  ],
+  "boundaries": [
+    {
+      "field": "recipient_name_length",
+      "points": [
+        0,
+        1,
+        40,
+        41
+      ]
+    },
+    {
+      "field": "phone_digits",
+      "points": [
+        7,
+        8,
+        15,
+        16
+      ]
+    },
+    {
+      "field": "pickup_code_length",
+      "points": [
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "field": "note_length",
+      "points": [
+        0,
+        120,
+        121
+      ]
+    }
+  ],
+  "decision_rules": [
+    "contactless_pickup = true and pickup_code valid -> accept; else reject if pickup_code missing/invalid",
+    "contactless_pickup = false and pickup_code omitted -> accept",
+    "pickup_station_id matches PS- plus 6 digits -> accept; else reject",
+    "recipient_phone matches E.164 -> accept; else reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": [
+    "pickup_station_id lowercase prefix",
+    "recipient phone contains spaces",
+    "pickup code lowercase letters"
+  ]
+}

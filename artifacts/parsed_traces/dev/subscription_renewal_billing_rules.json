@@ -1,5 +1,6 @@
 {
   "requirement_id": "subscription_renewal_billing_rules",
+  "category": "business_rules",
   "analysis": "- Requirement target: subscription_renewal_billing_rules\n- Rule: 1. An Active subscription renews at period_end.\n- Rule: 2. If auto_renew is false or status is Cancelled, no renewal occurs.\n- Rule: 3. If payment method is missing, renewal fails and the subscription becomes PastDue.\n- Rule: 4. If payment succeeds, a new billing period is created and status remains Active.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

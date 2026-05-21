@@ -26,9 +26,9 @@ Verification:
 FinalAnswer:
 | Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T01 | EP | user_registration_validation | None | representative valid input | request accepted | valid partition | High | repaired |
-| T02 | EP | user_registration_validation | None | representative invalid input | validation error | invalid partition | High | repaired |
-| T03 | BVA | user_registration_validation | None | username=2 | validation error | below lower boundary | High | repaired |
-| T04 | BVA | user_registration_validation | None | username=3 | boundary accepted | on lower boundary | High | repaired |
-| T05 | BVA | user_registration_validation | None | username=20 | boundary accepted | on upper boundary | Medium | repaired |
-| T06 | Decision Table | user_registration_validation | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | repaired |
+| T01 | EP | user_registration_validation | None | representative valid input | request accepted | valid partition | High | pending |
+| T02 | EP | user_registration_validation | None | representative invalid input | validation error | invalid partition | High | pending |
+| T03 | BVA | user_registration_validation | None | username=2 | validation error | below lower boundary | High | pending |
+| T04 | BVA | user_registration_validation | None | username=3 | boundary accepted | on lower boundary | High | pending |
+| T05 | BVA | user_registration_validation | None | username=20 | boundary accepted | on upper boundary | Medium | pending |
+| T06 | Decision Table | user_registration_validation | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | pending |

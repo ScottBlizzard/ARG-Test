@@ -1,5 +1,6 @@
 {
   "requirement_id": "fraud_risk_scoring_rules",
+  "category": "business_rules",
   "analysis": "- Requirement target: fraud_risk_scoring_rules\n- Rule: 1. Risk score starts at 0.\n- Rule: 2. Add 30 if ip_country differs from shipping_country.\n- Rule: 3. Add 30 if order_total is above 1000.\n- Rule: 4. Add 20 if account_age_days is less than 7.\n- Rule: 5. Add 20 if failed_payment_attempts is at least 2.\n- Rule: 6. If risk score is at least 70, the order is flagged for manual review.\n- Numeric constraint: add 20 if failed_payment_attempts -> 2 to threshold\n- Numeric constraint: if risk score -> 70 to threshold",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
@@ -18,7 +19,7 @@
       "expected_output": "request accepted",
       "covered_item": "valid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative valid input"
     },
     {
@@ -29,7 +30,7 @@
       "expected_output": "validation error",
       "covered_item": "invalid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative invalid input"
     },
     {
@@ -40,7 +41,7 @@
       "expected_output": "validation error",
       "covered_item": "below lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "add 20 if failed_payment_attempts=1"
     },
     {
@@ -51,7 +52,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "add 20 if failed_payment_attempts=2"
     },
     {
@@ -62,7 +63,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on upper boundary",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "add 20 if failed_payment_attempts=3"
     },
     {
@@ -73,7 +74,7 @@
       "expected_output": "rule-specific outcome",
       "covered_item": "decision rule coverage",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "rule trigger combination"
     }
   ]

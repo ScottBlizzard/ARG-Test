@@ -1,0 +1,9 @@
+Requirement ID: multi_currency_price_rounding
+Domain: e-commerce pricing
+
+Rules:
+1. Prices are converted using exchange_rate: converted = base_amount * exchange_rate.
+2. USD and EUR display 2 decimals; JPY displays 0 decimals.
+3. Rounding is half-up.
+4. Line total equals rounded(converted_unit_price) * quantity.
+5. Cart subtotal equals sum of line totals.

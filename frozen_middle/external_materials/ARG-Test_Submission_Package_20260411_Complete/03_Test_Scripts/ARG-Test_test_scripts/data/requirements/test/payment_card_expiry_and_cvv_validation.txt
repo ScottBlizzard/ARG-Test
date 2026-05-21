@@ -1,0 +1,12 @@
+Requirement ID: payment_card_expiry_and_cvv_validation
+Domain: checkout payment validation
+
+Rules:
+1. Required fields: cardholder_name, card_number, expiry_month, expiry_year, cvv, card_brand.
+2. cardholder_name length must be 2 to 40 and may contain letters, spaces, apostrophes, and hyphens only.
+3. card_number must contain 13 to 19 digits after spaces are removed.
+4. expiry_month must be between 1 and 12 inclusive.
+5. expiry_year must be between current_year and current_year + 15 inclusive.
+6. An expiry date earlier than the current month and year is invalid.
+7. Visa and Mastercard require a 3-digit cvv; American Express requires a 4-digit cvv.
+8. Illegal: masked card numbers containing * characters are not accepted as primary input.

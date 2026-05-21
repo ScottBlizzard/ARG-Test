@@ -1,0 +1,8 @@
+Requirement ID: cash_on_delivery_eligibility
+Domain: e-commerce payment
+
+Rules:
+1. Cash on delivery (COD) is available only for domestic shipping.
+2. COD is available only when order_total is at most 500.
+3. COD is not available for digital-only orders.
+4. COD is not available for hazardous goods.

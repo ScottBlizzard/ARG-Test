@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
@@ -10,7 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.utils import load_json, write_json
+from src.config import load_runtime_config
+from src.utils import build_run_manifest, load_json, write_json
 
 
 def safe_avg(values: list[float]) -> float:
@@ -22,10 +23,29 @@ def safe_avg(values: list[float]) -> float:
 def main() -> None:
     parser = argparse.ArgumentParser(description='Aggregate main experiment results by requirement category.')
     parser.add_argument('--split', choices=['dev', 'test'], default='test')
+    parser.add_argument('--provider', default=None)
+    parser.add_argument('--model', default=None)
+    parser.add_argument('--candidates', type=int, default=None)
+    parser.add_argument('--api-mode', default=None, choices=['responses', 'chat_completions'])
+    parser.add_argument('--seed', type=int, default=None)
+    parser.add_argument('--temperature', type=float, default=None)
+    parser.add_argument('--top-p', type=float, default=None)
+    parser.add_argument('--output-root', default=None)
     args = parser.parse_args()
 
+    config = load_runtime_config(
+        base_dir=ROOT,
+        provider=args.provider,
+        model=args.model,
+        candidates=args.candidates,
+        openai_api_mode=args.api_mode,
+        seed=args.seed,
+        temperature=args.temperature,
+        top_p=args.top_p,
+        output_root=args.output_root,
+    )
     manifest_path = ROOT / 'data' / 'requirements' / 'manifest.json'
-    main_summary_path = ROOT / 'outputs' / 'reports' / args.split / 'run_main_summary.json'
+    main_summary_path = config.paths.outputs / 'reports' / args.split / 'run_main_summary.json'
     if not manifest_path.exists() or not main_summary_path.exists():
         raise SystemExit('manifest.json or run_main_summary.json is missing')
 
@@ -45,6 +65,8 @@ def main() -> None:
         overall_coverages = [float(item.get('metrics', {}).get('overall_coverage', 0.0) or 0.0) for item in items]
         duplicates = [float(item.get('metrics', {}).get('duplicate_count', 0.0) or 0.0) for item in items]
         test_counts = [float(item.get('metrics', {}).get('test_count', 0.0) or 0.0) for item in items]
+        risk_scores = [float((item.get('risk_assessment') or {}).get('score', 0.0) or 0.0) for item in items]
+        high_risk_cases = sum(1 for item in items if (item.get('risk_assessment') or {}).get('level') == 'High')
         categories.append(
             {
                 'category': category,
@@ -53,6 +75,8 @@ def main() -> None:
                 'avg_overall_coverage': safe_avg(overall_coverages),
                 'avg_duplicate_count': safe_avg(duplicates),
                 'avg_test_count': safe_avg(test_counts),
+                'avg_risk_score': safe_avg(risk_scores),
+                'high_risk_requirement_count': high_risk_cases,
             }
         )
 
@@ -60,8 +84,24 @@ def main() -> None:
         'split': args.split,
         'categories': categories,
     }
-    output_path = ROOT / 'outputs' / 'reports' / args.split / 'generalization_by_category.json'
+    output_path = config.paths.outputs / 'reports' / args.split / 'generalization_by_category.json'
     write_json(output_path, payload)
+    manifest = build_run_manifest(
+        experiment='run_generalization',
+        split=args.split,
+        provider=config.provider,
+        model=config.model,
+        candidates=config.candidates,
+        openai_api_mode=config.openai_api_mode,
+        seed=config.seed,
+        temperature=config.temperature,
+        top_p=config.top_p,
+        enable_repair=config.enable_repair,
+        runtime_root=config.paths.runtime_root,
+        requirement_ids=[item.get('requirement_id', '') for item in main_summary],
+        extra={'output_summary_path': str(output_path)},
+    )
+    write_json(config.paths.outputs / 'reports' / args.split / 'generalization_manifest.json', manifest)
     print(json.dumps(payload, indent=2, ensure_ascii=False))
 
 

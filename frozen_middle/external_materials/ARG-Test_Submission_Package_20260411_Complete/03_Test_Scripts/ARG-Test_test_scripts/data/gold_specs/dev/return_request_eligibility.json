@@ -1,0 +1,29 @@
+{
+  "requirement_id": "return_request_eligibility",
+  "recommended_techniques": ["EP", "Decision Table"],
+  "valid_partitions": [
+    "Delivered within 30 days and not final sale",
+    "Delivered exactly 30 days boundary",
+    "after 30 days reject",
+    "final sale reject",
+    "digital-only reject"
+  ],
+  "invalid_partitions": [
+    "not Delivered status",
+    "negative days since delivery",
+    "missing delivered_at"
+  ],
+  "boundaries": [
+    {"field": "days_since_delivered", "points": [29, 30, 31]}
+  ],
+  "decision_rules": [
+    "status not Delivered -> reject",
+    "days_since_delivered above 30 -> reject",
+    "final_sale true -> reject",
+    "digital_only true -> reject",
+    "otherwise -> allow"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["partial delivery for multi-package order"]
+}

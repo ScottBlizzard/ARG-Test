@@ -1,5 +1,6 @@
 {
   "requirement_id": "refund_amount_calculation_rules",
+  "category": "business_rules",
   "analysis": "- Requirement target: refund_amount_calculation_rules\n- Rule: 1. refund_base equals paid_amount minus non_refundable_fees.\n- Rule: 2. If item_opened is true, apply restocking_fee_rate 0.10 capped at 50.\n- Rule: 3. refund_amount equals refund_base minus restocking_fee, and must be between 0 and paid_amount.\n- Rule: 4. If refund_amount would be negative, it becomes 0.",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

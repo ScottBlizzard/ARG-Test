@@ -23,9 +23,9 @@ Verification:
 FinalAnswer:
 | Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T01 | EP | backorder_policy_and_eta | None | representative valid input | request accepted | valid partition | High | repaired |
-| T02 | EP | backorder_policy_and_eta | None | representative invalid input | validation error | invalid partition | High | repaired |
-| T03 | BVA | backorder_policy_and_eta | None | backorder requires estimated_ship_days between 1 and 60.=0 | validation error | below lower boundary | High | repaired |
-| T04 | BVA | backorder_policy_and_eta | None | backorder requires estimated_ship_days between 1 and 60.=1 | boundary accepted | on lower boundary | High | repaired |
-| T05 | BVA | backorder_policy_and_eta | None | backorder requires estimated_ship_days between 1 and 60.=60 | boundary accepted | on upper boundary | Medium | repaired |
-| T06 | Decision Table | backorder_policy_and_eta | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | repaired |
+| T01 | EP | backorder_policy_and_eta | None | representative valid input | request accepted | valid partition | High | pending |
+| T02 | EP | backorder_policy_and_eta | None | representative invalid input | validation error | invalid partition | High | pending |
+| T03 | BVA | backorder_policy_and_eta | None | backorder requires estimated_ship_days between 1 and 60.=0 | validation error | below lower boundary | High | pending |
+| T04 | BVA | backorder_policy_and_eta | None | backorder requires estimated_ship_days between 1 and 60.=1 | boundary accepted | on lower boundary | High | pending |
+| T05 | BVA | backorder_policy_and_eta | None | backorder requires estimated_ship_days between 1 and 60.=60 | boundary accepted | on upper boundary | Medium | pending |
+| T06 | Decision Table | backorder_policy_and_eta | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | pending |

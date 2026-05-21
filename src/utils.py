@@ -1,9 +1,12 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import os
 import re
+from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
@@ -36,6 +39,32 @@ def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
         writer.writerows(rows)
 
 
+def utc_now_iso() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def load_dotenv_file(path: Path, override: bool = False) -> None:
+    if not path.exists():
+        return
+    for raw_line in path.read_text(encoding='utf-8-sig').splitlines():
+        stripped = raw_line.strip()
+        if not stripped or stripped.startswith('#'):
+            continue
+        if stripped.startswith('export '):
+            stripped = stripped[len('export '):].strip()
+        if '=' not in stripped:
+            continue
+        key, value = stripped.split('=', 1)
+        key = key.strip()
+        value = value.strip()
+        if not key:
+            continue
+        if value and len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+            value = value[1:-1]
+        if override or key not in os.environ:
+            os.environ[key] = value
+
+
 def normalize_text(value: str) -> str:
     return re.sub(r"\s+", " ", value.strip().lower())
 
@@ -52,6 +81,32 @@ def list_requirement_files(base_dir: Path, split: str) -> list[Path]:
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+@lru_cache(maxsize=8)
+def _manifest_index(root: str) -> dict[tuple[str, str], dict]:
+    manifest_path = Path(root) / "data" / "requirements" / "manifest.json"
+    if not manifest_path.exists():
+        return {}
+    manifest = load_json(manifest_path)
+    index: dict[tuple[str, str], dict] = {}
+    for item in manifest:
+        requirement_id = str(item.get("requirement_id", "")).strip()
+        split = str(item.get("split", "")).strip()
+        if requirement_id and split:
+            index[(split, requirement_id)] = item
+    return index
+
+
+def requirement_manifest_entry(base_dir: Path, split: str, requirement_id: str) -> dict | None:
+    return _manifest_index(str(base_dir.resolve())).get((split, requirement_id))
+
+
+def requirement_category(base_dir: Path, split: str, requirement_id: str) -> str | None:
+    entry = requirement_manifest_entry(base_dir, split, requirement_id)
+    if not entry:
+        return None
+    return str(entry.get("category", "")).strip() or None
 
 
 def extract_requirement_id(text: str, fallback: str) -> str:
@@ -162,3 +217,67 @@ def bool_from_env(name: str, default: bool) -> bool:
         return default
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
+
+def float_from_env(name: str, default: float | None = None) -> float | None:
+    raw = os.getenv(name)
+    if raw is None or not raw.strip():
+        return default
+    return float(raw.strip())
+
+
+def int_from_env(name: str, default: int | None = None) -> int | None:
+    raw = os.getenv(name)
+    if raw is None or not raw.strip():
+        return default
+    return int(raw.strip())
+
+
+def stable_hash_int(*parts: object) -> int:
+    token = "||".join(str(part) for part in parts)
+    digest = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    return int(digest[:16], 16)
+
+
+def derive_stage_seed(base_seed: int | None, requirement_id: str, stage: str, slot: int = 0) -> int | None:
+    if base_seed is None:
+        return None
+    derived = stable_hash_int(base_seed, requirement_id, stage, slot)
+    bounded = derived % 2_147_483_647
+    return bounded or 1
+
+
+def build_run_manifest(
+    *,
+    experiment: str,
+    split: str,
+    provider: str,
+    model: str,
+    candidates: int | None,
+    openai_api_mode: str | None = None,
+    seed: int | None = None,
+    temperature: float | None = None,
+    top_p: float | None = None,
+    enable_repair: bool,
+    runtime_root: Path,
+    requirement_ids: list[str],
+    extra: dict | None = None,
+) -> dict:
+    payload = {
+        "experiment": experiment,
+        "generated_at_utc": utc_now_iso(),
+        "split": split,
+        "provider": provider,
+        "model": model,
+        "candidates": candidates,
+        "openai_api_mode": openai_api_mode,
+        "seed": seed,
+        "temperature": temperature,
+        "top_p": top_p,
+        "enable_repair": enable_repair,
+        "runtime_root": str(runtime_root),
+        "requirement_count": len(requirement_ids),
+        "requirement_ids": requirement_ids,
+    }
+    if extra:
+        payload.update(extra)
+    return payload

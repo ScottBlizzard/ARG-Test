@@ -1,0 +1,27 @@
+{
+  "requirement_id": "coupon_expiry_and_timezone",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "now equals start time inclusive",
+    "now between start and end",
+    "now equals end time inclusive"
+  ],
+  "invalid_partitions": [
+    "now before start",
+    "now after end",
+    "start after end"
+  ],
+  "boundaries": [
+    {"field": "seconds_to_start", "points": [-1, 0, 1]},
+    {"field": "seconds_to_end", "points": [-1, 0, 1]}
+  ],
+  "decision_rules": [
+    "now before start -> reject",
+    "now after end -> reject",
+    "now within inclusive window -> accept",
+    "invalid window start after end -> error"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["missing timestamps", "timezone offset provided but ignored"]
+}

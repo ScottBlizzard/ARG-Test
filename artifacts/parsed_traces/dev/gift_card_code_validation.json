@@ -1,5 +1,6 @@
 {
   "requirement_id": "gift_card_code_validation",
+  "category": "input_validation",
   "analysis": "- Requirement target: gift_card_code_validation\n- Rule: 1. gift_card_code is required.\n- Rule: 2. gift_card_code must match pattern GC-XXXX-XXXX where X is an uppercase letter or digit.\n- Rule: 3. gift card status must be Active.\n- Rule: 4. If format is invalid or status is not Active, applying the gift card is rejected.",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

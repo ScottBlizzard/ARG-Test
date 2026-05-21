@@ -1,0 +1,12 @@
+Requirement ID: bundle_discount_eligibility_rules
+Domain: promotion pricing rules
+
+Rules:
+1. Bundle A applies when the cart contains at least 1 laptop and at least 1 eligible mouse.
+2. Bundle B applies when the cart contains at least 1 console and exactly 2 eligible games.
+3. Sale items are not eligible for bundle discounts.
+4. Only one bundle discount may apply to the same cart line.
+5. If multiple bundle discounts are eligible, apply the one with the highest absolute discount amount.
+6. Bundle A discount is 120 when the laptop unit price is at least 4000; otherwise 80.
+7. Bundle B discount is 150.
+8. Illegal: stack a bundle discount with coupon code BUNDLE-EXTRA.

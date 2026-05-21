@@ -33,6 +33,151 @@ class TestCase:
 
 
 @dataclass
+class RiskAssessment:
+    level: str
+    score: float
+    rule_count: int
+    numeric_constraint_count: int
+    technique_count: int
+    drivers: list[str] = field(default_factory=list)
+    recommended_focus: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        payload = asdict(self)
+        payload["score"] = round(float(self.score), 3)
+        return payload
+
+
+@dataclass
+class StateTransition:
+    source_state: str
+    trigger: str
+    target_state: str
+    legal: bool = True
+    source_rule: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+    def signature(self) -> str:
+        arrow = "->" if self.legal else "-x>"
+        return f"{self.source_state} {arrow} {self.target_state} [{self.trigger}]"
+
+
+@dataclass
+class StateTestSequence:
+    sequence_id: str
+    coverage_goal: str
+    steps: list[str]
+    covered_states: list[str]
+    covered_transitions: list[str]
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class StateCoveragePlan:
+    coverage_goal: str
+    sequence_count: int
+    fully_covered: bool
+    sequences: list[StateTestSequence] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "coverage_goal": self.coverage_goal,
+            "sequence_count": self.sequence_count,
+            "fully_covered": self.fully_covered,
+            "sequences": [sequence.to_dict() for sequence in self.sequences],
+        }
+
+
+@dataclass
+class StateModel:
+    states: list[str]
+    start_states: list[str]
+    legal_transitions: list[StateTransition] = field(default_factory=list)
+    illegal_transitions: list[StateTransition] = field(default_factory=list)
+    coverage_plans: list[StateCoveragePlan] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "states": self.states,
+            "start_states": self.start_states,
+            "legal_transitions": [transition.to_dict() for transition in self.legal_transitions],
+            "illegal_transitions": [transition.to_dict() for transition in self.illegal_transitions],
+            "coverage_plans": [plan.to_dict() for plan in self.coverage_plans],
+            "notes": self.notes,
+        }
+
+    def to_markdown(self, requirement_id: str) -> str:
+        lines = [
+            f"# State Model: {requirement_id}",
+            "",
+            f"- States: `{', '.join(self.states)}`" if self.states else "- States: `none`",
+            f"- Start states: `{', '.join(self.start_states)}`" if self.start_states else "- Start states: `none`",
+            "",
+            "## Legal Transitions",
+            "",
+            "| Source | Trigger | Target | Rule |",
+            "| --- | --- | --- | --- |",
+        ]
+        if self.legal_transitions:
+            for transition in self.legal_transitions:
+                lines.append(
+                    f"| {transition.source_state} | {transition.trigger} | {transition.target_state} | {transition.source_rule or ''} |"
+                )
+        else:
+            lines.append("|  |  |  |  |")
+
+        lines.extend(
+            [
+                "",
+                "## Illegal Transitions",
+                "",
+                "| Source | Trigger | Target | Rule |",
+                "| --- | --- | --- | --- |",
+            ]
+        )
+        if self.illegal_transitions:
+            for transition in self.illegal_transitions:
+                lines.append(
+                    f"| {transition.source_state} | {transition.trigger} | {transition.target_state} | {transition.source_rule or ''} |"
+                )
+        else:
+            lines.append("|  |  |  |  |")
+
+        for plan in self.coverage_plans:
+            lines.extend(
+                [
+                    "",
+                    f"## Coverage Plan: {plan.coverage_goal}",
+                    "",
+                    f"- Sequence count: `{plan.sequence_count}`",
+                    f"- Fully covered: `{str(plan.fully_covered).lower()}`",
+                    "",
+                ]
+            )
+            for sequence in plan.sequences:
+                lines.append(f"### {sequence.sequence_id}")
+                lines.append("")
+                lines.append(f"- Covered states: `{', '.join(sequence.covered_states)}`")
+                if sequence.covered_transitions:
+                    lines.append(f"- Covered transitions: `{'; '.join(sequence.covered_transitions)}`")
+                lines.append("")
+                for step in sequence.steps:
+                    lines.append(f"- {step}")
+                lines.append("")
+
+        if self.notes:
+            lines.extend(["## Notes", ""])
+            lines.extend(f"- {note}" for note in self.notes)
+            lines.append("")
+        return "\n".join(lines).strip() + "\n"
+
+
+@dataclass
 class ParsedTrace:
     requirement_id: str
     analysis: str
@@ -41,6 +186,9 @@ class ParsedTrace:
     verification: str
     test_cases: list[TestCase]
     raw_text: str
+    category: str | None = None
+    risk_assessment: RiskAssessment | None = None
+    state_model: StateModel | None = None
     missing_sections: list[str] = field(default_factory=list)
 
     def selected_techniques(self) -> list[str]:
@@ -60,6 +208,9 @@ class ParsedTrace:
     def to_dict(self) -> dict[str, Any]:
         return {
             "requirement_id": self.requirement_id,
+            "category": self.category,
+            "risk_assessment": self.risk_assessment.to_dict() if self.risk_assessment else None,
+            "state_model": self.state_model.to_dict() if self.state_model else None,
             "analysis": self.analysis,
             "pattern": self.pattern,
             "steps": self.steps,
@@ -119,19 +270,25 @@ class CheckResult:
 @dataclass
 class CandidateEvaluation:
     requirement_id: str
+    requirement_text: str
     raw_text: str
     parsed_trace: ParsedTrace
     checks: list[CheckResult]
     score: float
     repaired: bool = False
     source: str = "structured"
+    candidate_index: int | None = None
+    generation_metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "requirement_id": self.requirement_id,
+            "requirement_text": self.requirement_text,
             "score": self.score,
             "repaired": self.repaired,
             "source": self.source,
+            "candidate_index": self.candidate_index,
+            "generation_metadata": self.generation_metadata,
             "checks": [check.to_dict() for check in self.checks],
             "parsed_trace": self.parsed_trace.to_dict(),
         }

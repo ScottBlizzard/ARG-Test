@@ -1,0 +1,28 @@
+{
+  "requirement_id": "order_total_tax_calculation",
+  "recommended_techniques": ["BVA", "Decision Table"],
+  "valid_partitions": [
+    "US tax 8 percent shipping taxable",
+    "CN tax 13 percent shipping not taxable",
+    "other country tax 0"
+  ],
+  "invalid_partitions": [
+    "negative item price",
+    "negative quantity",
+    "discount above line amount",
+    "negative shipping fee"
+  ],
+  "boundaries": [
+    {"field": "taxable_amount", "points": [0, 0.01, 1, 9.99, 10]},
+    {"field": "shipping_fee", "points": [0, 0.01, 10]}
+  ],
+  "decision_rules": [
+    "US -> taxable includes shipping fee",
+    "CN -> taxable excludes shipping fee",
+    "other -> tax_rate 0 so tax_amount 0",
+    "tax rounded to 2 decimals half-up"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["missing country", "unknown country code"]
+}

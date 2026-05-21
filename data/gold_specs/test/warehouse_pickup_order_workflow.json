@@ -1,0 +1,52 @@
+{
+  "requirement_id": "warehouse_pickup_order_workflow",
+  "recommended_techniques": [
+    "State Transition",
+    "BVA"
+  ],
+  "valid_partitions": [
+    "correct pickup code within window -> picked up",
+    "pickup window expires -> expired",
+    "expired order -> return in transit",
+    "damage report -> hold for review"
+  ],
+  "invalid_partitions": [
+    "picked up back to ready for pickup",
+    "expired directly to picked up",
+    "pickup attempt count above 3 without hold for review"
+  ],
+  "boundaries": [
+    {
+      "field": "pickup_attempt_count",
+      "points": [
+        0,
+        1,
+        3,
+        4
+      ]
+    }
+  ],
+  "decision_rules": [
+    "correct pickup code and window valid -> transition to PICKED_UP",
+    "pickup window expired -> transition to EXPIRED",
+    "damage report -> transition to HOLD_FOR_REVIEW",
+    "pickup_attempt_count > 3 -> HOLD_FOR_REVIEW"
+  ],
+  "states": [
+    "READY_FOR_PICKUP",
+    "PICKED_UP",
+    "EXPIRED",
+    "RETURN_IN_TRANSIT",
+    "HOLD_FOR_REVIEW"
+  ],
+  "illegal_transitions": [
+    "PICKED_UP -> READY_FOR_PICKUP",
+    "EXPIRED -> PICKED_UP",
+    "RETURN_IN_TRANSIT -> PICKED_UP"
+  ],
+  "exception_cases": [
+    "pickup code entered incorrectly three times then correct on fourth attempt",
+    "damage report and pickup code submitted concurrently",
+    "pickup window timezone mismatch"
+  ]
+}

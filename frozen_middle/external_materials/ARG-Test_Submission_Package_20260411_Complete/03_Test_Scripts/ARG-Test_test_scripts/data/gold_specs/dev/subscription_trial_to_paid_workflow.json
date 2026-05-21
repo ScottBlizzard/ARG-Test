@@ -1,0 +1,28 @@
+{
+  "requirement_id": "subscription_trial_to_paid_workflow",
+  "recommended_techniques": ["State Transition", "Decision Table"],
+  "valid_partitions": [
+    "Trial to Active on successful charge",
+    "Trial to PastDue on failed charge",
+    "PastDue retries up to 3 then Cancelled",
+    "user cancels from any state"
+  ],
+  "invalid_partitions": [
+    "Active without successful charge",
+    "retries above 3",
+    "negative retry count"
+  ],
+  "boundaries": [
+    {"field": "retry_count", "points": [0, 1, 3, 4]},
+    {"field": "trial_days", "points": [13, 14, 15]}
+  ],
+  "decision_rules": [
+    "trial ends -> attempt charge",
+    "charge success -> Active",
+    "charge fail -> PastDue",
+    "PastDue retry daily up to 3 -> if still fail then Cancelled"
+  ],
+  "states": ["Trial", "Active", "PastDue", "Cancelled"],
+  "illegal_transitions": ["Trial to Cancelled via retry", "Cancelled to Active"],
+  "exception_cases": ["duplicate billing job runs twice"]
+}

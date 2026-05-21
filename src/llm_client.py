@@ -1,22 +1,57 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Iterable
+from typing import Any
 
 from .utils import extract_numeric_hints, extract_rule_lines, infer_techniques
 
 
+def _prompt_for_index(prompt: str | list[str], index: int) -> str:
+    if isinstance(prompt, list):
+        if not prompt:
+            return ""
+        if index < len(prompt):
+            return prompt[index]
+        return prompt[-1]
+    return prompt
+
+
 class BaseLLMClient(ABC):
-    def __init__(self, model: str) -> None:
+    def __init__(
+        self,
+        model: str,
+        *,
+        api_mode: str,
+        seed: int | None = None,
+        temperature: float | None = None,
+        top_p: float | None = None,
+    ) -> None:
         self.model = model
+        self.api_mode = api_mode
+        self.seed = seed
+        self.temperature = temperature
+        self.top_p = top_p
+        self._last_generation_metadata: list[dict[str, Any]] = []
+        self._last_plain_metadata: dict[str, Any] = {}
+        self._last_repair_metadata: dict[str, Any] = {}
+
+    def get_last_generation_metadata(self) -> list[dict[str, Any]]:
+        return [dict(item) for item in self._last_generation_metadata]
+
+    def get_last_plain_metadata(self) -> dict[str, Any]:
+        return dict(self._last_plain_metadata)
+
+    def get_last_repair_metadata(self) -> dict[str, Any]:
+        return dict(self._last_repair_metadata)
 
     @abstractmethod
     def generate_structured_candidates(
         self,
         requirement_id: str,
         requirement_text: str,
-        prompt: str,
+        prompt: str | list[str],
         candidates: int,
+        candidate_controls: list[dict[str, Any]] | None = None,
     ) -> list[str]:
         raise NotImplementedError
 
@@ -26,6 +61,7 @@ class BaseLLMClient(ABC):
         requirement_id: str,
         requirement_text: str,
         prompt: str,
+        control: dict[str, Any] | None = None,
     ) -> str:
         raise NotImplementedError
 
@@ -35,25 +71,80 @@ class BaseLLMClient(ABC):
         requirement_id: str,
         requirement_text: str,
         repair_prompt: str,
+        control: dict[str, Any] | None = None,
     ) -> str:
         raise NotImplementedError
 
+    def _metadata_payload(
+        self,
+        *,
+        operation: str,
+        control: dict[str, Any] | None,
+        response_id: str | None = None,
+        system_fingerprint: str | None = None,
+        finish_reason: str | None = None,
+        seed_applied: bool = False,
+    ) -> dict[str, Any]:
+        payload = {
+            "operation": operation,
+            "api_mode": self.api_mode,
+            "model": self.model,
+            "temperature": self.temperature,
+            "top_p": self.top_p,
+            "seed": (control or {}).get("seed"),
+            "seed_applied": seed_applied,
+            "candidate_index": (control or {}).get("candidate_index"),
+            "profile_label": (control or {}).get("profile_label"),
+            "profile_instruction": (control or {}).get("profile_instruction"),
+            "response_id": response_id,
+            "system_fingerprint": system_fingerprint,
+            "finish_reason": finish_reason,
+        }
+        return payload
+
 
 class MockLLMClient(BaseLLMClient):
+    def __init__(
+        self,
+        model: str,
+        *,
+        seed: int | None = None,
+        temperature: float | None = None,
+        top_p: float | None = None,
+    ) -> None:
+        super().__init__(model, api_mode="mock", seed=seed, temperature=temperature, top_p=top_p)
+
     def generate_structured_candidates(
         self,
         requirement_id: str,
         requirement_text: str,
-        prompt: str,
+        prompt: str | list[str],
         candidates: int,
+        candidate_controls: list[dict[str, Any]] | None = None,
     ) -> list[str]:
-        return [self._build_structured_trace(requirement_id, requirement_text, index) for index in range(candidates)]
+        controls = candidate_controls or [{"candidate_index": index + 1, "seed": None} for index in range(candidates)]
+        outputs: list[str] = []
+        metadata: list[dict[str, Any]] = []
+        for index in range(candidates):
+            control = controls[index] if index < len(controls) else {"candidate_index": index + 1, "seed": None}
+            outputs.append(self._build_structured_trace(requirement_id, requirement_text, candidate_index=index, control=control))
+            metadata.append(
+                self._metadata_payload(
+                    operation="structured_generation",
+                    control=control,
+                    response_id=f"mock-structured-{requirement_id}-{index + 1}",
+                    seed_applied=control.get("seed") is not None,
+                )
+            )
+        self._last_generation_metadata = metadata
+        return outputs
 
     def generate_plain_table(
         self,
         requirement_id: str,
         requirement_text: str,
         prompt: str,
+        control: dict[str, Any] | None = None,
     ) -> str:
         techniques = infer_techniques(requirement_text)
         primary = techniques[0]
@@ -63,6 +154,12 @@ class MockLLMClient(BaseLLMClient):
             f"| T01 | {primary} | {requirement_id} | None | representative valid input | accept request | representative valid partition | High |",
             f"| T02 | {primary} | {requirement_id} | None | representative invalid input | reject request | representative invalid partition | High |",
         ]
+        self._last_plain_metadata = self._metadata_payload(
+            operation="plain_table_generation",
+            control=control,
+            response_id=f"mock-plain-{requirement_id}",
+            seed_applied=(control or {}).get("seed") is not None,
+        )
         return "\n".join(rows)
 
     def repair_trace(
@@ -70,15 +167,30 @@ class MockLLMClient(BaseLLMClient):
         requirement_id: str,
         requirement_text: str,
         repair_prompt: str,
+        control: dict[str, Any] | None = None,
     ) -> str:
-        return self._build_structured_trace(requirement_id, requirement_text, candidate_index=99)
+        self._last_repair_metadata = self._metadata_payload(
+            operation="repair_trace",
+            control=control,
+            response_id=f"mock-repair-{requirement_id}",
+            seed_applied=(control or {}).get("seed") is not None,
+        )
+        return self._build_structured_trace(requirement_id, requirement_text, candidate_index=99, control=control)
 
-    def _build_structured_trace(self, requirement_id: str, requirement_text: str, candidate_index: int) -> str:
+    def _build_structured_trace(
+        self,
+        requirement_id: str,
+        requirement_text: str,
+        candidate_index: int,
+        control: dict[str, Any] | None = None,
+    ) -> str:
         techniques = infer_techniques(requirement_text)
         rules = extract_rule_lines(requirement_text)
         numeric_hints = extract_numeric_hints(requirement_text)
         analysis_lines = [f"- Requirement target: {requirement_id}"]
         analysis_lines.extend(f"- Rule: {rule}" for rule in rules[:6])
+        if control and control.get("profile_label"):
+            analysis_lines.append(f"- Candidate focus: {control['profile_label']}")
         if numeric_hints:
             analysis_lines.extend(
                 f"- Numeric constraint: {hint['field']} -> {hint.get('low')} to {hint.get('high', 'threshold')}" for hint in numeric_hints[:4]
@@ -87,6 +199,8 @@ class MockLLMClient(BaseLLMClient):
             f"- Selected techniques: {', '.join(techniques)}",
             "- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
         ]
+        if control and control.get("profile_instruction"):
+            pattern_lines.append(f"- Deterministic profile: {control['profile_instruction']}")
         steps = []
         step_index = 1
         if "EP" in techniques:
@@ -164,48 +278,216 @@ class MockLLMClient(BaseLLMClient):
 
 
 class OpenAIResponsesClient(BaseLLMClient):
-    def __init__(self, model: str, api_key: str | None = None) -> None:
-        super().__init__(model)
+    def __init__(
+        self,
+        model: str,
+        *,
+        api_key: str | None = None,
+        base_url: str | None = None,
+        timeout: float | None = None,
+        seed: int | None = None,
+        temperature: float | None = None,
+        top_p: float | None = None,
+    ) -> None:
+        super().__init__(model, api_mode="responses", seed=seed, temperature=temperature, top_p=top_p)
         try:
             from openai import OpenAI
         except ImportError as exc:
             raise RuntimeError("openai package is required for provider=openai") from exc
-        self._client = OpenAI(api_key=api_key)
+        client_kwargs = {"api_key": api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url
+        if timeout is not None:
+            client_kwargs["timeout"] = timeout
+        self._client = OpenAI(**client_kwargs)
 
     def generate_structured_candidates(
         self,
         requirement_id: str,
         requirement_text: str,
-        prompt: str,
+        prompt: str | list[str],
         candidates: int,
+        candidate_controls: list[dict[str, Any]] | None = None,
     ) -> list[str]:
-        return [self._run(prompt) for _ in range(candidates)]
+        controls = candidate_controls or [{"candidate_index": index + 1, "seed": None} for index in range(candidates)]
+        outputs: list[str] = []
+        metadata: list[dict[str, Any]] = []
+        for index in range(candidates):
+            control = controls[index] if index < len(controls) else {"candidate_index": index + 1, "seed": None}
+            text, meta = self._run(_prompt_for_index(prompt, index), operation="structured_generation", control=control)
+            outputs.append(text)
+            metadata.append(meta)
+        self._last_generation_metadata = metadata
+        return outputs
 
     def generate_plain_table(
         self,
         requirement_id: str,
         requirement_text: str,
         prompt: str,
+        control: dict[str, Any] | None = None,
     ) -> str:
-        return self._run(prompt)
+        text, meta = self._run(prompt, operation="plain_table_generation", control=control)
+        self._last_plain_metadata = meta
+        return text
 
     def repair_trace(
         self,
         requirement_id: str,
         requirement_text: str,
         repair_prompt: str,
+        control: dict[str, Any] | None = None,
     ) -> str:
-        return self._run(repair_prompt)
+        text, meta = self._run(repair_prompt, operation="repair_trace", control=control)
+        self._last_repair_metadata = meta
+        return text
 
-    def _run(self, prompt: str) -> str:
-        response = self._client.responses.create(model=self.model, input=prompt)
-        return getattr(response, "output_text", "") or ""
+    def _run(self, prompt: str, *, operation: str, control: dict[str, Any] | None) -> tuple[str, dict[str, Any]]:
+        request_kwargs: dict[str, Any] = {"model": self.model, "input": prompt}
+        if self.temperature is not None:
+            request_kwargs["temperature"] = self.temperature
+        if self.top_p is not None:
+            request_kwargs["top_p"] = self.top_p
+        response = self._client.responses.create(**request_kwargs)
+        metadata = self._metadata_payload(
+            operation=operation,
+            control=control,
+            response_id=getattr(response, "id", None),
+            system_fingerprint=getattr(response, "system_fingerprint", None),
+            seed_applied=False,
+        )
+        return getattr(response, "output_text", "") or "", metadata
 
 
-def get_llm_client(provider: str, model: str, api_key: str | None = None) -> BaseLLMClient:
+class OpenAIChatCompletionsClient(BaseLLMClient):
+    def __init__(
+        self,
+        model: str,
+        *,
+        api_key: str | None = None,
+        base_url: str | None = None,
+        timeout: float | None = None,
+        seed: int | None = None,
+        temperature: float | None = None,
+        top_p: float | None = None,
+    ) -> None:
+        super().__init__(model, api_mode="chat_completions", seed=seed, temperature=temperature, top_p=top_p)
+        try:
+            from openai import OpenAI
+        except ImportError as exc:
+            raise RuntimeError("openai package is required for provider=openai") from exc
+        client_kwargs = {"api_key": api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url
+        if timeout is not None:
+            client_kwargs["timeout"] = timeout
+        self._client = OpenAI(**client_kwargs)
+
+    def generate_structured_candidates(
+        self,
+        requirement_id: str,
+        requirement_text: str,
+        prompt: str | list[str],
+        candidates: int,
+        candidate_controls: list[dict[str, Any]] | None = None,
+    ) -> list[str]:
+        controls = candidate_controls or [{"candidate_index": index + 1, "seed": self.seed} for index in range(candidates)]
+        outputs: list[str] = []
+        metadata: list[dict[str, Any]] = []
+        for index in range(candidates):
+            control = controls[index] if index < len(controls) else {"candidate_index": index + 1, "seed": self.seed}
+            text, meta = self._run(_prompt_for_index(prompt, index), operation="structured_generation", control=control)
+            outputs.append(text)
+            metadata.append(meta)
+        self._last_generation_metadata = metadata
+        return outputs
+
+    def generate_plain_table(
+        self,
+        requirement_id: str,
+        requirement_text: str,
+        prompt: str,
+        control: dict[str, Any] | None = None,
+    ) -> str:
+        text, meta = self._run(prompt, operation="plain_table_generation", control=control)
+        self._last_plain_metadata = meta
+        return text
+
+    def repair_trace(
+        self,
+        requirement_id: str,
+        requirement_text: str,
+        repair_prompt: str,
+        control: dict[str, Any] | None = None,
+    ) -> str:
+        text, meta = self._run(repair_prompt, operation="repair_trace", control=control)
+        self._last_repair_metadata = meta
+        return text
+
+    def _run(self, prompt: str, *, operation: str, control: dict[str, Any] | None) -> tuple[str, dict[str, Any]]:
+        request_kwargs: dict[str, Any] = {
+            "model": self.model,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+        if self.temperature is not None:
+            request_kwargs["temperature"] = self.temperature
+        if self.top_p is not None:
+            request_kwargs["top_p"] = self.top_p
+        seed = (control or {}).get("seed")
+        if seed is not None:
+            request_kwargs["seed"] = seed
+        response = self._client.chat.completions.create(**request_kwargs)
+        choice = response.choices[0] if getattr(response, "choices", None) else None
+        content = ""
+        if choice and getattr(choice, "message", None):
+            content = getattr(choice.message, "content", "") or ""
+        metadata = self._metadata_payload(
+            operation=operation,
+            control=control,
+            response_id=getattr(response, "id", None),
+            system_fingerprint=getattr(response, "system_fingerprint", None),
+            finish_reason=getattr(choice, "finish_reason", None) if choice else None,
+            seed_applied=seed is not None,
+        )
+        return content, metadata
+
+
+def get_llm_client(
+    provider: str,
+    model: str,
+    api_key: str | None = None,
+    base_url: str | None = None,
+    timeout: float | None = None,
+    *,
+    api_mode: str = "chat_completions",
+    seed: int | None = None,
+    temperature: float | None = None,
+    top_p: float | None = None,
+) -> BaseLLMClient:
     provider_key = provider.strip().lower()
     if provider_key == "mock":
-        return MockLLMClient(model)
+        return MockLLMClient(model, seed=seed, temperature=temperature, top_p=top_p)
     if provider_key == "openai":
-        return OpenAIResponsesClient(model=model, api_key=api_key)
+        api_mode_key = api_mode.strip().lower()
+        if api_mode_key == "responses":
+            return OpenAIResponsesClient(
+                model=model,
+                api_key=api_key,
+                base_url=base_url,
+                timeout=timeout,
+                seed=seed,
+                temperature=temperature,
+                top_p=top_p,
+            )
+        if api_mode_key == "chat_completions":
+            return OpenAIChatCompletionsClient(
+                model=model,
+                api_key=api_key,
+                base_url=base_url,
+                timeout=timeout,
+                seed=seed,
+                temperature=temperature,
+                top_p=top_p,
+            )
+        raise ValueError(f"Unsupported OpenAI API mode: {api_mode}")
     raise ValueError(f"Unsupported provider: {provider}")

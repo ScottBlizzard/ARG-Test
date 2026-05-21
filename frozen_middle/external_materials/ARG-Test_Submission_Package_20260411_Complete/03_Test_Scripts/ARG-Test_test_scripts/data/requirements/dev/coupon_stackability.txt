@@ -1,0 +1,8 @@
+Requirement ID: coupon_stackability
+Domain: e-commerce promotion
+
+Rules:
+1. Coupons are either stackable or non-stackable.
+2. At most one non-stackable coupon may be applied to an order.
+3. Stackable coupons may be combined with other stackable coupons.
+4. If a non-stackable coupon is applied, applying any additional coupon is rejected.

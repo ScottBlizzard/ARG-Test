@@ -1,0 +1,29 @@
+{
+  "requirement_id": "coupon_code_format_validation",
+  "recommended_techniques": ["EP", "BVA"],
+  "valid_partitions": [
+    "length 6 to 12",
+    "uppercase letters and digits only",
+    "no leading or trailing spaces"
+  ],
+  "invalid_partitions": [
+    "missing coupon code",
+    "too short",
+    "too long",
+    "contains lowercase",
+    "contains special characters",
+    "contains spaces"
+  ],
+  "boundaries": [
+    {"field": "coupon_code_length", "points": [5, 6, 7, 11, 12, 13]}
+  ],
+  "decision_rules": [
+    "missing code -> reject",
+    "length outside 6 to 12 -> reject",
+    "non A-Z0-9 character -> reject",
+    "valid format -> accept"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["code has unicode characters"]
+}

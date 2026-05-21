@@ -1,0 +1,9 @@
+Requirement ID: free_shipping_threshold_by_member_tier
+Domain: e-commerce shipping
+
+Rules:
+1. member_tier is one of Guest, Silver, or Gold.
+2. For local or domestic orders, Standard shipping becomes free when subtotal reaches the tier threshold.
+3. Thresholds are: Guest 120, Silver 100, Gold 80.
+4. Express shipping is never free.
+5. International orders never get free shipping.

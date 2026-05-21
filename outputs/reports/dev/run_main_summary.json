@@ -2,7 +2,7 @@
   {
     "requirement_id": "age_restricted_product_purchase_validation",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -14,27 +14,34 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.333,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.333,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.067,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "bva_contract: missing lower-boundary or just-below case",
       "bva_contract: missing upper-boundary or just-above case",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "backorder_policy_and_eta",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "backorder_policy_and_eta",
@@ -45,25 +52,32 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.5,
         "decision_rule_coverage": 0.5,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.476,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.267,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "cart_item_quantity_limit",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "cart_item_quantity_limit",
@@ -74,25 +88,31 @@
         "invalid_partition_coverage": 0.5,
         "boundary_coverage": 0.5,
         "decision_rule_coverage": 0.4,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.629,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.48,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "cart_merge_on_login",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -104,27 +124,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "cart_stock_check_on_add",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -136,26 +162,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.25,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.321,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.05,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "cash_on_delivery_eligibility",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -167,28 +200,34 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "checkout_address_postcode_format",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "checkout_address_postcode_format",
@@ -199,26 +238,32 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.5,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.414,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.18,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "checkout_address_required_fields",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "checkout_address_required_fields",
@@ -229,25 +274,32 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.25,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.369,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.117,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "coupon_code_format_validation",
     "split": "dev",
-    "score": 0.8500000000000001,
-    "repaired": true,
+    "score": 1.0,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "coupon_code_format_validation",
@@ -258,24 +310,30 @@
         "invalid_partition_coverage": 0.167,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.25,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.345,
-      "checker_score": 0.8500000000000001,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.083,
+      "checker_score": 1.0,
+      "repaired": false
     },
     "diagnostics": [
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "coupon_expiry_and_timezone",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -287,26 +345,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.25,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.321,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.05,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "bva_contract: missing lower-boundary or just-below case",
       "bva_contract: missing upper-boundary or just-above case",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "coupon_minimum_spend",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -318,26 +383,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.333,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.333,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.067,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "bva_contract: missing lower-boundary or just-below case",
       "bva_contract: missing upper-boundary or just-above case",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "coupon_stackability",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -347,28 +419,34 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
+        "boundary_coverage": null,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.429,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 4,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "coupon_usage_limit_per_user",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -380,20 +458,27 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.333,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.333,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.067,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "bva_contract: missing lower-boundary or just-below case",
       "bva_contract: missing upper-boundary or just-above case",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
@@ -411,23 +496,32 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.5,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.452,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.233,
       "checker_score": 0.9500000000000001,
       "repaired": false
     },
     "diagnostics": [
-      "decision_contract: decision table coverage appears shallow"
+      "decision_contract: decision table coverage appears shallow",
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "customer_tier_upgrade_rules",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "customer_tier_upgrade_rules",
@@ -438,26 +532,32 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 1.0,
         "decision_rule_coverage": 0.5,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.5,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.3,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "delivery_slot_capacity_booking",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "delivery_slot_capacity_booking",
@@ -468,24 +568,31 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.25,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.321,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.05,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "digital_product_instant_delivery",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -497,27 +604,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "download_link_expiry_and_download_limit",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -529,20 +642,27 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
@@ -558,13 +678,22 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
+        "boundary_coverage": null,
         "decision_rule_coverage": 0.0,
         "state_coverage": 0.125,
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.161,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 6,
+      "overall_coverage": 0.021,
       "checker_score": 0.9500000000000001,
       "repaired": false
     },
@@ -592,6 +721,16 @@
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
       "overall_coverage": 0.0,
       "checker_score": 0.65,
       "repaired": true
@@ -607,8 +746,8 @@
   {
     "requirement_id": "fraud_risk_scoring_rules",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "fraud_risk_scoring_rules",
@@ -619,25 +758,31 @@
         "invalid_partition_coverage": 0.333,
         "boundary_coverage": 0.333,
         "decision_rule_coverage": 0.2,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.409,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.173,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "free_shipping_threshold_by_member_tier",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -649,27 +794,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "gift_card_code_validation",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -681,26 +832,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.333,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.333,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.067,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "bva_contract: missing lower-boundary or just-below case",
       "bva_contract: missing upper-boundary or just-above case",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "gift_card_partial_redemption",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -712,27 +870,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "invoice_vat_number_validation",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -744,20 +908,27 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
@@ -774,12 +945,21 @@
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
-        "decision_rule_coverage": 1.0,
+        "decision_rule_coverage": null,
         "state_coverage": 0.0,
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.143,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 6,
+      "overall_coverage": 0.0,
       "checker_score": 0.9500000000000001,
       "repaired": false
     },
@@ -791,7 +971,7 @@
   {
     "requirement_id": "loyalty_points_earn",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -803,27 +983,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.333,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.333,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.067,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "loyalty_points_redeem_limit",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -835,26 +1021,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "multi_currency_price_rounding",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -866,27 +1059,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "order_cancellation_window",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -898,21 +1097,27 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
@@ -928,13 +1133,22 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
+        "boundary_coverage": null,
         "decision_rule_coverage": 0.0,
         "state_coverage": 0.0,
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.143,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 6,
+      "overall_coverage": 0.0,
       "checker_score": 0.9500000000000001,
       "repaired": false
     },
@@ -946,7 +1160,7 @@
   {
     "requirement_id": "order_total_tax_calculation",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -958,28 +1172,34 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "password_policy_checker",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "password_policy_checker",
@@ -990,19 +1210,25 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.25,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.357,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.1,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
@@ -1024,6 +1250,16 @@
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
       "overall_coverage": 0.0,
       "checker_score": 0.65,
       "repaired": true
@@ -1039,7 +1275,7 @@
   {
     "requirement_id": "payment_method_availability_by_country",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -1049,23 +1285,28 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
+        "boundary_coverage": null,
         "decision_rule_coverage": 0.25,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.464,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 4,
+      "overall_coverage": 0.062,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
@@ -1087,6 +1328,16 @@
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
       "overall_coverage": 0.0,
       "checker_score": 0.9500000000000001,
       "repaired": false
@@ -1099,8 +1350,8 @@
   {
     "requirement_id": "preorder_deposit_and_balance_payment",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "preorder_deposit_and_balance_payment",
@@ -1111,25 +1362,31 @@
         "invalid_partition_coverage": 0.5,
         "boundary_coverage": 0.5,
         "decision_rule_coverage": 1.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 1.0
       },
-      "overall_coverage": 0.762,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.667,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "product_variant_selection_validation",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -1139,28 +1396,34 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
+        "boundary_coverage": null,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.429,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 4,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "bva_contract: missing lower-boundary or just-below case",
       "bva_contract: missing upper-boundary or just-above case",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "refund_amount_calculation_rules",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -1172,27 +1435,33 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "bva_contract: missing lower-boundary or just-below case",
       "bva_contract: missing upper-boundary or just-above case",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "return_request_eligibility",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -1204,20 +1473,27 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
@@ -1233,13 +1509,22 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
+        "boundary_coverage": null,
         "decision_rule_coverage": 0.0,
         "state_coverage": 0.2,
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.171,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 6,
+      "overall_coverage": 0.033,
       "checker_score": 0.9500000000000001,
       "repaired": false
     },
@@ -1251,8 +1536,8 @@
   {
     "requirement_id": "review_submission_validation",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "review_submission_validation",
@@ -1263,24 +1548,31 @@
         "invalid_partition_coverage": 0.2,
         "boundary_coverage": 0.5,
         "decision_rule_coverage": 0.25,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.421,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.19,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "seller_payout_fee_calculation",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -1292,28 +1584,34 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "shipping_fee_calculator",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "shipping_fee_calculator",
@@ -1324,25 +1622,31 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.5,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.405,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.167,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "shipping_method_eligibility_by_weight",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -1354,21 +1658,27 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "bva_contract: missing lower-boundary or just-below case",
       "bva_contract: missing upper-boundary or just-above case",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
@@ -1390,6 +1700,16 @@
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
       "overall_coverage": 0.0,
       "checker_score": 0.65,
       "repaired": true
@@ -1406,7 +1726,7 @@
   {
     "requirement_id": "subscription_renewal_billing_rules",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -1416,23 +1736,28 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
+        "boundary_coverage": null,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.429,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 4,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "schema: verification references invalid step numbers: [2]",
       "bva_contract: not applicable",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
@@ -1454,6 +1779,16 @@
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
       "overall_coverage": 0.0,
       "checker_score": 0.8500000000000001,
       "repaired": true
@@ -1467,7 +1802,7 @@
   {
     "requirement_id": "tax_exempt_certificate_validation",
     "split": "dev",
-    "score": 0.65,
+    "score": 0.8500000000000001,
     "repaired": true,
     "metrics": {
       "gold_spec_found": true,
@@ -1479,28 +1814,34 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.667,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.429,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.2,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     },
     "diagnostics": [
       "bva_contract: missing lower-boundary or just-below case",
       "bva_contract: missing upper-boundary or just-above case",
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   },
   {
     "requirement_id": "user_registration_validation",
     "split": "dev",
-    "score": 0.75,
-    "repaired": true,
+    "score": 0.9500000000000001,
+    "repaired": false,
     "metrics": {
       "gold_spec_found": true,
       "requirement_id": "user_registration_validation",
@@ -1510,20 +1851,25 @@
         "valid_partition_coverage": 0.25,
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
-        "decision_rule_coverage": 1.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "decision_rule_coverage": null,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.464,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 4,
+      "overall_coverage": 0.062,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     },
     "diagnostics": [
       "decision_contract: decision table coverage appears shallow",
-      "state_contract: analysis and steps do not clearly model states or transitions",
-      "state_contract: missing legal transition test",
-      "state_contract: missing illegal transition test"
+      "state_contract: not applicable"
     ]
   }
 ]

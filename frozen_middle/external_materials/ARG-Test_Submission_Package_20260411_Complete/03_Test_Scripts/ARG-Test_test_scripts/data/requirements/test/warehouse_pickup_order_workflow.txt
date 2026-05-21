@@ -1,0 +1,12 @@
+Requirement ID: warehouse_pickup_order_workflow
+Domain: pickup workflow
+
+Rules:
+1. A pickup order starts in READY_FOR_PICKUP after parcel arrival.
+2. If the customer provides the correct pickup code within the pickup window, the order moves to PICKED_UP.
+3. If the pickup window expires before pickup, the order moves to EXPIRED.
+4. From EXPIRED, staff may transition the order to RETURN_IN_TRANSIT.
+5. If station staff report parcel damage, the order moves to HOLD_FOR_REVIEW.
+6. Illegal: PICKED_UP back to READY_FOR_PICKUP.
+7. Illegal: EXPIRED directly to PICKED_UP.
+8. pickup_attempt_count must not exceed 3 before HOLD_FOR_REVIEW.

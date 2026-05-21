@@ -1,5 +1,6 @@
 {
   "requirement_id": "coupon_code_format_validation",
+  "category": "input_validation",
   "analysis": "- Requirement target: coupon_code_format_validation\n- Rule: 1. coupon_code is required.\n- Rule: 2. coupon_code must be 6 to 12 characters.\n- Rule: 3. Allowed characters are uppercase letters A-Z and digits 0-9.\n- Rule: 4. Leading or trailing spaces are not allowed.\n- Rule: 5. Invalid coupon_code returns a validation error.\n- Numeric constraint: coupon_code -> 6 to 12",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
@@ -18,7 +19,7 @@
       "expected_output": "request accepted",
       "covered_item": "valid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative valid input"
     },
     {
@@ -29,7 +30,7 @@
       "expected_output": "validation error",
       "covered_item": "invalid partition",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "representative invalid input"
     },
     {
@@ -40,7 +41,7 @@
       "expected_output": "validation error",
       "covered_item": "below lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "coupon_code=5"
     },
     {
@@ -51,7 +52,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on lower boundary",
       "priority": "High",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "coupon_code=6"
     },
     {
@@ -62,7 +63,7 @@
       "expected_output": "boundary accepted",
       "covered_item": "on upper boundary",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "coupon_code=12"
     },
     {
@@ -73,7 +74,7 @@
       "expected_output": "rule-specific outcome",
       "covered_item": "decision rule coverage",
       "priority": "Medium",
-      "checker_status": "repaired",
+      "checker_status": "pending",
       "input": "rule trigger combination"
     }
   ]

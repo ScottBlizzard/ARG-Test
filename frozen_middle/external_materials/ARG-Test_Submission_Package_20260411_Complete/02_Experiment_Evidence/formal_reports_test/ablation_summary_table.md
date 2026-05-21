@@ -1,0 +1,34 @@
+| requirement_id | split | variant | checker_score | overall_coverage | duplicate_count | test_count | repaired | applicable_dimension_count | valid_partition_coverage | invalid_partition_coverage | boundary_coverage | decision_rule_coverage | state_coverage | illegal_transition_coverage | exception_coverage |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| address_international_format_validation | test | structured_no_checker | 0.65 | 0.133 | 0 | 12 |  | 5 | 0.167 | 0 | 0 | 0.5 |  |  | 0 |
+| address_international_format_validation | test | full_pipeline | 0.85 | 0.375 | 0 | 10 | True | 5 | 0.167 | 0.625 | 0 | 0.75 |  |  | 0.333 |
+| bank_transfer_rule_checker | test | structured_no_checker | 0.85 | 0.486 | 0 | 9 |  | 5 | 1 | 0.429 | 0 | 1 |  |  | 0 |
+| bank_transfer_rule_checker | test | full_pipeline | 1 | 0.486 | 0 | 12 | False | 5 | 1 | 0.429 | 0 | 1 |  |  | 0 |
+| bundle_discount_eligibility_rules | test | structured_no_checker | 0.85 | 0.547 | 0 | 9 |  | 5 | 0.8 | 0.8 | 0 | 0.8 |  |  | 0.333 |
+| bundle_discount_eligibility_rules | test | full_pipeline | 0.95 | 0.627 | 0 | 7 | False | 5 | 1 | 0.8 | 0 | 1 |  |  | 0.333 |
+| checkout_promo_stack_and_priority | test | structured_no_checker | 0.8 | 0 | 0 | 0 |  | 5 | 0 | 0 | 0 | 0 |  |  | 0 |
+| checkout_promo_stack_and_priority | test | full_pipeline | 0.95 | 0.695 | 0 | 5 | False | 5 | 1 | 0.6 | 0.333 | 0.875 |  |  | 0.667 |
+| coupon_discount_engine | test | structured_no_checker | 0.95 | 0.683 | 0 | 6 |  | 5 | 0.25 | 0.667 | 1 | 1 |  |  | 0.5 |
+| coupon_discount_engine | test | full_pipeline | 0.95 | 0.683 | 0 | 9 | True | 5 | 0.25 | 0.667 | 1 | 1 |  |  | 0.5 |
+| gift_card_and_coupon_combination_rules | test | structured_no_checker | 1 | 0.62 | 0 | 6 |  | 5 | 1 | 0.6 | 0 | 0.833 |  |  | 0.667 |
+| gift_card_and_coupon_combination_rules | test | full_pipeline | 0.95 | 0.513 | 0 | 6 | False | 5 | 0.8 | 0.6 | 0 | 0.833 |  |  | 0.333 |
+| gift_order_recipient_contact_validation | test | structured_no_checker | 0.95 | 0.403 | 0 | 13 |  | 5 | 0.6 | 0.667 | 0 | 0.75 |  |  | 0 |
+| gift_order_recipient_contact_validation | test | full_pipeline | 0.95 | 0.604 | 0 | 8 | True | 5 | 0.8 | 0.889 | 0 | 1 |  |  | 0.333 |
+| order_approval_state_machine | test | structured_no_checker | 0.95 | 0.521 | 0 | 9 |  | 5 | 0.857 | 0.75 |  |  | 1 | 0 | 0 |
+| order_approval_state_machine | test | full_pipeline | 1 | 0.493 | 0 | 7 | False | 5 | 0.714 | 0.75 |  |  | 1 | 0 | 0 |
+| order_split_shipment_state_machine | test | structured_no_checker | 0.95 | 0.471 | 0 | 5 |  | 6 | 0.2 | 0.5 |  | 0.833 | 0.625 | 0 | 0.667 |
+| order_split_shipment_state_machine | test | full_pipeline | 0.95 | 0.84 | 0 | 5 | False | 6 | 1 | 1 |  | 1 | 0.875 | 0.5 | 0.667 |
+| payment_3ds_authentication_flow | test | structured_no_checker | 0.75 | 0.5 | 0 | 6 |  | 7 | 1 | 0.75 | 0 | 1 | 0.5 | 0.25 | 0 |
+| payment_3ds_authentication_flow | test | full_pipeline | 1 | 0.655 | 0 | 5 | False | 7 | 1 | 0.75 | 0 | 1 | 0.5 | 1 | 0.333 |
+| payment_card_expiry_and_cvv_validation | test | structured_no_checker | 0.55 | 0.502 | 0 | 10 |  | 5 | 0.833 | 0.545 | 0 | 0.8 |  |  | 0.333 |
+| payment_card_expiry_and_cvv_validation | test | full_pipeline | 0.85 | 0.587 | 0 | 15 | True | 5 | 0.833 | 0.636 | 0 | 0.8 |  |  | 0.667 |
+| pickup_station_contact_validation | test | structured_no_checker | 0.75 | 0.59 | 0 | 10 |  | 5 | 0.833 | 0.7 | 0 | 0.75 |  |  | 0.667 |
+| pickup_station_contact_validation | test | full_pipeline | 0.95 | 0.713 | 0 | 9 | False | 5 | 0.667 | 0.9 | 0 | 1 |  |  | 1 |
+| return_exchange_approval_workflow | test | structured_no_checker | 0.85 | 0.52 | 0 | 5 |  | 7 | 1 | 0.667 | 0 | 0.75 | 0.889 | 0 | 0.333 |
+| return_exchange_approval_workflow | test | full_pipeline | 0.95 | 0.714 | 0 | 5 | False | 7 | 1 | 1 | 0 | 1 | 1 | 1 | 0 |
+| return_refund_method_eligibility | test | structured_no_checker | 0.75 | 0.568 | 0 | 5 |  | 5 | 0.857 | 0.75 | 0 | 0.9 |  |  | 0.333 |
+| return_refund_method_eligibility | test | full_pipeline | 0.95 | 0.568 | 0 | 9 | True | 5 | 0.857 | 0.75 | 0 | 0.9 |  |  | 0.333 |
+| ticket_booking_refund_rule | test | structured_no_checker | 0.85 | 0.413 | 0 | 5 |  | 5 | 0.714 | 0.25 | 0.5 | 0.6 |  |  | 0 |
+| ticket_booking_refund_rule | test | full_pipeline | 0.95 | 0.464 | 0 | 6 | False | 5 | 0.571 | 0.25 | 0.5 | 1 |  |  | 0 |
+| warehouse_pickup_order_workflow | test | structured_no_checker | 0.75 | 0.781 | 0 | 5 |  | 7 | 1 | 1 | 0 | 1 | 0.8 | 1 | 0.667 |
+| warehouse_pickup_order_workflow | test | full_pipeline | 0.95 | 0.781 | 0 | 7 | False | 7 | 1 | 1 | 0 | 1 | 0.8 | 1 | 0.667 |

@@ -1,0 +1,8 @@
+Requirement ID: loyalty_points_earn
+Domain: e-commerce loyalty
+
+Rules:
+1. Earned points are computed from net_subtotal (non-negative).
+2. earn_rate is 1 point per 1 currency unit.
+3. earned_points equals floor(net_subtotal).
+4. If an order is cancelled or fully refunded, earned_points become 0.

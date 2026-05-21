@@ -1,0 +1,10 @@
+Requirement ID: gift_card_and_coupon_combination_rules
+Domain: payment promotion
+
+Rules:
+1. Gift cards may be used together with at most one coupon.
+2. Coupon discount is applied to merchandise subtotal (excluding shipping and tax) before applying gift card balance.
+3. Gift card balance is applied after coupon and can cover shipping and tax.
+4. Coupons cannot discount gift card products.
+5. The final payable amount must never be negative.
+6. Invalid inputs: multiple coupons, expired coupon, gift card code invalid.

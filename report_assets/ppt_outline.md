@@ -1,24 +1,15 @@
 ﻿# PPT Outline
 
-1. Title, Team ID, Names, Student IDs
-2. Background and problem
-3. Why plain LLM is not enough
-4. Project goal and research questions
-5. ARG-Test framework
-6. Structured testing trace schema
-7. Contract checker design
-8. Example requirement to generated tests
-9. Experimental setup and baselines
-10. Main results
-11. Case study and ablation
-12. Comparison with traditional testing
-13. Limitations and future improvements
-14. Conclusion
+This file is now only the short entry point.
 
-Suggested timing:
+Use the full blueprint here:
 
-- Background and motivation: 2 minutes
-- Method: 5 minutes
-- Demo: 2 minutes
-- Experiments: 4 minutes
-- Conclusion: 2 minutes
+- `report_assets/final_ppt_blueprint_cn.md`
+
+The full blueprint contains:
+
+- slide-by-slide structure
+- frozen number references
+- figure inventory
+- manual case-selection guidance
+- clarification points for the questions raised during the middle-phase defense

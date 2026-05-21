@@ -1,5 +1,6 @@
 {
   "requirement_id": "age_restricted_product_purchase_validation",
+  "category": "input_validation",
   "analysis": "- Requirement target: age_restricted_product_purchase_validation\n- Rule: 1. Some products define minimum_age (e.g., 18).\n- Rule: 2. If minimum_age is set, buyer_age and id_verified are required.\n- Rule: 3. Purchase is allowed only when buyer_age is at least minimum_age and id_verified is true.\n- Rule: 4. If validation fails, checkout is rejected.",
   "pattern": "- Selected techniques: EP, BVA, Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

@@ -1,5 +1,6 @@
 {
   "requirement_id": "multi_currency_price_rounding",
+  "category": "business_rules",
   "analysis": "- Requirement target: multi_currency_price_rounding\n- Rule: 1. Prices are converted using exchange_rate: converted = base_amount * exchange_rate.\n- Rule: 2. USD and EUR display 2 decimals; JPY displays 0 decimals.\n- Rule: 3. Rounding is half-up.\n- Rule: 4. Line total equals rounded(converted_unit_price) * quantity.\n- Rule: 5. Cart subtotal equals sum of line totals.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [

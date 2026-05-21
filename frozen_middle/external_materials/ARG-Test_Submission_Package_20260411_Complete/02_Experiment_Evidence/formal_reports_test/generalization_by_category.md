@@ -1,0 +1,5 @@
+| category | requirement_count | avg_checker_score | avg_overall_coverage | avg_duplicate_count | avg_test_count |
+| --- | --- | --- | --- | --- | --- |
+| business_rules | 7 | 0.957 | 0.577 | 0 | 7.714 |
+| input_validation | 4 | 0.95 | 0.579 | 0 | 8.5 |
+| workflow_state | 5 | 0.97 | 0.697 | 0 | 5.8 |

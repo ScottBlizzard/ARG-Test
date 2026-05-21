@@ -33,10 +33,13 @@
       "name": "state_contract",
       "passed": true,
       "score": 1.0,
-      "diagnostics": []
+      "diagnostics": [
+        "not applicable"
+      ]
     }
   ],
   "diagnostics": [
-    "decision_contract: decision table coverage appears shallow"
+    "decision_contract: decision table coverage appears shallow",
+    "state_contract: not applicable"
   ]
 }

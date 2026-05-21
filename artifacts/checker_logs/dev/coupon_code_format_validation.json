@@ -1,7 +1,7 @@
 {
   "requirement_id": "coupon_code_format_validation",
-  "score": 0.8500000000000001,
-  "repaired": true,
+  "score": 1.0,
+  "repaired": false,
   "checks": [
     {
       "name": "schema",
@@ -29,18 +29,14 @@
     },
     {
       "name": "state_contract",
-      "passed": false,
-      "score": 0.0,
+      "passed": true,
+      "score": 1.0,
       "diagnostics": [
-        "analysis and steps do not clearly model states or transitions",
-        "missing legal transition test",
-        "missing illegal transition test"
+        "not applicable"
       ]
     }
   ],
   "diagnostics": [
-    "state_contract: analysis and steps do not clearly model states or transitions",
-    "state_contract: missing legal transition test",
-    "state_contract: missing illegal transition test"
+    "state_contract: not applicable"
   ]
 }

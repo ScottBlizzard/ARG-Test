@@ -1,0 +1,11 @@
+Requirement ID: order_status_fulfillment_state_machine
+Domain: e-commerce fulfillment workflow
+
+Rules:
+1. An order starts in Created.
+2. Payment success moves the order to Paid.
+3. Pack operation moves Paid to Packed.
+4. Ship operation moves Packed to Shipped.
+5. Delivery confirmation moves Shipped to Delivered.
+6. Cancellation is allowed only in Created or Paid or Packed.
+7. Return is allowed only from Delivered and moves to Returned.

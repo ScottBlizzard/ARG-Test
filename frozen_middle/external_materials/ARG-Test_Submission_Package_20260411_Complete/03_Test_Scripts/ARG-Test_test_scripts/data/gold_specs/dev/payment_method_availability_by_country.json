@@ -1,0 +1,25 @@
+{
+  "requirement_id": "payment_method_availability_by_country",
+  "recommended_techniques": ["EP", "Decision Table"],
+  "valid_partitions": [
+    "US supports Card and PayPal",
+    "EU supports Card and PayPal",
+    "CN supports Card and Alipay",
+    "unknown country supports Card only"
+  ],
+  "invalid_partitions": [
+    "select PayPal in CN",
+    "select Alipay in US",
+    "select any non-Card in unknown country"
+  ],
+  "boundaries": [],
+  "decision_rules": [
+    "country US or EU -> PayPal allowed",
+    "country CN -> Alipay allowed",
+    "all countries -> Card allowed",
+    "select method not in allowed set -> error"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["country code lowercase"]
+}

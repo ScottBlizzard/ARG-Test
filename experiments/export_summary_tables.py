@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import csv
@@ -10,7 +10,26 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.config import load_runtime_config
 from src.utils import load_json
+
+
+OUTPUTS_ROOT = ROOT / 'outputs'
+
+
+def display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+def render_value(value):
+    if value is None:
+        return ''
+    if isinstance(value, float):
+        return f'{value:.3f}'.rstrip('0').rstrip('.')
+    return value
 
 
 def write_csv(path: Path, rows: list[dict]) -> None:
@@ -21,7 +40,7 @@ def write_csv(path: Path, rows: list[dict]) -> None:
     with path.open('w', encoding='utf-8', newline='') as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows([{key: render_value(value) for key, value in row.items()} for row in rows])
 
 
 def write_md(path: Path, rows: list[dict]) -> None:
@@ -35,12 +54,12 @@ def write_md(path: Path, rows: list[dict]) -> None:
         '| ' + ' | '.join(['---'] * len(headers)) + ' |',
     ]
     for row in rows:
-        lines.append('| ' + ' | '.join(str(row.get(header, '')).replace('|', '/') for header in headers) + ' |')
+        lines.append('| ' + ' | '.join(str(render_value(row.get(header, ''))).replace('|', '/') for header in headers) + ' |')
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
 def flatten_main(split: str) -> list[dict]:
-    path = ROOT / 'outputs' / 'reports' / split / 'run_main_summary.json'
+    path = OUTPUTS_ROOT / 'reports' / split / 'run_main_summary.json'
     if not path.exists():
         return []
     payload = load_json(path)
@@ -48,15 +67,20 @@ def flatten_main(split: str) -> list[dict]:
     for item in payload:
         metrics = item.get('metrics', {})
         coverage = metrics.get('coverage', {})
+        risk = item.get('risk_assessment') or {}
         rows.append(
             {
                 'requirement_id': item.get('requirement_id', ''),
                 'split': split,
+                'category': item.get('category', ''),
+                'risk_level': risk.get('level', ''),
+                'risk_score': risk.get('score', ''),
                 'checker_score': item.get('score', ''),
                 'overall_coverage': metrics.get('overall_coverage', ''),
                 'duplicate_count': metrics.get('duplicate_count', ''),
                 'test_count': metrics.get('test_count', ''),
                 'repaired': item.get('repaired', False),
+                'applicable_dimension_count': metrics.get('applicable_dimension_count', ''),
                 'valid_partition_coverage': coverage.get('valid_partition_coverage', ''),
                 'invalid_partition_coverage': coverage.get('invalid_partition_coverage', ''),
                 'boundary_coverage': coverage.get('boundary_coverage', ''),
@@ -71,23 +95,28 @@ def flatten_main(split: str) -> list[dict]:
 
 
 def flatten_baseline(split: str) -> list[dict]:
-    path = ROOT / 'outputs' / 'reports' / split / 'baseline_summary.json'
+    path = OUTPUTS_ROOT / 'reports' / split / 'baseline_summary.json'
     if not path.exists():
         return []
     payload = load_json(path)
     rows = []
     for item in payload:
+        risk = item.get('risk_assessment') or {}
         for baseline, metrics in item.get('baselines', {}).items():
             coverage = metrics.get('coverage', {})
             rows.append(
                 {
                     'requirement_id': item.get('requirement_id', ''),
                     'split': split,
+                    'category': item.get('category', ''),
+                    'risk_level': risk.get('level', ''),
+                    'risk_score': risk.get('score', ''),
                     'baseline': baseline,
                     'checker_score': metrics.get('checker_score', ''),
                     'overall_coverage': metrics.get('overall_coverage', ''),
                     'duplicate_count': metrics.get('duplicate_count', ''),
                     'test_count': metrics.get('test_count', ''),
+                    'applicable_dimension_count': metrics.get('applicable_dimension_count', ''),
                     'valid_partition_coverage': coverage.get('valid_partition_coverage', ''),
                     'invalid_partition_coverage': coverage.get('invalid_partition_coverage', ''),
                     'boundary_coverage': coverage.get('boundary_coverage', ''),
@@ -101,12 +130,13 @@ def flatten_baseline(split: str) -> list[dict]:
 
 
 def flatten_ablation(split: str) -> list[dict]:
-    path = ROOT / 'outputs' / 'reports' / split / 'ablation_summary.json'
+    path = OUTPUTS_ROOT / 'reports' / split / 'ablation_summary.json'
     if not path.exists():
         return []
     payload = load_json(path)
     rows = []
     for item in payload:
+        risk = item.get('risk_assessment') or {}
         for variant in ['structured_no_checker', 'full_pipeline']:
             metrics = item.get(variant, {})
             coverage = metrics.get('coverage', {})
@@ -114,12 +144,16 @@ def flatten_ablation(split: str) -> list[dict]:
                 {
                     'requirement_id': item.get('requirement_id', ''),
                     'split': split,
+                    'category': item.get('category', ''),
+                    'risk_level': risk.get('level', ''),
+                    'risk_score': risk.get('score', ''),
                     'variant': variant,
                     'checker_score': metrics.get('checker_score', ''),
                     'overall_coverage': metrics.get('overall_coverage', ''),
                     'duplicate_count': metrics.get('duplicate_count', ''),
                     'test_count': metrics.get('test_count', ''),
                     'repaired': metrics.get('repaired', ''),
+                    'applicable_dimension_count': metrics.get('applicable_dimension_count', ''),
                     'valid_partition_coverage': coverage.get('valid_partition_coverage', ''),
                     'invalid_partition_coverage': coverage.get('invalid_partition_coverage', ''),
                     'boundary_coverage': coverage.get('boundary_coverage', ''),
@@ -133,7 +167,7 @@ def flatten_ablation(split: str) -> list[dict]:
 
 
 def flatten_generalization(split: str) -> list[dict]:
-    path = ROOT / 'outputs' / 'reports' / split / 'generalization_by_category.json'
+    path = OUTPUTS_ROOT / 'reports' / split / 'generalization_by_category.json'
     if not path.exists():
         return []
     payload = load_json(path)
@@ -144,12 +178,17 @@ def flatten_generalization(split: str) -> list[dict]:
 
 
 def main() -> None:
+    global OUTPUTS_ROOT
+
     parser = argparse.ArgumentParser(description='Export report summary JSON files to CSV and Markdown tables.')
     parser.add_argument('--kind', choices=['main', 'baseline', 'ablation', 'generalization', 'all'], default='all')
     parser.add_argument('--split', choices=['dev', 'test'], default='test')
+    parser.add_argument('--output-root', default=None)
     args = parser.parse_args()
 
-    table_dir = ROOT / 'outputs' / 'reports' / args.split / 'tables'
+    config = load_runtime_config(base_dir=ROOT, output_root=args.output_root)
+    OUTPUTS_ROOT = config.paths.outputs
+    table_dir = OUTPUTS_ROOT / 'reports' / args.split / 'tables'
     table_dir.mkdir(parents=True, exist_ok=True)
 
     mapping = {
@@ -163,14 +202,14 @@ def main() -> None:
 
     for kind in kinds:
         rows = mapping[kind](args.split)
-        csv_path = table_dir / f'{kind}_summary_table.csv' if kind != 'generalization' else table_dir / 'generalization_by_category.csv'
-        md_path = table_dir / f'{kind}_summary_table.md' if kind != 'generalization' else table_dir / 'generalization_by_category.md'
+        csv_path = table_dir / (f'{kind}_summary_table.csv' if kind != 'generalization' else 'generalization_by_category.csv')
+        md_path = table_dir / (f'{kind}_summary_table.md' if kind != 'generalization' else 'generalization_by_category.md')
         write_csv(csv_path, rows)
         write_md(md_path, rows)
         exported[kind] = {
             'rows': len(rows),
-            'csv': str(csv_path.relative_to(ROOT)),
-            'md': str(md_path.relative_to(ROOT)),
+            'csv': display_path(csv_path),
+            'md': display_path(md_path),
         }
 
     print(json.dumps({'split': args.split, 'exported': exported}, indent=2, ensure_ascii=False))

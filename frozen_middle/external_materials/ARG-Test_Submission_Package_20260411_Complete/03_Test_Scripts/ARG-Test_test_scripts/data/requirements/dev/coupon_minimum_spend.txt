@@ -1,0 +1,8 @@
+Requirement ID: coupon_minimum_spend
+Domain: e-commerce promotion
+
+Rules:
+1. A coupon may define minimum_subtotal (non-negative).
+2. The coupon can be applied only when cart_subtotal is at least minimum_subtotal.
+3. If cart_subtotal is below minimum_subtotal, coupon application is rejected.
+4. Negative subtotals are invalid.

@@ -1,0 +1,26 @@
+{
+  "requirement_id": "currency_conversion_rate_expiry",
+  "recommended_techniques": ["EP", "Decision Table"],
+  "valid_partitions": [
+    "rate fresh less than 30 minutes",
+    "rate stale at least 30 minutes fetch succeeds",
+    "rate stale fetch fails blocks checkout"
+  ],
+  "invalid_partitions": [
+    "unsupported currency",
+    "negative age minutes",
+    "missing rate timestamp"
+  ],
+  "boundaries": [
+    {"field": "age_minutes", "points": [29, 30, 31]}
+  ],
+  "decision_rules": [
+    "age less than 30 -> use cached rate",
+    "age at least 30 -> fetch new rate",
+    "fetch fails -> error and block checkout",
+    "unsupported currency -> error"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["rate provider timeout"]
+}

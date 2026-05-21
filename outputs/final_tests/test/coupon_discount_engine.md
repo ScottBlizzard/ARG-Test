@@ -27,9 +27,9 @@ Verification:
 FinalAnswer:
 | Test ID | Technique | Requirement Target | Preconditions | Input | Expected Output | Covered Item | Priority | Checker Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T01 | EP | coupon_discount_engine | None | representative valid input | request accepted | valid partition | High | repaired |
-| T02 | EP | coupon_discount_engine | None | representative invalid input | validation error | invalid partition | High | repaired |
-| T03 | BVA | coupon_discount_engine | None | save10 gives 10 percent off when subtotal=49 | validation error | below lower boundary | High | repaired |
-| T04 | BVA | coupon_discount_engine | None | save10 gives 10 percent off when subtotal=50 | boundary accepted | on lower boundary | High | repaired |
-| T05 | BVA | coupon_discount_engine | None | save10 gives 10 percent off when subtotal=51 | boundary accepted | on upper boundary | Medium | repaired |
-| T06 | Decision Table | coupon_discount_engine | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | repaired |
+| T01 | EP | coupon_discount_engine | None | representative valid input | request accepted | valid partition | High | pending |
+| T02 | EP | coupon_discount_engine | None | representative invalid input | validation error | invalid partition | High | pending |
+| T03 | BVA | coupon_discount_engine | None | save10 gives 10 percent off when subtotal=49 | validation error | below lower boundary | High | pending |
+| T04 | BVA | coupon_discount_engine | None | save10 gives 10 percent off when subtotal=50 | boundary accepted | on lower boundary | High | pending |
+| T05 | BVA | coupon_discount_engine | None | save10 gives 10 percent off when subtotal=51 | boundary accepted | on upper boundary | Medium | pending |
+| T06 | Decision Table | coupon_discount_engine | rule conditions satisfied | rule trigger combination | rule-specific outcome | decision rule coverage | Medium | pending |

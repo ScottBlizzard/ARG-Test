@@ -1,0 +1,8 @@
+Requirement ID: seller_payout_fee_calculation
+Domain: e-commerce marketplace payouts
+
+Rules:
+1. commission_rate depends on category: electronics 0.05, fashion 0.10, other 0.08.
+2. payment_processor_fee equals 0.02 * paid_amount + 0.30.
+3. net_payout equals paid_amount minus refunds minus commission_fee minus processor_fee.
+4. net_payout must not be negative; if negative, it becomes 0.

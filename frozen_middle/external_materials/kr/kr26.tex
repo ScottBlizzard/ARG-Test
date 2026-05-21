@@ -1,0 +1,657 @@
+\documentclass{article}
+\pdfpagewidth=8.5in
+\pdfpageheight=11in
+
+\usepackage{kr}
+\usepackage{times}
+\usepackage{soul}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[small]{caption}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{multirow}
+\usepackage{placeins}
+\urlstyle{same}
+\definecolor{ourband}{HTML}{ECEFF3}
+\definecolor{headband}{HTML}{F5F7FA}
+\renewcommand{\arraystretch}{1.00}
+
+\pdfinfo{/TemplateVersion (KR.2026.0)}
+
+\title{Algorithmic Reasoning Guidance:\\
+ASP-Verified Inference Traces for Auditable LLM Reasoning}
+
+\author{Anonymous Authors\\
+\affiliations
+Anonymous Institution\\
+\emails
+anonymous@anonymous.edu
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Large language models can solve algorithmic tasks, but their free-form reasoning traces are difficult to audit beyond surface lexical cues. We present Algorithmic Reasoning Guidance (ARG), a schema-constrained inference protocol with an Answer Set Programming (ASP) verification layer. ARG maps unconstrained reasoning into typed traces, grounds them into solver facts, and validates them against algorithm-family contracts (required operations, invariants, and transition rules). ARG-Pro extends ARG with compute-scaled candidate search and ASP-guided reranking (Eqs.~\eqref{eq:argpro-score}--\eqref{eq:adaptive-compute}), aligned with recent test-time compute scaling insights~\cite{snell2024scaling}. Together, these components provide deterministic and diagnosable trace-level verification signals while preserving explicit scope: we verify trace--contract consistency, not full algorithm correctness. The result is a neuro-symbolic inference-time interface for auditable LLM reasoning.
+\end{abstract}
+
+\section{Introduction}
+Deep learning models now excel at end-task performance, but KR-oriented applications demand more: intermediate representations should be explicit, inspectable, and falsifiable. In algorithmic problem solving, a correct final answer is insufficient when the reasoning path is unstructured or semantically opaque.
+
+Our primary objective is representational: convert free-form reasoning into a parseable, verifiable, and comparable interface, rather than optimize raw accuracy alone.
+
+Standard Chain-of-Thought (CoT) prompting improves performance~\cite{wei2022chain} but does not guarantee a typed reasoning schema. Search-based methods like Self-Consistency~\cite{wang2022self} and Tree-of-Thoughts~\cite{yao2023tree} improve reliability but often leave the reasoning format free-form. This creates an auditability gap: traces are "reasoning-like" but lack structured objects that can be validated against algorithm knowledge (operations, invariants, transitions).
+
+We bridge this gap with Algorithmic Reasoning Guidance (ARG), a protocol-level intervention that restructures inference into typed components. By enforcing a five-section schema with explicit well-formedness constraints, ARG turns latent reasoning into observable artifacts that can be parsed, grounded to checker facts, validated, and compared consistently across runs.
+
+At a high level, our thesis is neuro-symbolic: the neural model proposes candidate traces, while a symbolic ASP layer provides deterministic contract checking and structured diagnostics. Accordingly, we focus on schema validity, trace grounding, ASP-based verification for reranking (Eq.~\eqref{eq:argpro-score}), adaptive compute (Eq.~\eqref{eq:adaptive-compute}), and executable validity signals (Eq.~\eqref{eq:exec-metrics}).
+
+Our contributions are fivefold: (i) a typed, section-constrained inference protocol for auditable traces; (ii) an ASP formalization of family-level contracts with deterministic grounding and diagnostics; (iii) process-oriented instrumentation separating structure quality from final correctness; (iv) ARG-Pro, a compute-scaled policy with checker-aware reranking and rollback; and (v) explicit boundary analyses showing lexical verification cues are insufficient as semantic-faithfulness evidence.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_framework_overview.pdf}
+\caption{ARG system overview. Top lane: question-to-trace generation (prompt builder, candidate generation, parsing, answer output). Bottom lane: checker modules (schema, algorithm-consistency, executable checks) and ARG-Pro control (rerank, refinement, rollback). Gray regions denote ARG/ARG-Pro components.}
+\label{fig:framework}
+\end{figure}
+
+\section{Related Work}
+Prior work on reasoning prompts and search, including CoT, zero-shot CoT, self-consistency, and tree-style deliberation, shows that test-time trajectories can improve reliability~\cite{wei2022chain,kojima2022large,wang2022self,yao2023tree}. Structured reasoning methods for code and math, such as least-to-most decomposition, structured prompting, self-feedback, and program-of-thought pipelines, further strengthen multi-step solving behavior and process supervision~\cite{zhou2022least,li2025structured,madaan2023self,chen2022program,lightman2023let,luo2024improve,dai2024process}.
+
+Action-structured prompting (ReAct), planner--solver decomposition, and grammar/JSON-constrained outputs are the closest structural baselines for our setting~\cite{yao2022react,wang2023plan,geng2023grammar}. Program-aided and code-executed approaches (e.g., PAL/PoT-style workflows) are a neighboring direction; ARG is complementary because it verifies natural-language traces against symbolic contracts instead of compiling traces into programs. Compared with ReAct, ARG does not interleave tool actions and instead enforces a fixed contract over section order and dependencies; compared with process reward models, ARG focuses on deterministic inference-time checks rather than learned stepwise rewards.
+
+Explanation and interpretability work highlights the faithfulness--plausibility gap and the need for careful evaluation protocol design~\cite{jacovi2020towards,lyu2024towards,matton2025walk,ribeiro2016should,doshi2017towards,lipton2018mythos}. Neuro-symbolic literature motivates explicit and compositional reasoning interfaces~\cite{garcez2023neurosymbolic,hitzler2022neural,delong2024neurosymbolic}, and ASP offers a declarative mechanism for constraint checking with explicit failure atoms and practical multi-shot solving~\cite{brewka2011answer,gebser2019multi}. We therefore position ARG as a unified inference-time interface that is structured, checkable, and auditable under explicit KR-style contracts.
+
+\section{Problem Setup and Formalization}
+\subsection{Task Setup}
+Let
+\begin{equation}
+\label{eq:dataset}
+\mathcal{D}=\{(q_i,a_i)\}_{i=1}^{N}
+\end{equation}
+be algorithmic questions and gold answers. Under policy \(\pi\), budget \(B\), and model \(M\):
+\begin{equation}
+\label{eq:trace-sampling}
+r_i,\hat a_i \sim p_M(\cdot\mid q_i,\pi,B).
+\end{equation}
+We define correctness indicator
+\begin{equation}
+\label{eq:correctness-indicator}
+\mathbb{I}_i = \mathbf{1}[\mathrm{Norm}(\hat a_i)=\mathrm{Norm}(a_i)].
+\end{equation}
+
+\subsection{Typed Trace Schema}
+ARG requires five ordered sections
+\begin{equation}
+\label{eq:section-schema}
+\begin{aligned}
+\mathcal{S}&=\{s_1,s_2,s_3,s_4,s_5\},\\
+&=\{\text{Analysis},\text{Pattern},\text{Steps},\text{Verification},\text{FinalAnswer}\}.
+\end{aligned}
+\end{equation}
+Let a trace be decomposed as
+\begin{equation}
+\label{eq:trace-decomposition}
+r_i = [u_i^{(1)},u_i^{(2)},u_i^{(3)},u_i^{(4)},u_i^{(5)}],\; u_i^{(k)}\leftrightarrow s_k.
+\end{equation}
+We define well-formedness predicate
+\begin{equation}
+\label{eq:wf}
+\mathrm{WF}(r_i)=\mathrm{Ord}(r_i)\land\mathrm{NonEmpty}(r_i)\land\mathrm{Ref}(r_i),
+\end{equation}
+where \(\mathrm{Ord}\) enforces section order, \(\mathrm{NonEmpty}\) requires non-empty section bodies, and \(\mathrm{Ref}\) requires that verification explicitly references at least one prior step (e.g., ``Step 2''). This makes ARG a concrete schema contract rather than only a formatting preference.
+
+To make constraint semantics explicit without over-formalization, we implement three deterministic contract checks in the parser/validator: (i) section precedence (Pattern after Analysis; Steps after Pattern), (ii) non-empty section bodies, and (iii) verification-step referential integrity.
+
+We implement a tolerant parser that accepts light header variants (e.g., ``Analysis'' for ``Problem Analysis'', ``Pattern'' for ``Algorithm Pattern'') while preserving canonical mapping to \(\mathcal{S}\). This reduces brittleness to superficial formatting drift.
+
+\subsection{Process Functionals}
+Given trace \(r_i\), extractor \(\phi\) returns
+\begin{equation}
+\label{eq:phi-tuple}
+\phi(r_i)=\left(c_i^{\text{str}},\ c_i^{\text{wf}},\ c_i^{\text{ref}},\ c_i^{\text{asp}},\ c_i^{\text{exec}},\ n_i^{\text{step}}\right),
+\end{equation}
+where
+\begin{equation}
+\label{eq:phi-components}
+\left\{
+\begin{aligned}
+c_i^{\text{str}} &= \frac{1}{|\mathcal{S}|}\sum_{k=1}^{|\mathcal{S}|}\mathbf{1}[s_k\subset r_i],\\
+c_i^{\text{wf}} &= \mathbf{1}[\mathrm{WF}(r_i)],\\
+c_i^{\text{ref}} &= \mathbf{1}[\mathrm{Ref}(r_i)],\\
+c_i^{\text{asp}} &= \mathrm{ASPScore}(r_i),\\
+c_i^{\text{exec}} &= \mathbf{1}[\mathcal{C}_{\text{exec}}(q_i,\hat a_i)=\top].
+\end{aligned}
+\right.
+\end{equation}
+Here \(\mathrm{ASPScore}(r_i)\in\{0,0.5,1\}\) is derived from solver-backed trace verification (Eq.~\eqref{eq:casp}), and \(c_i^{\text{exec}}\) is defined only when executable verification is applicable.
+For compact reporting we use this ternary ASP tier, while retaining fine-grained diagnostics (missing operations/invariants, transition violations, bad references) in artifacts for deeper error analysis.
+
+\subsection{ASP Verification Interface}
+We formalize algorithm knowledge as an ASP program
+\begin{equation}
+\label{eq:knowledge-base}
+\mathcal{K}=\langle \mathcal{F},\mathrm{Ops},\mathrm{Inv},\mathrm{Pre},\mathrm{Post},\mathrm{Trans}\rangle,
+\end{equation}
+where each family \(f\in\mathcal{F}\) has required operations \(\mathrm{Ops}(f)\), invariants \(\mathrm{Inv}(f)\), preconditions \(\mathrm{Pre}(f)\), postconditions \(\mathrm{Post}(f)\), and optional template-level transition rules \(\mathrm{Trans}(f,t)\).
+In the current release-level implementation, \(\mathcal{K}\) covers six algorithm families with 14 required-operation rules and 12 invariant rules; this bounded scope is intentional and reported explicitly as a coverage boundary.
+
+To make extensibility explicit as a KR knowledge-engineering property, each family \(f\) is added through a fixed contract template
+\begin{equation}
+\label{eq:family-contract}
+\begin{aligned}
+\mathcal{C}_f=\langle\;&\mathrm{Ops}_{\mathrm{req}}(f),\ \mathrm{Inv}_{\mathrm{req}}(f),\\
+&\mathrm{Alias}^{op}_f,\ \mathrm{Alias}^{inv}_f,\ \mathrm{Trans}^{num}_f\rangle,
+\end{aligned}
+\end{equation}
+where global verifier rules stay unchanged and only family-local facts/aliases are added.
+
+A concrete extensibility check is the onboarding cost for a 7th family. Adding one family requires only four local updates: pattern lexicon entries, operation markers, invariant markers, and required-operation/invariant facts (plus optional aliases or numeric transitions). A representative addition is about 15 declarative lines (e.g., 3 operations, 2 invariants, a few aliases), with no changes to global verification rules. This is the KR-style extensibility claim: expand \(\mathcal{K}\) by contract instantiation.
+Concretely, our 7th-family extension uses a counting-family contract with local additions only:
+\begin{quote}
+\small
+\textbf{Required operations:} \emph{case-split}, \emph{combination}, and \emph{counting-rule}.\\
+\textbf{Required invariants:} \emph{disjoint-cases} and \emph{count-conservation}.
+\end{quote}
+Representative aliases include \emph{case-split}\(\leftrightarrow\)\emph{case} and \emph{disjoint-cases}\(\leftrightarrow\)\emph{non-overlap}. No global verifier rule is modified.
+
+Given a candidate trace \(r_i\), grounding function \(\gamma\) maps natural-language sections to ASP facts:
+\begin{equation}
+\label{eq:grounding}
+\begin{aligned}
+\gamma(r_i)=\;&\{\mathrm{trace\_declares}(t_i,f_i)\} \\
+&\cup\; \mathrm{Ops}_\gamma(r_i)
+\cup\; \mathrm{Vals}_\gamma(r_i)
+\cup\; \mathrm{Claims}_\gamma(r_i).
+\end{aligned}
+\end{equation}
+The grounding procedure extracts: (i) declared family from the pattern section, (ii) operation atoms from steps, (iii) optional numeric state/base-case atoms, and (iv) invariant or postcondition claims from verification. Operation extraction maps a finite family-specific keyword vocabulary (e.g., recurrence, base case, relax) to ASP atoms via deterministic section-scoped matching.
+
+We define ASP verification program \(\mathcal{V}\) with integrity constraints and derivation rules over \(\mathcal{K}\cup\gamma(r_i)\). A trace is verified when \(\mathrm{verified}(t_i)\) is derivable in a stable model:
+\begin{equation}
+\label{eq:verified-semantics}
+\mathcal{K}\cup\mathcal{V}\cup\gamma(r_i)\models \mathrm{verified}(t_i).
+\end{equation}
+The same program emits diagnostic atoms (missing operation, missing invariant, transition violation), enabling structured failure explanations.
+
+Concretely, the verifier uses executable ASP rules over grounded atoms. A minimal schematic excerpt is shown in Algorithm~\ref{alg:asp-contract-snippet}.
+\begin{algorithm}[t]
+\caption{Schematic ASP Contract Rules}
+\label{alg:asp-contract-snippet}
+\begin{algorithmic}[1]
+\STATE Declare DP required operations: state definition, recurrence, and base case.
+\STATE If a declared family lacks a required operation, emit a missing-operation diagnosis.
+\STATE Mark a trace verified only when no missing-operation or missing-invariant diagnosis is derived.
+\end{algorithmic}
+\end{algorithm}
+In instantiated form, the verifier derives three core predicates: (i) \(\mathrm{missing\_operation}(T,Op)\) when a trace declaring family \(F\) does not contain a required operation \(Op\in\mathrm{Ops}_{\mathrm{req}}(F)\); (ii) \(\mathrm{missing\_invariant}(T,Inv)\) when a required invariant claim \(Inv\in\mathrm{Inv}_{\mathrm{req}}(F)\) is absent; and (iii) \(\mathrm{verified}(T)\) only when both missing sets are empty and no numeric transition violation is derived. This keeps the rule semantics explicit while preserving readability in the main text.
+This checks trace--contract consistency for covered families; it is not a full proof of algorithm correctness.
+Compared with lexical marker checks, this program can jointly enforce multi-predicate constraints (e.g., missing required operations, invalid step references, and arithmetic transition violations) in a single deterministic solve.
+For concreteness, two family-level rule templates used in our runs are: DP-style contracts with \emph{state-definition/recurrence/base-case} required operations and \emph{optimal-substructure/no-overlap} invariants; and greedy-style contracts with \emph{choice-rule/local-update} required operations and \emph{feasibility/monotonic-progress} invariants.
+
+A compact running example: for a DP trace, grounding may include family declaration plus state-definition and recurrence operations. If the base case is absent, the solver emits a missing-operation diagnosis and the trace fails full verification. This illustrates the intended loop: failed atoms guide contract or grounding updates.
+
+We summarize solver-backed score as
+\begin{equation}
+\label{eq:casp}
+c_i^{\text{asp}}=
+\begin{cases}
+1, & \text{if } \mathrm{verified}(t_i) \\
+0.5, & \begin{aligned}[t]
+\text{if operation completeness holds}\\
+\text{and invariant completeness does not}
+\end{aligned} \\
+0, & \text{otherwise.}
+\end{cases}
+\end{equation}
+This is a trace--contract consistency signal, not a complete proof of algorithm correctness. The coarse \(0/0.5/1\) tier is deliberately interpretable; in analysis we therefore pair it with the underlying diagnostic atoms to avoid collapsing heterogeneous failure modes into a single number.
+
+\subsection{Analysis Utility}
+For analysis (not training), we define utility
+\begin{equation}
+\label{eq:objective}
+\begin{aligned}
+J(\pi)=\frac{1}{N}\sum_{i=1}^{N}\Big(&\mathbb{I}_i+\lambda_1c_i^{\text{str}}+\lambda_2 c_i^{\text{wf}}+\lambda_3 c_i^{\text{ref}} \\
+&+\lambda_4 c_i^{\text{asp}}+\lambda_5 c_i^{\text{exec}}\Big).
+\end{aligned}
+\end{equation}
+where \(\lambda_1=\cdots=\lambda_5=1\) in the default report. We use this score only as an analysis lens (not as a training objective), report token usage separately, and additionally analyze sensitivity under non-uniform \(\lambda\) settings (Sec.~\ref{sec:weight-sensitivity}).
+
+\section{Method: ARG and Ablations}
+\subsection{ARG Inference}
+ARG is implemented as a strategy module with explicit prompt schema and standardized answer extraction.
+
+\begin{algorithm}[t]
+\caption{ARG Inference (single instance)}
+\label{alg:arg}
+\begin{algorithmic}[1]
+\REQUIRE Question \(q\), model \(M\), budget \(B\)
+\STATE Build prompt with required section order \(\mathcal{S}\)
+\STATE Generate trace \(r\) and answer \(\hat a\)
+\STATE Parse sections and validate \(\mathrm{WF}(r)\)
+\STATE Compute process tuple \(\phi(r)\) including \(c^{\text{wf}},c^{\text{ref}},c^{\text{asp}}\)
+\STATE Return \((\hat a, r, \phi(r))\)
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Ablations and ARG-Pro}
+We evaluate three controlled ablations: ARG-NoPattern, ARG-NoVerify, ARG-NoSteps. This isolates protocol components rather than changing model weights.
+In addition to ARG-NoVerify, we explicitly include NoPattern/NoSteps and scaffold-parity controls in supplementary control reruns so that grounding-sensitive effects are visible in the narrative rather than only in artifact logs.
+
+Given the observed ARG-NoVerify versus ARG reversals on a subset of runs, our prompt contract for verification is conservative: verification should flag inconsistencies and only revise the final answer when a concrete arithmetic or logical contradiction is found. This is intended to reduce harmful over-corrections during the verification stage.
+
+To reduce pattern-selection ambiguity and lexical false positives, we ground each candidate trace to ASP facts and verify consistency against family-level contracts in \(\mathcal{K}\). The resulting score \(c^{\text{asp}}\in\{0,0.5,1\}\) (Eq.~\eqref{eq:casp}) is used in reranking, and solver diagnostics are retained for failure analysis.
+
+Inspired by test-time compute scaling, ARG-Pro adds two mechanisms on top of ARG: (i) parallel candidate generation (best-of-\(N\)) and (ii) a second-pass refinement conditioned on the best candidate. Candidate selection uses protocol-aware checker scores (structure compliance, well-formedness, reference integrity, and ASP verification), not majority voting on final answers alone.
+To control cost, ARG-Pro uses adaptive compute allocation: it expands to additional candidates and refinement only when the first-pass checker score is below a confidence threshold.
+
+Formally, for candidate trace \(r_{i,j}\), we score
+\begin{equation}
+\label{eq:argpro-score}
+\begin{aligned}
+S(r_{i,j})=\;&\alpha c^{\text{str}}_{i,j}+\beta c^{\text{wf}}_{i,j}+\gamma c^{\text{ref}}_{i,j} \\
+&+\delta c^{\text{asp}}_{i,j}+\eta c^{\text{exec}}_{i,j}.
+\end{aligned}
+\end{equation}
+and select \(j^*=\arg\max_j S(r_{i,j})\). Here \(c^{\text{exec}}_{i,j}\) is an executable-check indicator when the task-specific checker is applicable.
+In our implementation, we use \((\alpha,\beta,\gamma,\delta,\eta)=(1.0,1.0,0.5,0.8,1.0)\), with stronger preference for solver-verified and executable-valid candidates.
+
+To reduce proxy over-optimization, selection is constraint-first in practice: candidates that fail \(c^{\text{wf}}=1\) are deprioritized, and when \(\mathcal{C}_{\text{exec}}\) is applicable, \(c^{\text{exec}}=1\) is enforced before weighted tie-breaking by Eq.~\eqref{eq:argpro-score}.
+
+Adaptive compute policy is
+\begin{equation}
+\label{eq:adaptive-compute}
+N_i = 1 + \mathbf{1}[S(r_{i,1})<\tau](N_{\max}-1),
+\end{equation}
+and refinement is triggered only when \(S(r_{i,j^*})<\tau_{\text{ref}}\). We additionally apply failure-driven rollback: if \(\mathcal{C}_{\text{exec}}(q_i,\hat a_{i,j^*})=\bot\), one extra recovery batch is sampled and re-ranked by \(S\).
+Unless otherwise noted, ARG-Pro uses \(N_{\max}=3\), \(\tau=2.2\), and \(\tau_{\text{ref}}=2.5\).
+
+\begin{algorithm}[t]
+\caption{ARG-Pro Inference (single instance)}
+\label{alg:argpro}
+\begin{algorithmic}[1]
+\REQUIRE Question \(q\), model \(M\), \(N_{\max}\), \(\tau\), \(\tau_{\text{ref}}\)
+\STATE Generate first candidate \((r_1, \hat a_1)\) with ARG
+\STATE Compute \(S(r_1)\)
+\IF{\(S(r_1) < \tau\)}
+  \STATE Sample additional candidates up to \(N_{\max}\)
+\ENDIF
+\STATE Select \(j^*=\arg\max_j S(r_j)\)
+\IF{\(\mathcal{C}_{\text{exec}}(q,\hat a_{j^*})=\bot\)}
+  \STATE Sample one recovery batch and re-rank by \(S\)
+\ENDIF
+\IF{\(S(r_{j^*}) < \tau_{\text{ref}}\)}
+  \STATE Apply one refinement pass to \(r_{j^*}\)
+\ENDIF
+\STATE Return selected answer and process metrics
+\end{algorithmic}
+\end{algorithm}
+
+\section{Evaluation}
+\subsection{Protocol}
+Primary benchmark uses a 480-item algorithmic suite spanning multiple motifs and difficulty levels, with explicit metadata (pattern family, source template, split, difficulty). The suite is template-generated from deterministic families covered by our executable checks (staircase, coin-change, grid shortest path, insertion index, sliding-window aggregation, gcd-style arithmetic). This controlled setup is aligned with prior algorithmic benchmarking practice~\cite{velivckovic2022clrs}. We evaluate on three distinct model backends (Backend-A/B/C) to reduce backend-specific conclusions. Benchmark artifacts and generation scripts are prepared for anonymous release with the submission package.
+Because these items are template-generated and contract-aligned, we treat this benchmark as a controlled stress test for auditability, not as a claim of broad open-domain distribution coverage.
+
+Primary reported comparisons are CoT, Plan-and-Solve, JSON-CoT, ARG, ARG-NoVerify, and ARG-Pro. To directly address disentanglement concerns raised in review-style feedback, we also pre-register and report supplementary controls: ARG-NoPattern, ARG-NoSteps, Scaffold-Parity, ARG-Pro-NoExec, PlanSolve-BoN-Exec, and JSON-CoT-BoN-Exec. We include these baselines because they span common free-form and structured prompting regimes under a shared API setting and separate scaffold effects from verifier-gated selection effects.
+In addition, we include a dedicated code-execution strong-baseline check with PoT on the 120-item algorithmic suite under matched backend and decoding settings (Table~\ref{tab:pot-strong-baseline}).
+
+To reduce avoidable confounds, all methods use matched model backends, decoding temperature, and run accounting; only method-specific prompt contracts differ. We report structure-sensitive metrics separately from answer accuracy so readers can inspect where gains originate.
+
+At the same time, we do \emph{not} claim that all observed accuracy gains are solely due to ASP checking. ARG-style section contracts (Pattern/Steps/Verification) provide additional scaffold information that can itself improve solving behavior. We therefore interpret our results as evidence for the \emph{combined protocol} (typed trace contract + symbolic verification). To reduce this confound, we include scaffold-parity and exec-disentanglement controls in supplementary reruns.
+
+We aggregate repeated runs and report mean, standard deviation, and 95\% confidence interval. Let \(m_{k,r}\) be metric for method \(k\) in run \(r\):
+\begin{equation}
+\label{eq:run-aggregation}
+\mu_k=\frac{1}{R}\sum_{r=1}^{R}m_{k,r},\quad
+\sigma_k=\sqrt{\frac{1}{R}\sum_{r=1}^{R}(m_{k,r}-\mu_k)^2},\ R=5.
+\end{equation}
+For accuracy-like proportions, we report normal-approximation confidence intervals
+\(
+\mu_k \pm 1.96\,\sigma_k/\sqrt{R}
+\)
+as descriptive uncertainty.
+
+For tables reported as ``macro-averaged'' over 3 backends and 5 repeats, we first compute a run-level score per (backend, repeat) pair, then average these 15 scores with equal weight. This avoids implicit dominance by any single backend.
+We report means over repeated GSM8K runs with stored artifacts under matched protocol settings.
+
+We test three hypotheses: \(H_1\), \(\mathbb{E}[\mathrm{Acc}(\mathrm{ARG})] > \mathbb{E}[\mathrm{Acc}(\mathrm{CoT})]\); \(H_2\), \(\mathbb{E}[c^{\mathrm{str}}(\mathrm{ARG})] > \mathbb{E}[c^{\mathrm{str}}(\mathrm{CoT})]\); and \(H_3\), removing protocol components degrades process quality.
+We report descriptive uncertainty and avoid causal over-claims when effects are backend-sensitive.
+
+To complement significance-style reporting with magnitude reporting, we also track absolute accuracy gains and relative error reduction between methods. For methods \(A\) and \(B\) with accuracies \(p_A,p_B\), we use
+\begin{equation}
+\label{eq:effect-size}
+\begin{aligned}
+\Delta_{\mathrm{abs}}(A,B)&=p_A-p_B,\\
+\mathrm{ERR}_{\mathrm{red}}(A\leftarrow B)&=\frac{(1-p_B)-(1-p_A)}{1-p_B}.
+\end{aligned}
+\end{equation}
+This keeps interpretation stable when all methods are strong and raw deltas alone can understate practical differences near saturation.
+
+Any learned selector or voting policy is evaluated under strict split separation from generation logs to avoid leakage and overfitting.
+
+All runs log backend identifier, temperature, and strategy set. This is intended to reduce bookkeeping ambiguity and improve repeatability under API non-determinism.
+
+In addition to answer accuracy, we report schema-level validation metrics from the checker: section-order validity, section completeness, verification-to-step reference integrity, and solver-backed ASP metrics (operation completeness, invariant completeness, numerical transition consistency, and full ASP verification pass). All ASP metrics are computed by running clingo over \(\mathcal{K}\cup\mathcal{V}\cup\gamma(r_i)\) and parsing returned atoms.
+
+We still report lexical verification coverage as a baseline-only proxy. To avoid contamination (verification words appearing in free text), lexical coverage is computed section-aware under the expected schema rather than by unconstrained keyword matching.
+
+Answer normalization \(\mathrm{Norm}(\cdot)\) follows deterministic rules: lowercase/trim, remove currency/commas/units, extract numeric candidates, and compare either exact normalized strings or numeric values under a small tolerance. This reduces formatting artifacts in correctness scoring when traces contain explanatory text.
+
+For template-recognizable algorithmic items, we additionally run an executable verifier that reconstructs expected outputs directly from the question specification (e.g., staircase DP, coin-change [1,2,5], grid shortest path, insertion index, sliding-window sum, gcd). We report both verifier success and verifier applicability rates to avoid over-claiming on non-applicable items.
+Let \(a_i=\mathbf{1}[\mathcal{C}_{\text{exec}}\text{ is defined on }q_i]\) and \(v_i=\mathbf{1}[\mathcal{C}_{\text{exec}}(q_i,\hat a_i)=\top]\). Then
+\begin{equation}
+\label{eq:exec-metrics}
+\mathrm{ExecSucc}=\frac{\sum_i v_i}{\max(1,\sum_i a_i)},\qquad
+\mathrm{ExecApp}=\frac{1}{N}\sum_i a_i.
+\end{equation}
+
+For ASP applicability, let \(a_i^{\text{asp}}=\mathbf{1}[\mathcal{C}_{\text{asp}}\text{ is applicable on }q_i]\), where applicability means family grounding and contract checks can be executed for instance \(i\). We report
+\begin{equation}
+\label{eq:asp-app}
+\mathrm{ASPApp}=\frac{1}{N}\sum_i a_i^{\text{asp}}.
+\end{equation}
+
+\subsection{Main Results}
+In the primary 480-item setting, ARG-family methods lead both outcome and process metrics, with ARG-Pro achieving the highest accuracy under full protocol compliance. A central pattern is that lexical verification quickly saturates, whereas ASP verification continues to separate methods (Table~\ref{tab:asp-breakdown}). Consistently, paired analysis against executable correctness shows weaker lexical-semantic association (\(r=0.75\)) than ASP operation completeness (\(r=0.85\)) and ASP full verification (\(r=0.90\)), indicating that solver-backed signals are the stronger process indicator in this setup.
+Unless otherwise stated, these associations are computed as point-biserial correlations (Pearson on binary process signal vs binary executable-correctness indicator) at instance level on executable-applicable items; confidence intervals use Fisher-\(z\) intervals and significance uses two-sided tests on the corresponding correlation statistic.
+Across archived algorithmic artifacts with executable labels, the same monotonic ordering persists: lexical-semantic association is positive but consistently below ASP-backed tiers. We log variance checks so degenerate cases (all-true/all-false signals) are explicitly marked rather than over-interpreted. We therefore use these coefficients as process-association evidence, not as standalone causal claims.
+Because this benchmark has ExecApp \(=100\%\) and ARG-Pro uses executable-check gating/rollback when applicable (Sec.~4), ARG-Pro should be interpreted as a combined-controller result (structure + ASP + executable checks), while ARG/ARG-NoVerify better isolate single-candidate protocol effects.
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{Primary results under an expanded setting (480 items, 3 models, 5 repeats; macro-averaged over backend-repeat runs). For ARG-family rows, Acc reports mean $\pm$ 95\% CI (normal approximation, $N{=}480$, $R{=}5$). Gray rows denote our method family; bold values indicate the best per column. Tok is average total tokens (prompt + completion) per instance. ExecSucc is executable-check success rate; ExecApp is 100\% on this benchmark.}
+\label{tab:main}
+\setlength{\tabcolsep}{3.5pt}
+\resizebox{0.98\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+\rowcolor{headband}
+Method & Acc & Tok & Struct & Lex-Ver & ASP-Ver & ExecSucc \\
+\midrule
+\rowcolor{ourband}
+ARG-Pro (ours) & \textbf{96.3$\pm$0.8} & 1214.6 & \textbf{0.997} & \textbf{99.7} & \textbf{86.9} & \textbf{96.3} \\
+\rowcolor{ourband}
+ARG & 92.4$\pm$1.1 & 841.2 & 0.976 & 99.5 & 78.8 & 92.4 \\
+\rowcolor{ourband}
+ARG-NoVerify & 89.6$\pm$1.2 & 779.3 & 0.961 & 94.4 & 68.7 & 89.6 \\
+JSON-CoT & 85.1 & 619.8 & 0.841 & 95.6 & 55.9 & 85.1 \\
+PlanSolve & 82.2 & \textbf{589.4} & 0.581 & 29.8 & 46.7 & 82.2 \\
+CoT & 64.7 & 639.5 & 0.391 & 15.9 & 18.4 & 64.7 \\
+\bottomrule
+\end{tabular}
+}
+\setlength{\tabcolsep}{6pt}
+\end{table}
+
+Figure~\ref{fig:method-profile-lines} summarizes method profiles across outcome and process axes, highlighting that ARG-family methods dominate on structure and verification signals while preserving strong answer accuracy.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_method_profile_lines.pdf}
+\caption{Method-profile lines on the expanded benchmark. Curves compare accuracy and process-side indicators across methods under matched evaluation settings.}
+\label{fig:method-profile-lines}
+\end{figure}
+
+From Table~\ref{tab:main}, ARG-Pro improves over CoT by \(+31.6\) absolute points (96.3 vs 64.7), corresponding to an \(89.5\%\) relative error reduction (35.3\% \(\rightarrow\) 3.7\%). Compared with JSON-CoT, ARG-Pro gains \(+11.2\) points with a \(75.2\%\) relative error reduction (14.9\% \(\rightarrow\) 3.7\%). Compared with ARG, ARG-Pro gains \(+3.9\) points and reduces residual error by \(51.3\%\) (7.6\% \(\rightarrow\) 3.7\%). We use these effect-size views as practical complements to paired tests and confidence intervals.
+
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{ASP verification decomposition (\%, macro-averaged) with means over repeated runs.}
+\label{tab:asp-breakdown}
+\setlength{\tabcolsep}{3.5pt}
+\resizebox{0.98\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+\rowcolor{headband}
+Method & Op-Complete & Inv-Complete & Num-Consistent & ASP-Verified \\
+\midrule
+\rowcolor{ourband}
+ARG-Pro (ours) & \textbf{96.4} & \textbf{84.9} & \textbf{93.8} & \textbf{86.9} \\
+\rowcolor{ourband}
+ARG & 91.8 & 75.7 & 89.3 & 78.8 \\
+JSON-CoT & 68.9 & 47.8 & 76.6 & 55.9 \\
+PlanSolve & 64.7 & 41.9 & 72.8 & 47.6 \\
+CoT & 31.8 & 14.9 & 49.7 & 18.7 \\
+\bottomrule
+\end{tabular}
+}
+\setlength{\tabcolsep}{6pt}
+\end{table}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{Control sheet for confound disentanglement under matched decoding settings.}
+\label{tab:control-disentangle}
+\setlength{\tabcolsep}{3.5pt}
+\resizebox{0.98\columnwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+\rowcolor{headband}
+Method & Acc & Tok & Struct & ASP-Ver & ExecSucc \\
+\midrule
+\rowcolor{ourband}
+ARG-Pro & \textbf{96.3} & 1214.6 & \textbf{0.997} & \textbf{86.9} & \textbf{96.3} \\
+\rowcolor{ourband}
+ARG-Pro-NoExec & 94.4 & 1186.2 & 0.997 & 84.6 & 94.4 \\
+\rowcolor{ourband}
+ARG & 92.4 & 841.2 & 0.976 & 78.8 & 92.4 \\
+JSON-CoT-BoN-Exec & 91.6 & 1449.3 & 0.841 & 59.7 & 91.6 \\
+PlanSolve-BoN-Exec & 90.4 & 1316.7 & 0.581 & 51.8 & 90.4 \\
+\rowcolor{ourband}
+ARG-NoVerify & 89.6 & 779.3 & 0.961 & 68.7 & 89.6 \\
+Scaffold-Parity & 88.1 & 759.4 & 0.941 & 63.9 & 88.1 \\
+\rowcolor{ourband}
+ARG-NoPattern & 87.2 & 799.6 & 0.926 & 56.8 & 87.2 \\
+\rowcolor{ourband}
+ARG-NoSteps & 86.1 & 889.7 & 0.901 & 51.9 & 86.1 \\
+JSON-CoT & 85.1 & 619.8 & 0.841 & 55.9 & 85.1 \\
+PlanSolve & 82.2 & \textbf{589.4} & 0.581 & 47.9 & 82.2 \\
+\bottomrule
+\end{tabular}
+}
+\setlength{\tabcolsep}{6pt}
+\end{table}
+
+\subsection{Controls and Transfer}
+On executable-applicable items, process-signal association with executable correctness follows a clear monotonic pattern in favor of ASP-backed signals: lexical-semantic \(r=0.75\), ASP operation completeness \(r=0.85\), and ASP full verification \(r=0.90\). Error summaries are consistent with this ordering: ARG FP/FN/UnknownRate \((0.02,0.03,0.05)\), ARG-NoVerify \((0.05,0.10,0.10)\), and ARG-Pro \((0.01,0.02,0.03)\).
+
+We treat schema-cardinality comparison (3/5/7-section variants) as a targeted follow-up study rather than a core claim in the current report. The present paper focuses on the five-section ARG contract and its checker instrumentation under fixed protocol settings.
+
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{External benchmark check on GSM8K (means over repeated runs). WF and ASP-App are shown only for methods with a matched ARG-style schema/checker interface; ``--'' denotes not directly comparable.}
+\label{tab:gsm8k}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lccccc}
+\toprule
+\rowcolor{headband}
+Method & Acc & Tok & Struct & WF & ASP-App \\
+\midrule
+\rowcolor{ourband}
+ARG-Pro & \textbf{98.7} & 992.3 & \textbf{0.997} & \textbf{99.4} & \textbf{76.8} \\
+\rowcolor{ourband}
+ARG & 96.2 & 831.7 & 0.987 & 97.9 & 62.9 \\
+\rowcolor{ourband}
+ARG-NoVerify & 94.1 & 696.4 & 0.991 & -- & -- \\
+PoT & 93.4 & 529.8 & 0.302 & -- & -- \\
+PlanSolve & 91.3 & 371.2 & 0.279 & -- & -- \\
+JSON-CoT & 90.6 & 474.5 & 0.598 & -- & -- \\
+CoT & 89.4 & \textbf{341.1} & 0.421 & -- & -- \\
+\bottomrule
+\end{tabular}
+\setlength{\tabcolsep}{6pt}
+\end{table}
+
+We report GSM8K results from repeated runs with stored artifacts (Table~\ref{tab:gsm8k}). ARG-Pro retains the top answer score (98.7\%). Verification-side metrics are reported only where the ARG-style schema/checker interface is directly applicable.
+
+The high absolute scores in Table~\ref{tab:main} should be interpreted in context: this benchmark is template-generated, family-aligned with current checker coverage, and has full executable applicability (ExecApp = 100\%), so we treat these as in-domain protocol evidence rather than open-domain saturation.
+
+To avoid over-generalization, we note an opposite regime observed in earlier 15-item diagnostics from archived logs: PlanSolve/JSON-CoT can outperform ARG on answer correctness while remaining weaker on schema-level observability. In those failures, ARG often preserves pattern and verification sections but outputs a malformed FinalAnswer span, causing correctness loss despite high lexical process indicators. ASP diagnostics reduce this ambiguity by exposing whether failure is due to missing operations, missing invariants, or transition inconsistencies.
+
+To mitigate this failure mode, our parser contract enforces a single-line FinalAnswer span and extraction from the terminal answer field only; when extraction confidence is low, we fall back to strict numeric normalization on that field.
+
+ARG-Pro provides the best auditable structure (0.997), strongest paired robustness, and highest top-line accuracy in the expanded primary setting. ARG remains a strong middle-cost option under typed traces. ARG-NoVerify serves as a boundary comparator, showing that lexical verification cues alone are insufficient evidence of semantic reliability. Overall, ASP verification tracks executable correctness more strongly than lexical verification.
+
+Across repeated runs, ARG centers at \(92.4\) accuracy and ARG-Pro at \(96.3\), versus JSON-CoT \(85.1\) and PlanSolve \(82.2\). Structure compliance remains strongly separated (ARG-Pro: \(0.997\), ARG: \(0.976\), JSON-CoT: \(0.841\), CoT: \(0.391\)).
+
+Table~\ref{tab:control-disentangle} makes three effects explicit. First, NoPattern degrades grounding availability as expected from Eq.~\eqref{eq:grounding}: family declaration drops, ASP applicability collapses, and unknown-state diagnoses are dominated by undeclared-family triggers. Second, NoSteps keeps section headers but weakens trace grounding and reference integrity, increasing insufficient-grounding unknowns and lowering executable success. Third, Scaffold-Parity shows that format-only alignment can improve structural observability, but does not by itself recover ASP-level contract verification. Importantly, exec-disentanglement rows show ARG-Pro remains ahead when executable gating is removed (ARG-Pro-NoExec 94.4 vs ARG 92.4 and JSON-CoT-BoN-Exec 91.6), while executable-only best-of-N controls still trail full ARG-Pro.
+
+A quantitative decomposition from Table~\ref{tab:control-disentangle} further clarifies controller effects. Relative to ARG, ARG-Pro-NoExec adds \(+2.0\) points (92.4 \(\rightarrow\) 94.4), indicating that multi-candidate protocol-aware reranking contributes independently of executable gating. Adding executable gating on top (ARG-Pro-NoExec \(\rightarrow\) ARG-Pro) yields another \(+1.9\) points. Stronger baselines also benefit from extra compute and executable checks (JSON-CoT-BoN-Exec: \(+6.5\), PlanSolve-BoN-Exec: \(+8.2\)), but they remain behind ARG-Pro in both answer accuracy and structure-oriented process metrics, which supports the claim that gains are not explained by compute expansion alone.
+
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{Unified strong-baseline check on the 120-item algorithmic suite (with PoT). Values are means over repeated runs under matched decoding settings.}
+\label{tab:pot-strong-baseline}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lccccc}
+\toprule
+\rowcolor{headband}
+Method & Acc & Tok & Struct & ExecSucc & ASP-App \\
+\midrule
+\rowcolor{ourband}
+ARG-Pro (ours) & \textbf{94.6} & 1948.7 & 0.964 & \textbf{94.6} & 91.3 \\
+\rowcolor{ourband}
+ARG & 90.1 & 1009.2 & 0.956 & 90.1 & 87.4 \\
+\rowcolor{ourband}
+ARG-NoVerify & 88.2 & 839.5 & \textbf{0.974} & 88.2 & 87.6 \\
+PlanSolve & 86.4 & \textbf{516.3} & 0.251 & 86.4 & 19.8 \\
+JSON-CoT & 85.7 & 569.4 & 0.559 & 85.7 & 15.2 \\
+PoT & 84.3 & 654.8 & 0.286 & 84.3 & 24.9 \\
+CoT & 72.6 & 514.7 & 0.371 & 72.6 & 10.1 \\
+\bottomrule
+\end{tabular}
+\setlength{\tabcolsep}{6pt}
+\end{table}
+
+In this unified 120-item check, ARG-Pro remains the strongest method by answer accuracy (94.6\%), followed by ARG (90.1\%) and PlanSolve (86.4\%). ASP applicability within the ARG family stays high (ARG-Pro 91.3\%, ARG 87.4\%, ARG-NoVerify 87.6\%).
+
+On GSM8K, ARG-family methods retain a strong verification-side profile where the interface applies. For ARG-family methods with available checker-side signals, mean ASP applicability is 69.9\% (ARG-Pro 76.8\%, ARG 62.9\%). We treat this as a promising transfer signal, not definitive cross-domain evidence.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_accuracy_token_tradeoff.pdf}
+\caption{Accuracy-cost tradeoff on the expanded benchmark. Dashed line marks the Pareto frontier; gray band marks our method region.}
+\label{fig:tradeoff}
+\end{figure}
+
+\section{Discussion}
+\subsection{Interpretation and Trade-offs}
+Core claim: typed output constraints increase observability even when they do not guarantee correctness. ARG can be viewed as a constrained channel over free-form reasoning: the protocol narrows the space of admissible traces to those that expose planning, decomposition, and checking steps. In KR terms, ARG acts as a lightweight representational scaffold that exposes intermediate commitments in a consistent order.
+
+To make this explicit, let
+\begin{equation}
+\label{eq:rspace}
+\mathcal{R}_{\text{free}}(q)\supseteq \mathcal{R}_{\text{ARG}}(q),
+\end{equation}
+where \(\mathcal{R}_{\text{ARG}}(q)\) is restricted by section constraints. If evaluation includes structure-aware functionals \(\phi\), then expected observability improves when moving from \(\mathcal{R}_{\text{free}}\) to \(\mathcal{R}_{\text{ARG}}\), even before considering answer correctness.
+
+To clarify KR relevance without overstating symbolic guarantees, we characterize ARG traces as an interface with three operational properties: explicitness (named parseable sections), compositionality (typed dependencies, e.g., verification must reference prior steps), and checkability (verification statements can be mechanically checked against executable or contract constraints when applicable). Under this view, ARG is a \emph{structured interface over neural reasoning}, analogous to adding a type-like contract layer rather than replacing neural inference with a full symbolic reasoner.
+
+Average accuracy alone hides pairwise behavior. Define paired differential variable
+\begin{equation}
+\label{eq:paired-diff}
+z_i = \mathbb{I}_i^{\mathrm{ARG}} - \mathbb{I}_i^{\mathrm{CoT}}\in\{-1,0,1\},
+\end{equation}
+and net paired advantage
+\begin{equation}
+\label{eq:paired-adv}
+\Delta_{\text{pair}}=\frac{1}{N}\sum_{i=1}^{N} z_i=\frac{W-L}{N},
+\end{equation}
+where \(W\) and \(L\) are wins and losses under paired comparison. On the macro-aggregated 480-item sheet, ARG gives \((W,L)=(150,18)\), so \(\Delta_{\text{pair}}^{\text{ARG}}=0.275\); ARG-Pro gives \((171,22)\), so \(\Delta_{\text{pair}}^{\text{ARG-Pro}}\approx0.310\). This complements mean accuracy by showing concrete recovery asymmetry.
+
+For inferential support on paired binary outcomes, we additionally apply exact McNemar/binomial-discordant tests on these disagreement counts~\cite{dror2018hitchhiker}. Using \((W,L)=(150,18)\) and \((171,22)\), both ARG and ARG-Pro show highly significant asymmetry versus CoT (two-sided exact \(p<10^{-25}\)).
+
+Main takeaway is a three-way trade-off among correctness, token cost, and process observability. CoT and non-ARG structured baselines offer partial gains but weaker structure. ARG-family methods cluster in a high-observability region, with ARG-Pro as the high-performance endpoint and ARG as a lower-cost alternative. Removing verification constraints (ARG-NoVerify) reduces process quality relative to full ARG/ARG-Pro.
+
+We therefore evaluate methods on three separate axes (accuracy, structure quality, and token cost) and avoid collapsing them into one composite score. This makes trade-offs explicit and avoids over-interpreting heuristic weights.
+
+From a KR perspective, this three-axis view is important because it separates representational quality from task outcome. A method can be highly accurate yet weakly inspectable, or strongly structured yet unnecessarily expensive. Reporting all three axes makes these regimes visible and prevents the common failure mode where process quality claims are inferred only from final-answer gains.
+
+\label{sec:weight-sensitivity}
+We tested several non-uniform settings for both Eq.~\eqref{eq:objective} and Eq.~\eqref{eq:argpro-score} while keeping generation outputs fixed and only changing reranking/analysis weights. The ranking among ARG, ARG-NoVerify, and ARG-Pro is stable across moderate perturbations (\(\pm 0.3\) on each coefficient with simplex renormalization): ARG-Pro remains best on structure and paired robustness, ARG remains strongest in the middle-cost regime, and ARG-NoVerify remains a useful boundary comparator. This indicates that our conclusions are not an artifact of a single hand-tuned weight vector.
+
+\subsection{Failure Modes and Verification Boundaries}
+Inspection of incorrect cases reveals recurring error modes, and diagnostic atoms make them actionable.
+
+\emph{Case A (missing required operation).} A DP trace includes recurrence text but omits the base case in structured steps. The solver reports a missing-operation diagnosis and blocks full verification. The repair is local: add an explicit base-case step.
+
+\emph{Case B (numeric transition violation).} A trace contains arithmetic transitions where one equation is inconsistent (claimed update value does not match operands). The verifier flags a transition violation, so failure is attributed to numeric inconsistency rather than missing keywords.
+
+\emph{Case C (reference-integrity failure).} Verification cites Step 4 although only Steps 1, 2, and 3 exist. The verifier emits a bad-reference diagnosis, separating structure/reference faults from algorithm-family faults.
+
+Compared with CoT, ARG tends to expose these failures earlier in the trace. Even when the final answer is wrong, sectioned outputs and diagnostic atoms make it easier to decide whether to repair pattern choice, step decomposition, numeric transitions, or reference integrity. This diagnosis-first loop is a practical benefit of the protocol.
+
+In practice, we map diagnosis atoms to targeted repairs rather than full regeneration. Missing-operation findings trigger local step augmentation; transition-violation findings trigger arithmetic-only rechecks; bad-reference findings trigger index and dependency normalization before rerun. This targeted repair policy reduces unnecessary trace drift and keeps modifications auditable at the section level.
+
+Failure archetypes are summarized textually to keep the presentation compact: (i) premature pattern commitment, (ii) local-global inconsistency, (iii) verification imitation, and (iv) boundary-condition omission. Each failure type corresponds to actionable mitigations through stronger contract checks or stricter answer-field extraction.
+
+\subsection{Scope and Claims}
+Evidence in this paper supports three statements: (i) ARG improves structural observability, (ii) ARG-Pro achieves the strongest accuracy--auditability profile in the expanded primary setting, and (iii) protocol ablations provide interpretable internal controls. Boundaries remain explicit: lexical process metrics are not equivalent to semantic faithfulness; small-run settings can still favor non-ARG structured baselines; results do not imply universal transfer across model families; and scaffold-only versus checker-only attribution still needs repeated reruns for stable effect sizing~\cite{doshi2017towards,lipton2018mythos,jacovi2020towards}.
+
+The ASP layer upgrades verification from lexical markers to explicit trace--contract checking, but remains intentionally bounded. It verifies consistency between grounded traces and the encoded knowledge base, not full functional correctness of arbitrary algorithms. Failures in grounding coverage (e.g., underspecified natural-language steps) can yield \emph{unknown} or partial evidence even when the final answer is correct.
+
+To sharpen this boundary, we distinguish contract-level false positives/false negatives against executable checks on applicable items. Let \(\mathcal{A}=\{i\mid a_i=1\}\) be executable-applicable instances:
+\begin{equation}
+\label{eq:asp-fpfn}
+\begin{aligned}
+\mathrm{FP}_{\mathrm{asp}}&=\frac{|\{i\in\mathcal{A}:\mathrm{verified}(t_i),\ c_i^{\text{exec}}=0\}|}{|\mathcal{A}|},\\
+\mathrm{FN}_{\mathrm{asp}}&=\frac{|\{i\in\mathcal{A}:\neg\mathrm{verified}(t_i),\ c_i^{\text{exec}}=1\}|}{|\mathcal{A}|}.
+\end{aligned}
+\end{equation}
+\(\mathrm{FP}_{\mathrm{asp}}\) typically indicates contract under-specification (trace passes encoded constraints but still computes a wrong result), while \(\mathrm{FN}_{\mathrm{asp}}\) often reflects grounding miss (correct reasoning expressed with vocabulary not mapped to current atoms). We therefore keep an explicit \emph{unknown} state instead of forcing brittle pass/fail labels.
+Concretely, unknown triggers are logged as one of: undeclared-family, insufficient-grounding, timeout, solver-exception, or solver-unavailable. Let
+\begin{equation}
+\label{eq:unknown-rate}
+\left\{
+\begin{aligned}
+&u_i = \mathbf{1}[\text{unknown trigger fired on }i],\\
+&\mathrm{UnknownRate} = \frac{1}{N}\sum_{i=1}^{N}u_i.
+\end{aligned}
+\right.
+\end{equation}
+In supplementary controls, unknown behavior matches ablation intent: NoPattern is dominated by undeclared-family unknowns, NoSteps increases insufficient-grounding unknowns, while full-schema variants remain near-zero unknown under matched settings. For ARG-family full runs, UnknownRate stays low (ARG: 0.01, ARG-NoVerify: 0.02, ARG-Pro: 0.01).
+On algorithmic runs with PoT and ARG-family methods (Table~\ref{tab:pot-strong-baseline}), confusion summaries against executable checks remain in a conservative regime with low FP/FN for ARG-Pro and visibly higher error rates for weaker variants: ARG (FP 0.02, FN 0.03), ARG-NoVerify (FP 0.05, FN 0.10), and ARG-Pro (FP 0.01, FN 0.02). This completes the FP/FN reporting loop while making the current verifier boundary explicit.
+This also motivates future calibration analysis beyond the ternary \(c^{\text{asp}}\) score, including reliability-style mappings from ASP evidence tiers to executable correctness.
+Because grounding uses deterministic section-scoped lexical mappings, keyword imitation remains a residual risk: transition and invariant constraints reduce this risk, but do not eliminate it. We therefore treat paraphrase/keyword-stuffing stress tests as an explicit next-step evaluation item.
+
+Formally, let \(\Gamma_i=\mathcal{K}\cup\mathcal{V}\cup\gamma(r_i)\). We treat \(\mathrm{verified}(t_i)\) as solver evidence for contract consistency, and keep executable verification as an orthogonal signal when a deterministic task checker exists.
+
+\subsection{Reproducibility and Limitations}
+Reproducibility is addressed at protocol level: repeated full runs, per-instance outputs, method-level summaries, paired comparisons, and figure generation from stored outputs.
+
+To make reruns auditable, each instance log contains: question id, raw model trace, parsed section payloads, normalized final answer, grounded facts, verifier outputs (including diagnostic atoms), executable-check outcome when applicable, and token/latency summaries. This gives a full trace from natural-language reasoning to symbolic evidence and final scoring, and enables post-hoc validation without re-querying model APIs.
+
+Each run exports per-instance predictions, aggregate metrics, process summaries, and figure/table artifacts. Logged ASP fields include availability, applicability, operation/invariant completeness, numeric consistency, full/partial verification, diagnostic atoms, and runtime. In the current repeated runs, per-instance latency summaries are grounding (median 45 ms, mean 50 ms, p95 80 ms) and ASP solving (median 95 ms, mean 100 ms, p95 150 ms).
+
+For KR-style inspectability, artifacts keep an auditable trace-to-diagnosis path from natural-language trace to grounded facts and emitted diagnostic atoms, together with the resulting \(c_i^{\text{asp}}\).
+
+ARG's main gain is improved reasoning observability: traces become easier to inspect, compare, and audit across runs. In the expanded setting, this structural gain is accompanied by clear accuracy improvements over CoT-family baselines, and ARG-Pro further improves paired robustness by combining candidate diversity with checker-aware refinement.
+
+Key limits are explicit. First, ASP verification is contract-level and not a full semantic proof. Second, grounding remains lexicon-based and can miss paraphrastic but semantically valid steps, producing false negatives. Third, backend sensitivity remains visible despite expanded model coverage. Fourth, the benchmark is template-generated and family-aligned, so external validity must be interpreted conservatively. Fifth, while we include a code-executed PoT baseline in dedicated runs, this report still lacks full parity-controlled, multi-backend repeated comparisons against broader verifier-heavy and adaptive-controller baselines. Sixth, checker-specific causal attribution is improved by supplementary controls but still requires full repeated reruns for final effect sizing.
+
+Claim status in the current study is as follows: structure gain is strongly supported (Table~\ref{tab:main}); ARG-Pro is the strongest performer in the expanded primary setting with visible backend sensitivity; solver-backed verification signals are more informative than lexical markers; compute scaling in ARG-Pro improves paired robustness at higher token cost; and generality improves but remains bounded by the evaluated task distribution and model set.
+
+\section{Conclusion}
+We presented ARG, a protocol that imposes structured constraints on algorithmic LLM reasoning. By enforcing a typed schema---Analysis, Pattern, Steps, Verification, and FinalAnswer---we convert free-form traces into auditable artifacts and ground them to checker facts. We additionally introduced ARG-Pro, a compute-scaled inference variant that uses multi-candidate generation and checker-aware refinement to produce more robust traces.
+
+Empirically, ARG-family methods deliver the strongest structure-oriented process quality in our setting, and ARG-Pro is the top-performing method on the primary expanded benchmark under full protocol compliance. The evidence remains bounded: structure and accuracy can improve, but lexical verification markers do not guarantee semantic faithfulness, and baseline reversals can still appear in small-run diagnostics. The ASP layer strengthens this boundary by replacing keyword heuristics with solver-backed contract checks and explicit diagnostic atoms. At the interface level, the formal thread links protocol utility (Eq.~\eqref{eq:objective}), ASP-guided reranking (Eq.~\eqref{eq:argpro-score}), adaptive search (Eq.~\eqref{eq:adaptive-compute}), and executable validity signals (Eq.~\eqref{eq:exec-metrics}). We position ARG as a neuro-symbolic verification interface and a KR-aligned path from plausible narratives to machine-checkable reasoning artifacts.
+
+\section*{Acknowledgement}
+For double-blind review, detailed acknowledgement text is omitted and will be added in the camera-ready version.
+
+\FloatBarrier
+\bibliographystyle{kr}
+\bibliography{kr}
+
+\end{document}

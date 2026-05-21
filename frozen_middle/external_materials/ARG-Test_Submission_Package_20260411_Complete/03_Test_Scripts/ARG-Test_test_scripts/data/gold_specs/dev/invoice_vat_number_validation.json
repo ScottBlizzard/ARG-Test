@@ -1,0 +1,27 @@
+{
+  "requirement_id": "invoice_vat_number_validation",
+  "recommended_techniques": ["EP", "BVA"],
+  "valid_partitions": [
+    "business invoice with valid vat number",
+    "personal invoice no vat number"
+  ],
+  "invalid_partitions": [
+    "business invoice missing vat number",
+    "vat number wrong prefix",
+    "vat number too short",
+    "vat number too long",
+    "vat number contains non-digit after prefix"
+  ],
+  "boundaries": [
+    {"field": "vat_digits_length", "points": [7, 8, 9, 12, 13]}
+  ],
+  "decision_rules": [
+    "personal invoice -> accept without vat",
+    "business invoice -> require vat",
+    "vat must be AA + 8 to 12 digits",
+    "invalid vat -> reject"
+  ],
+  "states": [],
+  "illegal_transitions": [],
+  "exception_cases": ["vat number has spaces"]
+}

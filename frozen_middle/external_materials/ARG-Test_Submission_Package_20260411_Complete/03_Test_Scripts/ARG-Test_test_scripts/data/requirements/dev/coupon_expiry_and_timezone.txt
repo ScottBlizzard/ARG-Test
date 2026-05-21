@@ -1,0 +1,8 @@
+Requirement ID: coupon_expiry_and_timezone
+Domain: e-commerce promotion
+
+Rules:
+1. A coupon has start_time_utc and end_time_utc.
+2. A coupon is valid when now_utc is between start_time_utc and end_time_utc (inclusive).
+3. Validation uses UTC timestamps only; user timezone does not change validity.
+4. If now_utc is outside the window, applying the coupon is rejected.

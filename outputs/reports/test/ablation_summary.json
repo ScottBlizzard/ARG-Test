@@ -12,12 +12,20 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.125,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.327,
-      "checker_score": 0.65
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.058,
+      "checker_score": 0.8500000000000001
     },
     "full_pipeline": {
       "gold_spec_found": true,
@@ -29,13 +37,21 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.125,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.327,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.058,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     }
   },
   {
@@ -51,12 +67,20 @@
         "invalid_partition_coverage": 0.143,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.449,
-      "checker_score": 0.65
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.229,
+      "checker_score": 0.8500000000000001
     },
     "full_pipeline": {
       "gold_spec_found": true,
@@ -68,13 +92,21 @@
         "invalid_partition_coverage": 0.143,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.449,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.229,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     }
   },
   {
@@ -90,12 +122,20 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001
     },
     "full_pipeline": {
       "gold_spec_found": true,
@@ -107,12 +147,20 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     }
   },
@@ -129,12 +177,20 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 1.0,
         "decision_rule_coverage": 0.75,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.571,
-      "checker_score": 0.65
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.4,
+      "checker_score": 0.8500000000000001
     },
     "full_pipeline": {
       "gold_spec_found": true,
@@ -146,13 +202,21 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 1.0,
         "decision_rule_coverage": 0.75,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.571,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.4,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     }
   },
   {
@@ -168,12 +232,20 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001
     },
     "full_pipeline": {
       "gold_spec_found": true,
@@ -185,12 +257,20 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     }
   },
@@ -205,13 +285,21 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
-        "decision_rule_coverage": 1.0,
+        "boundary_coverage": null,
+        "decision_rule_coverage": null,
         "state_coverage": 0.0,
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
       "checker_score": 0.8500000000000001
     },
     "full_pipeline": {
@@ -222,13 +310,21 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
-        "decision_rule_coverage": 1.0,
+        "boundary_coverage": null,
+        "decision_rule_coverage": null,
         "state_coverage": 0.167,
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.31,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.033,
       "checker_score": 0.9500000000000001,
       "repaired": false
     }
@@ -244,13 +340,22 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
+        "boundary_coverage": null,
         "decision_rule_coverage": 0.0,
         "state_coverage": 0.0,
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.143,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 6,
+      "overall_coverage": 0.0,
       "checker_score": 0.75
     },
     "full_pipeline": {
@@ -261,13 +366,22 @@
       "coverage": {
         "valid_partition_coverage": 0.0,
         "invalid_partition_coverage": 0.0,
-        "boundary_coverage": 1.0,
+        "boundary_coverage": null,
         "decision_rule_coverage": 0.0,
         "state_coverage": 0.0,
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.143,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 6,
+      "overall_coverage": 0.0,
       "checker_score": 0.8500000000000001,
       "repaired": true
     }
@@ -289,6 +403,16 @@
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
       "overall_coverage": 0.071,
       "checker_score": 0.8500000000000001
     },
@@ -306,6 +430,16 @@
         "illegal_transition_coverage": 0.0,
         "exception_coverage": 0.0
       },
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "state_coverage",
+        "illegal_transition_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 7,
       "overall_coverage": 0.071,
       "checker_score": 0.9500000000000001,
       "repaired": false
@@ -324,12 +458,20 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001
     },
     "full_pipeline": {
       "gold_spec_found": true,
@@ -341,12 +483,20 @@
         "invalid_partition_coverage": 0.0,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.286,
-      "checker_score": 0.65,
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.0,
+      "checker_score": 0.8500000000000001,
       "repaired": true
     }
   },
@@ -363,12 +513,20 @@
         "invalid_partition_coverage": 0.25,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.321,
-      "checker_score": 0.65
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.05,
+      "checker_score": 0.8500000000000001
     },
     "full_pipeline": {
       "gold_spec_found": true,
@@ -380,13 +538,21 @@
         "invalid_partition_coverage": 0.25,
         "boundary_coverage": 0.0,
         "decision_rule_coverage": 0.0,
-        "state_coverage": 1.0,
-        "illegal_transition_coverage": 1.0,
+        "state_coverage": null,
+        "illegal_transition_coverage": null,
         "exception_coverage": 0.0
       },
-      "overall_coverage": 0.321,
-      "checker_score": 0.75,
-      "repaired": true
+      "applicable_dimensions": [
+        "valid_partition_coverage",
+        "invalid_partition_coverage",
+        "boundary_coverage",
+        "decision_rule_coverage",
+        "exception_coverage"
+      ],
+      "applicable_dimension_count": 5,
+      "overall_coverage": 0.05,
+      "checker_score": 0.9500000000000001,
+      "repaired": false
     }
   }
 ]

@@ -1,5 +1,6 @@
 {
   "requirement_id": "coupon_stackability",
+  "category": "business_rules",
   "analysis": "- Requirement target: coupon_stackability\n- Rule: 1. Coupons are either stackable or non-stackable.\n- Rule: 2. At most one non-stackable coupon may be applied to an order.\n- Rule: 3. Stackable coupons may be combined with other stackable coupons.\n- Rule: 4. If a non-stackable coupon is applied, applying any additional coupon is rejected.",
   "pattern": "- Selected techniques: Decision Table\n- Rationale: use partitions for valid/invalid inputs, boundaries for thresholds, and rule/state modeling when behavior depends on combinations or transitions.",
   "steps": [
