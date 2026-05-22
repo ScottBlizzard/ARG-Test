@@ -84,7 +84,11 @@ def risk_color(priority: int) -> str:
 
 def save_risk_heatmap(output_path: Path) -> None:
     configure()
-    fig, ax = plt.subplots(figsize=(8.2, 5.8), dpi=220)
+    fig = plt.figure(figsize=(9.4, 5.8), dpi=220)
+    ax = fig.add_axes([0.08, 0.12, 0.62, 0.78])
+    legend_ax = fig.add_axes([0.74, 0.20, 0.22, 0.60])
+    legend_ax.set_axis_off()
+
     ax.set_xlim(0.5, 5.5)
     ax.set_ylim(0.5, 5.5)
     ax.set_xticks(range(1, 6))
@@ -128,23 +132,31 @@ def save_risk_heatmap(output_path: Path) -> None:
             zorder=4,
         )
 
-    ax.add_patch(FancyBboxPatch((3.55, 4.45), 1.55, 0.72, boxstyle="round,pad=0.015,rounding_size=0.03", facecolor=PALETTE["red_soft"], edgecolor=PALETTE["red"], linewidth=1.2))
-    ax.text(3.68, 4.98, "High priority", fontsize=10.2, fontweight="bold", color=PALETTE["ink"])
-    ax.text(3.68, 4.72, "R1, R2, R4, R5", fontsize=9.6, color=PALETTE["muted"])
+    legend_specs = [
+        ("High priority", "R1, R2, R4, R5", PALETTE["red_soft"], PALETTE["red"], 0.72),
+        ("Medium priority", "R3, R6, R7, R8", PALETTE["gold_soft"], PALETTE["gold"], 0.40),
+        ("Low priority", "R9, R10", PALETTE["teal_soft"], PALETTE["teal"], 0.08),
+    ]
+    for title, items, fill, edge, y0 in legend_specs:
+        legend_ax.add_patch(
+            FancyBboxPatch(
+                (0.02, y0),
+                0.96,
+                0.22,
+                boxstyle="round,pad=0.015,rounding_size=0.03",
+                facecolor=fill,
+                edgecolor=edge,
+                linewidth=1.2,
+                transform=legend_ax.transAxes,
+            )
+        )
+        legend_ax.text(0.16, y0 + 0.14, title, fontsize=10.2, fontweight="bold", color=PALETTE["ink"], transform=legend_ax.transAxes)
+        legend_ax.text(0.16, y0 + 0.06, items, fontsize=9.5, color=PALETTE["muted"], transform=legend_ax.transAxes)
 
-    ax.add_patch(FancyBboxPatch((3.55, 3.55), 1.55, 0.72, boxstyle="round,pad=0.015,rounding_size=0.03", facecolor=PALETTE["gold_soft"], edgecolor=PALETTE["gold"], linewidth=1.2))
-    ax.text(3.68, 4.08, "Medium priority", fontsize=10.2, fontweight="bold", color=PALETTE["ink"])
-    ax.text(3.68, 3.82, "R3, R6, R7, R8", fontsize=9.4, color=PALETTE["muted"])
-
-    ax.add_patch(FancyBboxPatch((3.55, 2.65), 1.55, 0.72, boxstyle="round,pad=0.015,rounding_size=0.03", facecolor=PALETTE["teal_soft"], edgecolor=PALETTE["teal"], linewidth=1.2))
-    ax.text(3.68, 3.18, "Low priority", fontsize=10.2, fontweight="bold", color=PALETTE["ink"])
-    ax.text(3.68, 2.92, "R9, R10", fontsize=9.6, color=PALETTE["muted"])
-
-    ax.text(
-        0.03,
-        0.03,
+    fig.text(
+        0.08,
+        0.04,
         "Bubble size reflects computed priority = Impact x Likelihood x Detectability.",
-        transform=ax.transAxes,
         fontsize=9.6,
         color=PALETTE["muted"],
     )
