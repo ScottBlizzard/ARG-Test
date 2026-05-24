@@ -180,7 +180,7 @@ def save_coupon_scorecard(output_path: Path) -> None:
     )
 
     cards = [
-        ("Executable tests", "15 module tests\n27 repo tests", PALETTE["gold_soft"], PALETTE["gold"]),
+        ("Executable tests", "15 module tests\n32 repo tests", PALETTE["gold_soft"], PALETTE["gold"]),
         ("Coverage", "100% statement\n100% branch", PALETTE["teal_soft"], PALETTE["teal"]),
         ("Mutation result", "4 / 4 mutants killed", PALETTE["red_soft"], PALETTE["red"]),
     ]

@@ -2,11 +2,9 @@
 
 ## 1. Selected Major Module
 
-The selected detailed module is:
+This document treats `coupon_discount_engine` as the selected major feature of the target e-commerce promotion application. It is not the whole AutoTestDesign tool itself. Instead, it is the executable feature used to demonstrate that the test designs produced or refined with ARG-Test can be translated into concrete black-box and white-box tests.
 
-- `coupon_discount_engine`
-
-This module is a strong final-project target because it combines:
+This module is a strong detailed-execution target because it combines:
 
 - valid and invalid input partitions
 - multiple numeric boundaries
@@ -14,21 +12,25 @@ This module is a strong final-project target because it combines:
 - explicit expected results
 - a compact reference implementation suitable for white-box execution
 
+The module is suitable for detailed execution because its expected behavior is explicit, reviewable, and rich enough to require more than one testing technique. A single nominal-path test would not be sufficient: the module has rejection rules, threshold rules, membership restrictions, and implementation branches that must be checked together.
+
 ## 2. Requirement Basis and Scope
 
 ### 2.1 Formalized Requirement Summary
 
 The detailed execution document uses the following normalized rules derived from the final requirement set and the selected reference implementation:
 
-- only one coupon may be applied to an order
-- unknown coupon codes must be rejected
-- expired coupons must be rejected
-- `SAVE10` requires `subtotal >= 50`
-- `SAVE20` requires `subtotal >= 100`
-- `SAVE20` also requires premium membership
-- `SAVE20` cannot be combined with sale items
-- `FREESHIP` requires `subtotal >= 30`
-- no-coupon input should leave subtotal and shipping unchanged
+- R1: only one coupon may be applied to an order
+- R2: unknown coupon codes must be rejected
+- R3: expired coupons must be rejected
+- R4: `SAVE10` requires `subtotal >= 50`
+- R5: `SAVE20` requires `subtotal >= 100`
+- R6: `SAVE20` also requires premium membership
+- R7: `SAVE20` cannot be combined with sale items
+- R8: `FREESHIP` requires `subtotal >= 30`
+- R9: no-coupon input should leave subtotal and shipping unchanged
+
+These rules define the coverage items used in the rest of the document. The black-box design focuses on externally visible behavior from these rules, while the white-box design checks whether the executable reference implementation exercises all important branches that implement them.
 
 ### 2.2 Implementation Under Test
 
@@ -47,6 +49,8 @@ The detailed execution document uses the following normalized rules derived from
 | `coverage.py` | collect statement and branch coverage |
 | mutant functions | demonstrate defect detection usefulness |
 
+`pytest` was selected because the reference implementation is a compact Python module and the expected outcomes can be expressed directly with assertions. `coverage.py` was added to connect the test design with executable evidence. Branch coverage is especially useful here because coupon logic is implemented through conditionals, not only straight-line statements.
+
 Commands used:
 
 ```powershell
@@ -59,6 +63,8 @@ python -m coverage xml -o final_docs\execution_evidence\coupon_discount_engine_b
 ```
 
 ## 4. Black-Box Test Design
+
+The black-box design was derived from the requirement rules without relying on internal implementation details. Three techniques are used together because they cover different risks. Equivalence Partitioning separates valid and invalid classes. Boundary Value Analysis targets monetary thresholds where off-by-one or inclusive/exclusive mistakes are likely. Decision Table Testing captures business-rule combinations, especially for `SAVE20`, where multiple conditions interact.
 
 ### 4.1 Equivalence Partitioning
 
@@ -108,9 +114,27 @@ python -m coverage xml -o final_docs\execution_evidence\coupon_discount_engine_b
 | BB09 | `test_save20_valid_case_applies_discount` | decision table | valid `SAVE20` acceptance |
 | BB10 | `test_freeship_threshold_on_boundary_sets_shipping_to_zero` | BVA | `FREESHIP` exact threshold acceptance |
 
+### 4.5 Requirement-to-Test Traceability
+
+The following traceability matrix connects the requirement rules, coverage ideas, selected techniques, executable test IDs, and expected behavior. This is the main bridge between the abstract test design and the concrete `pytest` implementation.
+
+| Requirement | Coverage item | Technique | Test ID(s) | `pytest` function(s) | Expected behavior |
+| --- | --- | --- | --- | --- | --- |
+| R1 | more than one coupon | EP | `BB02` | `test_multiple_coupons_are_rejected` | reject multiple coupons |
+| R2 | unknown coupon code | EP | `BB03` | `test_unknown_coupon_is_rejected` | reject unknown code |
+| R3 | expired coupon | EP | `BB04` | `test_expired_coupon_is_rejected` | reject expired coupon |
+| R4 | `SAVE10` below/on threshold | BVA | `BB05`, `BB06`, `WB05` | `test_save10_boundary_below_threshold_is_rejected`, `test_save10_boundary_on_threshold_is_accepted`, `test_coupon_normalization_accepts_mixed_case_and_spacing` | reject below 50, accept at 50 or above |
+| R5 | `SAVE20` threshold | BVA / decision table | `WB03`, `BB09` | `test_save20_below_threshold_keeps_original_values`, `test_save20_valid_case_applies_discount` | reject below 100, accept when all conditions hold |
+| R6 | premium membership required | EP / decision table | `BB07` | `test_save20_requires_premium_membership` | reject non-premium customer |
+| R7 | sale-item restriction | EP / decision table | `BB08` | `test_save20_with_sale_items_is_rejected` | reject `SAVE20` with sale items |
+| R8 | `FREESHIP` threshold | BVA | `WB04`, `BB10` | `test_freeship_below_threshold_is_rejected`, `test_freeship_threshold_on_boundary_sets_shipping_to_zero` | reject below 30, set shipping to zero at 30 |
+| R9 | no coupon path | EP | `BB01` | `test_no_coupon_keeps_order_values` | accept and keep values unchanged |
+
 ## 5. White-Box Test Design
 
 ### 5.1 White-Box Objectives
+
+The white-box design complements the black-box suite by checking implementation branches that may not be fully justified by a single external rule. For example, the negative value guards are implementation-level safety checks, while coupon normalization verifies that the function handles user-facing input variations such as whitespace and mixed letter case.
 
 The white-box design targets:
 
@@ -143,6 +167,8 @@ The white-box design targets:
 | WB04 | `test_freeship_below_threshold_is_rejected` | `FREESHIP` rejection branch |
 | WB05 | `test_coupon_normalization_accepts_mixed_case_and_spacing` | normalization and `SAVE10` valid path |
 
+Together, the black-box and white-box tests form a layered design. The black-box part proves that the observable business rules are represented. The white-box part proves that the implementation paths behind those rules are executed, including defensive branches and normalization behavior.
+
 ## 6. Execution Results
 
 ![Detailed Module Execution Evidence](figures/coupon_module_evidence_scorecard.png)
@@ -152,7 +178,7 @@ The white-box design targets:
 | Item | Observed result |
 | --- | --- |
 | Module-specific executable tests | `15 passed` |
-| Repository regression suite at report-preparation time | `27 passed` |
+| Repository regression suite at report-preparation time | `32 passed` |
 | Statement coverage on the reference module | `100%` |
 | Branch coverage on the reference module | `100%` |
 | Mutation result | `4 / 4 mutants killed` |
@@ -179,11 +205,11 @@ First, the black-box suite is not superficial. It covers valid partitions, inval
 
 Second, the white-box suite is not decorative. It exercises the explicit negative-input guards and rejection/acceptance branches that are easy to overlook in a purely requirement-level discussion.
 
-Third, the combined suite is compact. With only `15` module-focused cases, it achieves complete statement and branch coverage on the selected implementation, which is a good tradeoff between completeness and maintainability for a coursework final project.
+Third, the combined suite is compact. With only `15` module-focused cases, it achieves complete statement and branch coverage on the selected implementation, which is a good tradeoff between completeness and maintainability for this module-level validation.
 
 ## 7. Mutation-Based Usefulness Demonstration
 
-The final project also includes defect-seeded usefulness evidence. Four representative mutants were created:
+The evaluation also includes defect-seeded usefulness evidence. Four representative mutants were created:
 
 - a mutant that allows multiple coupons
 - a mutant that rejects `SAVE10` exactly at subtotal `50`
@@ -216,4 +242,6 @@ Primary evidence files:
 
 ## 9. Conclusion
 
-The `coupon_discount_engine` module satisfies the detailed-design requirement of the final project at a strong level. The module is supported by multiple black-box techniques, executable white-box tests, complete statement and branch coverage, and a successful mutation demonstration. This makes it a credible detailed anchor for the overall ARG-Test submission rather than a merely illustrative example.
+The `coupon_discount_engine` module is supported by a complete detailed-design and execution chain. The module is covered by multiple black-box techniques, executable white-box tests, complete statement and branch coverage, and a successful mutation demonstration. This makes it a credible detailed anchor for the overall ARG-Test submission rather than a merely illustrative example.
+
+Most importantly, the evidence chain is complete: requirement rules are transformed into coverage items, coverage items are mapped to executable `pytest` tests, the tests are run against a reference implementation, and the resulting suite is checked with both coverage and mutation evidence. The result is a traceable module-level validation package that connects test case design, test tool implementation, and test result analysis.
