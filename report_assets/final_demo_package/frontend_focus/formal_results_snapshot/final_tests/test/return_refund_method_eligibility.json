@@ -1,0 +1,105 @@
+{
+  "requirement_id": "return_refund_method_eligibility",
+  "category": "business_rules",
+  "risk_assessment": {
+    "level": "Medium",
+    "score": 6.45,
+    "rule_count": 4,
+    "numeric_constraint_count": 0,
+    "technique_count": 2,
+    "drivers": [
+      "category=business_rules",
+      "4 explicit rule lines",
+      "decision-table logic",
+      "business impact keywords: balance, card, payment, refund",
+      "strict rejection/constraint language: required"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "decision combinations",
+      "business-critical rules",
+      "negative/error handling"
+    ]
+  },
+  "state_model": null,
+  "analysis": "The requirement defines eligibility and refund logic based on multiple conditional inputs: delivery date, payment date, payment method, item status (final-sale), and return reason. Key thresholds exist at 30 days post-delivery (eligibility) and 180 days post-payment (refund type). The system must also validate the refund amount against the paid amount. Inputs require validation against enumerated payment methods (CARD, BANK_TRANSFER, COD, GIFT_CARD) and boolean states (Final-Sale).",
+  "pattern": "Decision Table Testing is selected to manage the combinatorial logic between time-bound conditions and payment method outcomes. This technique ensures all unique combinations of eligibility windows and payment type behaviors are mapped to specific expected outputs. Boundary Value Analysis principles are implicitly applied to the 30-day and 180-day thresholds within the decision entries.",
+  "steps": [
+    "1. Validate eligible return with CARD payment made within 180 days (Original Card Refund).",
+    "2. Validate eligible return with CARD payment made beyond 180 days (Store Credit).",
+    "3. Validate ineligible return requested beyond 30 days (Return Denied).",
+    "4. Validate COD payment method (Store Credit Only).",
+    "5. Validate SELLER_FAULT reason (Shipping Fee Refunded)."
+  ],
+  "verification": "- Verified Rule 1 and 2 against Step 1 and Step 2 regarding date windows and payment method mapping.\n- Verified Rule 1 against Step 3 ensuring 30-day limit enforcement.\n- Verified Rule 2 against Step 4 ensuring non-CARD exclusions.\n- Verified Rule 3 against Step 5 ensuring shipping logic dependency on reason.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 2 (Card Payment)",
+      "preconditions": "Order Delivered Apr 05 2026; Paid Mar 20 2026",
+      "expected_output": "Eligible=true; Method=Original Card; Ship_Rev=false",
+      "covered_item": "R1 Eligibility, R2 Card Logic",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Method: CARD; Reason: CHANGE_OF_MIND"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 2 (Card Payment >180d)",
+      "preconditions": "Order Delivered Apr 05 2026; Paid Oct 01 2025",
+      "expected_output": "Eligible=true; Method=Store_Credit; Ship_Rev=false",
+      "covered_item": "R1 Eligibility, R2 Card Logic",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Method: CARD; Reason: CHANGE_OF_MIND"
+    },
+    {
+      "test_id": "T03",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 1 (Eligibility Time)",
+      "preconditions": "Order Delivered Mar 01 2026; Not Final_Sale",
+      "expected_output": "Eligible=false; Method=N/A; Error=\"Outside Window\"",
+      "covered_item": "R1 Time Limit",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "Method: CARD; Date_Diff>30Days"
+    },
+    {
+      "test_id": "T04",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 2 (COD Payment)",
+      "preconditions": "Order Delivered Apr 05 2026; Paid Apr 01 2026",
+      "expected_output": "Eligible=true; Method=Store_Credit; Ship_Rev=false",
+      "covered_item": "R2 COD Logic",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Method: COD; Reason: CHANGE_OF_MIND"
+    },
+    {
+      "test_id": "T05",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 3 (Shipping Fee)",
+      "preconditions": "Order Delivered Apr 05 2026; Paid Apr 01 2026",
+      "expected_output": "Eligible=true; Method=Original Card; Ship_Rev=true",
+      "covered_item": "R3 Shipping Logic",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Method: CARD; Reason: SELLER_FAULT"
+    },
+    {
+      "test_id": "T06",
+      "technique": "BVA",
+      "requirement_target": "return_refund_method_eligibility",
+      "preconditions": "None",
+      "expected_output": "boundary behavior verified",
+      "covered_item": "boundary case (repair)",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "repaired boundary input"
+    }
+  ]
+}

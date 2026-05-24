@@ -1,0 +1,7 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Equivalence Partitioning,Invalid Coupon Handling,Subtotal = 150; Valid Cart,"System rejects code; Message: ""Code invalid""; Total unchanged",Rule 5,High,repaired,"Code: ""INVALID_CODE99""; Items: $150"
+T02,Boundary Value Analysis,Shipping Subsidy Threshold,Subtotal near 80; SHIPFREE selected,Discount N/A; Original shipping fee charged,Rule 2,High,repaired,"Code: ""SHIPFREE""; Subtotal: 79.99"
+T03,Boundary Value Analysis,Percentage Discount Activation,Subtotal near 100; PERCENT10 selected,Merchandise price reduced 10%; Correct new total,Rule 2,High,repaired,"Code: ""PERCENT10""; Subtotal: 100.00"
+T04,Decision Logic (Rule Based),Multiple Coupon Rejection,Valid cart; Attempting stack,"System rejects input; Error: ""Only one promo allowed""","Rule 1, 6",Critical,repaired,"Code 1: ""PERCENT10""; Code 2: ""FIXED20"""
+T05,Integration Testing,Tax & Points Calculation,"Subtotal 200, Tax 20, Points 500",Discount on merch only (Tax 20 kept); Points deducted max to current payable; No negative balance,"Rule 3, 4",High,repaired,"Code: ""FIXED20""; Apply 500pts"
+T06,BVA,checkout_promo_stack_and_priority,None,boundary behavior verified,boundary case (repair),Medium,repaired,repaired boundary input

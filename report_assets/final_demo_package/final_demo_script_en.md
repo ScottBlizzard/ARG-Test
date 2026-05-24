@@ -42,7 +42,7 @@ This file shows extracted states, legal transitions, illegal transitions, and co
 
 ## 2:50 - 3:20 Connect to formal benchmark results
 
-The live mock run demonstrates the tool interface, but our final project quality is represented by the frozen formal result bundle.
+The Web mock interaction demonstrates the tool interface, while formal examples replay the frozen result bundle used for final quality claims.
 
 On the held-out test split, ARG-Test reaches an average checker score of 0.959 and an average overall coverage of 0.615, clearly outperforming the rule-based, plain-LLM, and structured-no-checker baselines.
 

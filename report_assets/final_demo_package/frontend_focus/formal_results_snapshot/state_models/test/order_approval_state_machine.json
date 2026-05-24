@@ -1,0 +1,189 @@
+{
+  "states": [
+    "Draft",
+    "Submitted",
+    "ManagerApproved",
+    "FinanceApproved",
+    "Rejected",
+    "Closed"
+  ],
+  "start_states": [
+    "Draft"
+  ],
+  "legal_transitions": [
+    {
+      "source_state": "Draft",
+      "trigger": "Submit",
+      "target_state": "Submitted",
+      "legal": true,
+      "source_rule": "Submit is allowed only from Draft and moves the order to Submitted."
+    },
+    {
+      "source_state": "Submitted",
+      "trigger": "ManagerApprove",
+      "target_state": "ManagerApproved",
+      "legal": true,
+      "source_rule": "ManagerApprove is allowed only from Submitted and moves the order to ManagerApproved."
+    },
+    {
+      "source_state": "Submitted",
+      "trigger": "ManagerReject",
+      "target_state": "Rejected",
+      "legal": true,
+      "source_rule": "ManagerReject is allowed only from Submitted and moves the order to Rejected."
+    },
+    {
+      "source_state": "ManagerApproved",
+      "trigger": "FinanceApprove",
+      "target_state": "FinanceApproved",
+      "legal": true,
+      "source_rule": "FinanceApprove is allowed only from ManagerApproved and moves the order to FinanceApproved."
+    },
+    {
+      "source_state": "ManagerApproved",
+      "trigger": "FinanceReject",
+      "target_state": "Rejected",
+      "legal": true,
+      "source_rule": "FinanceReject is allowed only from ManagerApproved and moves the order to Rejected."
+    },
+    {
+      "source_state": "FinanceApproved",
+      "trigger": "Close",
+      "target_state": "Closed",
+      "legal": true,
+      "source_rule": "Close is allowed only from FinanceApproved and moves the order to Closed."
+    },
+    {
+      "source_state": "Rejected",
+      "trigger": "EditAndResubmit",
+      "target_state": "Draft",
+      "legal": true,
+      "source_rule": "EditAndResubmit is allowed only from Rejected and moves the order to Draft."
+    }
+  ],
+  "illegal_transitions": [],
+  "coverage_plans": [
+    {
+      "coverage_goal": "All States",
+      "sequence_count": 2,
+      "fully_covered": true,
+      "sequences": [
+        {
+          "sequence_id": "AS01",
+          "coverage_goal": "All States",
+          "steps": [
+            "Start in Draft",
+            "Trigger `Submit`: Draft -> Submitted",
+            "Trigger `ManagerApprove`: Submitted -> ManagerApproved",
+            "Trigger `FinanceApprove`: ManagerApproved -> FinanceApproved",
+            "Trigger `Close`: FinanceApproved -> Closed"
+          ],
+          "covered_states": [
+            "Draft",
+            "Submitted",
+            "ManagerApproved",
+            "FinanceApproved",
+            "Closed"
+          ],
+          "covered_transitions": [
+            "Draft -> Submitted [Submit]",
+            "Submitted -> ManagerApproved [ManagerApprove]",
+            "ManagerApproved -> FinanceApproved [FinanceApprove]",
+            "FinanceApproved -> Closed [Close]"
+          ]
+        },
+        {
+          "sequence_id": "AS02",
+          "coverage_goal": "All States",
+          "steps": [
+            "Start in Draft",
+            "Trigger `Submit`: Draft -> Submitted",
+            "Trigger `ManagerReject`: Submitted -> Rejected"
+          ],
+          "covered_states": [
+            "Draft",
+            "Submitted",
+            "Rejected"
+          ],
+          "covered_transitions": [
+            "Draft -> Submitted [Submit]",
+            "Submitted -> Rejected [ManagerReject]"
+          ]
+        }
+      ]
+    },
+    {
+      "coverage_goal": "All Transitions",
+      "sequence_count": 3,
+      "fully_covered": true,
+      "sequences": [
+        {
+          "sequence_id": "AT01",
+          "coverage_goal": "All Transitions",
+          "steps": [
+            "Start in Draft",
+            "Trigger `Submit`: Draft -> Submitted",
+            "Trigger `ManagerApprove`: Submitted -> ManagerApproved",
+            "Trigger `FinanceApprove`: ManagerApproved -> FinanceApproved",
+            "Trigger `Close`: FinanceApproved -> Closed"
+          ],
+          "covered_states": [
+            "Draft",
+            "Submitted",
+            "ManagerApproved",
+            "FinanceApproved",
+            "Closed"
+          ],
+          "covered_transitions": [
+            "Draft -> Submitted [Submit]",
+            "Submitted -> ManagerApproved [ManagerApprove]",
+            "ManagerApproved -> FinanceApproved [FinanceApprove]",
+            "FinanceApproved -> Closed [Close]"
+          ]
+        },
+        {
+          "sequence_id": "AT02",
+          "coverage_goal": "All Transitions",
+          "steps": [
+            "Start in Draft",
+            "Trigger `Submit`: Draft -> Submitted",
+            "Trigger `ManagerApprove`: Submitted -> ManagerApproved",
+            "Trigger `FinanceReject`: ManagerApproved -> Rejected",
+            "Trigger `EditAndResubmit`: Rejected -> Draft"
+          ],
+          "covered_states": [
+            "Draft",
+            "Submitted",
+            "ManagerApproved",
+            "Rejected"
+          ],
+          "covered_transitions": [
+            "Draft -> Submitted [Submit]",
+            "Submitted -> ManagerApproved [ManagerApprove]",
+            "ManagerApproved -> Rejected [FinanceReject]",
+            "Rejected -> Draft [EditAndResubmit]"
+          ]
+        },
+        {
+          "sequence_id": "AT03",
+          "coverage_goal": "All Transitions",
+          "steps": [
+            "Start in Draft",
+            "Trigger `Submit`: Draft -> Submitted",
+            "Trigger `ManagerReject`: Submitted -> Rejected"
+          ],
+          "covered_states": [
+            "Draft",
+            "Submitted",
+            "Rejected"
+          ],
+          "covered_transitions": [
+            "Draft -> Submitted [Submit]",
+            "Submitted -> Rejected [ManagerReject]"
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": []
+}

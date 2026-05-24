@@ -1,0 +1,7 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,DTT,"Req 2, 3",Logged In User,Order Submitted,EMAIL Path Valid,High,repaired,"Channel:EMAIL, Email:test@ex.co, Name:Alice"
+T02,DTT,"Req 2, 4",Logged In User,Order Submitted,SMS Path Valid,High,repaired,"Channel:SMS, Phone:+12125551234, Name:Alice"
+T03,BVA,Req 5,Logged In User,Scheduled Future (Today),Day Boundary Min (0),Medium,repaired,"Days:0, Name:Bob"
+T04,BVA,Req 5,Logged In User,Scheduled Future (1 Year),Day Boundary Max (365),Medium,repaired,"Days:365, Name:Charlie"
+T05,EP,Req 7,Logged In User,Error: Missing Email,Missing Contact Valid,Critical,repaired,"Channel:EMAIL, No Email Provided, Name:Dave"
+T06,BVA,Req 6,Logged In User,Error: Message Too Long,Message Boundary Fail,Low,repaired,"Msg:201 Chars, Name:Eve"

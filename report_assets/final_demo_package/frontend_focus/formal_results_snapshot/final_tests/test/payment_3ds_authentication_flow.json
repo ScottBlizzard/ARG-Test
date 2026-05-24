@@ -1,0 +1,192 @@
+{
+  "requirement_id": "payment_3ds_authentication_flow",
+  "category": "workflow_state",
+  "risk_assessment": {
+    "level": "High",
+    "score": 7.15,
+    "rule_count": 7,
+    "numeric_constraint_count": 0,
+    "technique_count": 1,
+    "drivers": [
+      "category=workflow_state",
+      "7 explicit rule lines",
+      "stateful workflow behavior",
+      "business impact keywords: authentication, card, payment",
+      "strict rejection/constraint language: must not, required"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "legal transitions",
+      "illegal transitions",
+      "business-critical rules",
+      "negative/error handling"
+    ]
+  },
+  "state_model": {
+    "states": [
+      "INITIATED",
+      "AUTH_REQUIRED",
+      "FAILED",
+      "AUTHENTICATED",
+      "PENDING_REVIEW"
+    ],
+    "start_states": [
+      "INITIATED"
+    ],
+    "legal_transitions": [
+      {
+        "source_state": "AUTH_REQUIRED",
+        "trigger": "3DS fails or the customer cancels",
+        "target_state": "FAILED",
+        "legal": true,
+        "source_rule": "If 3DS fails or the customer cancels, the payment becomes FAILED."
+      }
+    ],
+    "illegal_transitions": [
+      {
+        "source_state": "AUTH_REQUIRED",
+        "trigger": "CAPTURE",
+        "target_state": "CAPTURED",
+        "legal": false,
+        "source_rule": "Illegal: capture before authentication when 3DS is required."
+      }
+    ],
+    "coverage_plans": [
+      {
+        "coverage_goal": "All States",
+        "sequence_count": 4,
+        "fully_covered": false,
+        "sequences": [
+          {
+            "sequence_id": "AS01",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `AUTHENTICATED` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          },
+          {
+            "sequence_id": "AS02",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `AUTH_REQUIRED` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          },
+          {
+            "sequence_id": "AS03",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `FAILED` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          },
+          {
+            "sequence_id": "AS04",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `PENDING_REVIEW` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          }
+        ]
+      },
+      {
+        "coverage_goal": "All Transitions",
+        "sequence_count": 1,
+        "fully_covered": true,
+        "sequences": [
+          {
+            "sequence_id": "AT01",
+            "coverage_goal": "All Transitions",
+            "steps": [
+              "Start in AUTH_REQUIRED",
+              "Trigger `3DS fails or the customer cancels`: AUTH_REQUIRED -> FAILED"
+            ],
+            "covered_states": [
+              "AUTH_REQUIRED",
+              "FAILED"
+            ],
+            "covered_transitions": [
+              "AUTH_REQUIRED -> FAILED [3DS fails or the customer cancels]"
+            ]
+          }
+        ]
+      }
+    ],
+    "notes": []
+  },
+  "analysis": "The requirement defines a stateful payment workflow governed by external authentication (3DS). Key states are INITIATED, AUTH_REQUIRED, AUTHENTICATED, FAILED, PENDING_REVIEW, and CAPTURED. Transitions are conditional on user actions, provider responses, and system constraints (timeout, retry limits). The critical risks involve unauthorized state progression (capture without auth) and exhaustion of retry mechanisms. State Transition Testing is optimal here due to the explicit definition of legal state transitions and forbidden actions.",
+  "pattern": "**State Transition Testing**\nJustification: The requirement explicitly outlines specific lifecycle states (INITIATED, AUTH_REQUIRED, etc.) and the precise triggers for moving between them (successful auth, cancellation, timeout). This method allows systematic coverage of every valid state change and validation of guard conditions that prevent illegal transitions.",
+  "steps": [
+    "1. **Initiation**: Create a new payment record designated as requiring 3DS.",
+    "2. **Successful Auth**: Submit a valid 3DS credential response within the timeout window.",
+    "3. **Retry Exceedance**: Submit three consecutive invalid 3DS credentials triggering the FAILED state twice, then attempt a third.",
+    "4. **Illegal Capture**: Attempt to invoke the capture API immediately upon INITIATED status without entering AUTH_REQUIRED.",
+    "5. **Timeout Handling**: Trigger a provider communication failure during AUTH_REQUIRED state."
+  ],
+  "verification": "- Verified Step 1 input produces 'AUTH_REQUIRED' status confirming Requirement 2.\n- Verified Step 2 output results in 'AUTHENTICATED' state permitting Requirement 3 flow.\n- Verified Step 3 action returns error code 'RETRY_LIMIT_EXCEEDED', enforcing Requirement 6 constraint.\n- Verified Step 4 action is rejected by the system preventing Requirement 7 violation.\n- Verified Step 5 results in 'PENDING_REVIEW' blocking Requirement 5 capture restrictions.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "State Transition",
+      "requirement_target": "Req 2, 3",
+      "preconditions": "None",
+      "expected_output": "Status: AUTH_REQUIRED",
+      "covered_item": "Initial Flow Start",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Card flagged for 3DS"
+    },
+    {
+      "test_id": "T02",
+      "technique": "State Transition",
+      "requirement_target": "Req 3",
+      "preconditions": "Status: AUTH_REQUIRED",
+      "expected_output": "Status: AUTHENTICATED",
+      "covered_item": "Successful Auth",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Valid 3DS Token"
+    },
+    {
+      "test_id": "T03",
+      "technique": "State Transition",
+      "requirement_target": "Req 6",
+      "preconditions": "Status: FAILED",
+      "expected_output": "Error: MAX_RETRY_EXCEEDED",
+      "covered_item": "Retry Limit Enforcement",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "3rd Retry Attempt"
+    },
+    {
+      "test_id": "T04",
+      "technique": "State Transition",
+      "requirement_target": "Req 7",
+      "preconditions": "Status: INITIATED",
+      "expected_output": "Error: MISSING_AUTH",
+      "covered_item": "Illegal Transition Blocking",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "POST /Capture"
+    },
+    {
+      "test_id": "T05",
+      "technique": "State Transition",
+      "requirement_target": "Req 5",
+      "preconditions": "Status: AUTH_REQUIRED",
+      "expected_output": "Status: PENDING_REVIEW",
+      "covered_item": "Timeout Handling",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Provider Timeout Event"
+    }
+  ]
+}

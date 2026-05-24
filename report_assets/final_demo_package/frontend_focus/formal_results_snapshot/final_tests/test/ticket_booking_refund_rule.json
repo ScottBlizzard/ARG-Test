@@ -1,0 +1,132 @@
+{
+  "requirement_id": "ticket_booking_refund_rule",
+  "category": "business_rules",
+  "risk_assessment": {
+    "level": "High",
+    "score": 7.65,
+    "rule_count": 6,
+    "numeric_constraint_count": 2,
+    "technique_count": 2,
+    "drivers": [
+      "category=business_rules",
+      "6 explicit rule lines",
+      "2 numeric constraints",
+      "decision-table logic",
+      "business impact keywords: payment, refund",
+      "workflow cues: before"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "boundary coverage",
+      "decision combinations",
+      "business-critical rules",
+      "state-dependent behavior"
+    ]
+  },
+  "state_model": null,
+  "analysis": "The requirement defines two main processes: booking creation and refund calculation.\n1. **Booking Creation (Rule 1)** depends on boolean inputs: `SeatAvailable` and `PaymentSuccess`. \n2. **Ticket Classification (Rule 2)** depends on continuous input `Age`. Boundaries exist at ages 2, 12, 13, 59, 60.\n3. **Refund Calculation (Rules 3-6)** depends on `TicketType` (Standard/Promo) and `TimeBeforeDeparture` (Hours).\n   - Standard Ticket refunds depend on time brackets: >48h, [24-48]h, <24h.\n   - Promo Tickets override time brackets with 0% refund.\nCritical risk areas include the exact boundary definitions for Age (e.g., 12 vs 13) and Time (24h vs 48h), and the priority of the Promo rule over the Standard refund logic.",
+  "pattern": "**Decision Table Testing** is selected to manage the combinatorial logic of Ticket Type vs. Time Duration for refund percentages. **Boundary Value Analysis** is integrated to validate the specific age thresholds and time limits mentioned in the rules. This combination ensures coverage of normal behavior and edge-case transitions.",
+  "steps": [
+    "1. **Booking Validation:** Submit request with `SeatAvailable=True`, `PaymentSuccess=True`. Expect `BookingStatus=Confirmed`.",
+    "2. **Age Lower Boundary:** Enter `Age=2` with `TicketType=Standard`. Expect `Category=Child`.",
+    "3. **Age Mid-Boundary:** Enter `Age=13` with `TicketType=Standard`. Expect `Category=Adult`.",
+    "4. **Age Upper Boundary:** Enter `Age=60` with `TicketType=Standard`. Expect `Category=Senior`.",
+    "5. **Refund >48h:** Enter `Std Ticket`, `Time=50h`. Expect `Refund=90%`.",
+    "6. **Refund 24-48h:** Enter `Std Ticket`, `Time=24h`. Expect `Refund=50%`.",
+    "7. **Refund <24h:** Enter `Std Ticket`, `Time=20h`. Expect `Refund=0%`.",
+    "8. **Refund Promo:** Enter `Promo Ticket`, `Time=60h`. Expect `Refund=0%`."
+  ],
+  "verification": "- Verified T01 against Rule 1 preconditions.\n- Verified T05 against Rule 3 time threshold (>48 hours).\n- Verified T08 against Rule 6 priority overriding Rule 3 logic.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "Booking Creation",
+      "preconditions": "User logged in",
+      "expected_output": "Status=Booked",
+      "covered_item": "Rule 1",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Seats=Yes, Payment=Yes"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Boundary Analysis",
+      "requirement_target": "Ticket Classification",
+      "preconditions": "Active Session",
+      "expected_output": "Category=Child",
+      "covered_item": "Rule 2 (Lower)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Age=2"
+    },
+    {
+      "test_id": "T03",
+      "technique": "Boundary Analysis",
+      "requirement_target": "Ticket Classification",
+      "preconditions": "Active Session",
+      "expected_output": "Category=Adult",
+      "covered_item": "Rule 2 (Boundary)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Age=13"
+    },
+    {
+      "test_id": "T04",
+      "technique": "Boundary Analysis",
+      "requirement_target": "Ticket Classification",
+      "preconditions": "Active Session",
+      "expected_output": "Category=Senior",
+      "covered_item": "Rule 2 (Upper)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Age=60"
+    },
+    {
+      "test_id": "T05",
+      "technique": "Decision Table",
+      "requirement_target": "Refund Calculation",
+      "preconditions": "Active Booking (Std)",
+      "expected_output": "RefundPercent=90%",
+      "covered_item": "Rule 3",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "TimeBefore>48h"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Boundary Analysis",
+      "requirement_target": "Refund Calculation",
+      "preconditions": "Active Booking (Std)",
+      "expected_output": "RefundPercent=50%",
+      "covered_item": "Rule 4 (Bound)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "TimeBefore=24h"
+    },
+    {
+      "test_id": "T07",
+      "technique": "Decision Table",
+      "requirement_target": "Refund Calculation",
+      "preconditions": "Active Booking (Std)",
+      "expected_output": "RefundPercent=0%",
+      "covered_item": "Rule 5",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "TimeBefore<24h"
+    },
+    {
+      "test_id": "T08",
+      "technique": "Decision Table",
+      "requirement_target": "Refund Calculation",
+      "preconditions": "Active Booking (Promo)",
+      "expected_output": "RefundPercent=0%",
+      "covered_item": "Rule 6",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "TimeBefore=100h"
+    }
+  ]
+}

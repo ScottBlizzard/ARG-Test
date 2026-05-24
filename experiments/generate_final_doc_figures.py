@@ -34,16 +34,16 @@ PALETTE = {
 
 
 RISK_ITEMS = [
-    ("R1", 5, 4, 3, 60, "showcase realism"),
-    ("R2", 5, 4, 4, 80, "score/coverage gap"),
-    ("R3", 4, 4, 3, 48, "workflow generalization"),
-    ("R4", 5, 5, 5, 125, "white-box evidence"),
-    ("R5", 5, 3, 5, 75, "result-source control"),
-    ("R6", 4, 3, 3, 36, "document consistency"),
-    ("R7", 4, 3, 4, 48, "evidence discoverability"),
-    ("R8", 3, 4, 3, 36, "schedule/cost realism"),
-    ("R9", 2, 3, 5, 30, "README sync"),
-    ("R10", 3, 2, 4, 24, "middle/final confusion"),
+    ("R1", 5, 4, 3, 60, "FR coverage exposition"),
+    ("R2", 5, 5, 4, 100, "metric interpretation"),
+    ("R3", 4, 4, 3, 48, "FR4/executable boundary"),
+    ("R4", 5, 3, 4, 60, "demo UI interpretation"),
+    ("R5", 5, 3, 5, 75, "provider latency wording"),
+    ("R6", 4, 3, 3, 36, "traceability drift"),
+    ("R7", 4, 3, 4, 48, "result-source policy"),
+    ("R8", 3, 2, 2, 12, "ad-hoc mock confusion"),
+    ("R9", 2, 3, 4, 24, "secret leakage"),
+    ("R10", 3, 2, 5, 30, "maintainability chain"),
 ]
 
 
@@ -102,13 +102,13 @@ def save_risk_heatmap(output_path: Path) -> None:
         "R1": (3.95, 4.98),
         "R2": (4.78, 5.02),
         "R3": (4.06, 4.03),
-        "R4": (5.00, 5.00),
+        "R4": (3.18, 4.86),
         "R5": (3.00, 5.00),
         "R6": (3.00, 4.03),
         "R7": (3.18, 3.88),
-        "R8": (3.98, 3.02),
+        "R8": (2.00, 3.00),
         "R9": (3.00, 2.00),
-        "R10": (2.00, 3.00),
+        "R10": (2.18, 3.10),
     }
 
     for risk_id, impact, likelihood, detectability, priority, label in RISK_ITEMS:
@@ -134,8 +134,8 @@ def save_risk_heatmap(output_path: Path) -> None:
 
     legend_specs = [
         ("High priority", "R1, R2, R4, R5", PALETTE["red_soft"], PALETTE["red"], 0.72),
-        ("Medium priority", "R3, R6, R7, R8", PALETTE["gold_soft"], PALETTE["gold"], 0.40),
-        ("Low priority", "R9, R10", PALETTE["teal_soft"], PALETTE["teal"], 0.08),
+        ("Medium priority", "R3, R6, R7", PALETTE["gold_soft"], PALETTE["gold"], 0.40),
+        ("Low priority", "R8, R9, R10", PALETTE["teal_soft"], PALETTE["teal"], 0.08),
     ]
     for title, items, fill, edge, y0 in legend_specs:
         legend_ax.add_patch(
@@ -180,7 +180,7 @@ def save_coupon_scorecard(output_path: Path) -> None:
     )
 
     cards = [
-        ("Executable tests", "15 module tests\n32 repo tests", PALETTE["gold_soft"], PALETTE["gold"]),
+        ("Executable tests", "15 module tests\n38 repo tests", PALETTE["gold_soft"], PALETTE["gold"]),
         ("Coverage", "100% statement\n100% branch", PALETTE["teal_soft"], PALETTE["teal"]),
         ("Mutation result", "4 / 4 mutants killed", PALETTE["red_soft"], PALETTE["red"]),
     ]

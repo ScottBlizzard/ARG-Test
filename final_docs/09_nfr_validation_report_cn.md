@@ -21,7 +21,7 @@
 结果：
 
 - sample size = `5`
-- average mock processing time per requirement = `0.005 s`
+- average mock processing time per requirement = `0.014 s`
 
 结论：
 

@@ -15,7 +15,7 @@ Accordingly, the scope of this report covers:
 - the independent `final_docs/` package
 - `demo_web/`, the demo package, and presentation/defense interpretation risks
 
-At this stage, the main risks are no longer “the core system does not exist.” They are now about whether the finished functionality, boundaries, and evidence are explained accurately, consistently, and defensibly.
+At this stage, the main risks are no longer "the core system does not exist." They are now about whether the finished functionality, boundaries, and evidence are explained accurately, consistently, and defensibly.
 
 ## 2. Risk Scoring Method and Evidence Sources
 
@@ -54,7 +54,7 @@ Whenever the report, PPT, demo, or defense uses quantitative results, the team m
 - dataset split: `dev = 50`, `test = 16`
 - full pipeline: `avg checker score = 0.959`, `avg overall coverage = 0.615`, `avg test count = 7.312`
 - baselines: Rule-based `0.753 / 0.147 / 4.125`; Plain LLM `0.844 / 0.030 / 7.250`; Structured No Checker `0.841 / 0.538 / 6.312`
-- detailed executable evidence: `15 module tests passed`; `32 repo tests passed`; `100% statement coverage`; `100% branch coverage`; `4 / 4 mutants killed`
+- detailed executable evidence: `15 module tests passed`; `38 repo tests passed`; `100% statement coverage`; `100% branch coverage`; `4 / 4 mutants killed`
 
 These numbers are grounded in `report_assets/final_latex_report/main.tex`, `final_docs/execution_evidence/`, and the formal demo snapshot, and must not be replaced by mock outputs or legacy repository leftovers.
 
@@ -73,7 +73,7 @@ The table below makes the framing explicit: the risks in this report are tied to
 | `FR 6.0` Output & Export | Supports `Markdown / JSON / CSV` export; see `src/exporter.py` and the formal output directories. | `R1`, `R6`, `R7` |
 | `FR 7.0` Test Suite Optimization | Multi-candidate reranking, repair, and priority-aware refinement are implemented. | `R1`, `R2` |
 | `NFR 4.1` Performance | Mock/local-path performance has been validated, but live runtime remains provider-latency-bound. | `R5` |
-| `NFR 4.2` Usability / UI / Traceability | The primary workflow is still CLI plus artifact-based execution, supplemented by the `demo_web/` FastAPI UI shell. | `R4`, `R6`, `R8` |
+| `NFR 4.2` Usability / UI / Traceability | The primary defense workflow is the `demo_web/` FastAPI Web demo, with CLI and exported artifacts retained as the reproducibility and audit path. | `R4`, `R6`, `R8` |
 | `NFR 4.3` Security | `.env`-based secret injection, manifests without API keys, and artifact secret scanning are in place. | `R9` |
 | `NFR 4.4` Maintainability and Technology | The modular Python repo, architecture figure, README, final docs, and demo package together support this requirement. | `R6`, `R10` |
 
@@ -92,11 +92,11 @@ The full register is split into a compact scoring table and a mitigation summary
 | `R1` | `FR 1.0~FR 7.0` | FR coverage may be undervalued if capabilities are not mapped to the specification. | `5/4/3` | `60` | High | Controlled |
 | `R2` | `FR 2.0`, `FR 3.0`, `FR 7.0` | Metrics, baselines, and gold-spec usage may be misinterpreted. | `5/5/4` | `100` | High | Controlled |
 | `R3` | `FR 4.0`, `FR 5.0` | FR 4.0 and the coupon module may be mistaken for full white-box automation. | `4/4/3` | `48` | Medium | Residual but defendable |
-| `R4` | `NFR 4.2.1` | UI capability may be overclaimed or under-explained. | `5/5/5` | `125` | High | Controlled with boundary |
+| `R4` | `NFR 4.2.1` | Web demo capability may be misinterpreted as a production SaaS frontend rather than a stable course-project demonstration surface. | `5/3/4` | `60` | High | Controlled with boundary |
 | `R5` | `NFR 4.1.1`, `NFR 4.1.2` | Live-provider latency may make strict performance claims misleading. | `5/3/5` | `75` | High | Residual and accepted |
 | `R6` | `NFR 4.2.2`, `NFR 4.4.3` | Traceability may weaken if paths, IDs, and wording drift. | `4/3/3` | `36` | Medium | Controlled |
 | `R7` | result-source policy | Mixing formal, mock, and legacy outputs may weaken result authority. | `4/3/4` | `48` | Medium | Controlled |
-| `R8` | demo interpretation | The mock demo may be mistaken for the final benchmark. | `3/4/3` | `36` | Medium | Controlled |
+| `R8` | demo interpretation | Ad hoc mock outputs may be cited as official benchmark evidence if the replay boundary is not explained. | `3/2/2` | `12` | Low | Controlled |
 | `R9` | `NFR 4.3.1` | Secrets may accidentally enter screenshots, logs, or artifacts. | `2/3/4` | `24` | Low | Controlled |
 | `R10` | `NFR 4.4.1~NFR 4.4.3` | Maintainability evidence may be undervalued if the evidence chain is fragmented. | `3/2/5` | `30` | Low | Controlled |
 
@@ -105,19 +105,19 @@ Mitigation and evidence summary:
 - `R1`: Use explicit FR-coverage mapping in the risk report and test plan; key evidence includes `src/main.py`, `src/risk.py`, `src/state_model.py`, `src/exporter.py`, `final_docs/10_feature_closure_status_cn.md`, and `extended_feature_smoke_summary.md`.
 - `R2`: Always report `0.959 / 0.615 / 7.312` together with the baselines; state that `checker_score != correctness` and that the `gold spec` is an evaluation rubric, not training data.
 - `R3`: In the detailed document, separate the AutoTestDesign app feature under validation from the selected executable validation module; cite `src/state_model.py` and `coupon_discount_engine_execution_summary.md`.
-- `R4`: State the UI boundary directly: the project has a CLI-centered prototype plus the `demo_web/` FastAPI UI shell for direct text, CSV, state-model, and formal-dashboard demonstration.
-- `R5`: Split the performance claim into mock/local processing and live-provider latency; the NFR evidence records a local sample average of `0.005 s / requirement`.
+- `R4`: State the UI boundary directly: the project has a stable `demo_web/` FastAPI Web demo for direct text, CSV, state-model, and formal-dashboard demonstration; CLI and exported artifacts remain the audit/reproduction path.
+- `R5`: Split the performance claim into mock/local processing and live-provider latency; the latest NFR evidence records a local sample average of `0.014 s / requirement`.
 - `R6`: Keep wording and paths synchronized across `README.md`, `final_docs/README.md`, `05_evidence_and_submission_checklist_cn.md`, and `report_assets/final_demo_package/`.
 - `R7`: Anchor official results to `.local_runs/formal_qwen_novpn` and the formal result snapshot under `report_assets/final_demo_package/frontend_focus/formal_results_snapshot/`.
-- `R8`: Explain during the demo that `mock` is used for stable interaction, while the frozen formal result represents final quality.
+- `R8`: Explain during the demo that built-in formal examples use `frozen_formal_run` replay, while edited ad hoc inputs use local `mock` generation and must not be cited as official benchmark quality.
 - `R9`: Keep secrets outside committed artifacts; manifests record provider metadata but not API keys, and artifact/report directories have been secret-scanned.
-- `R10`: Present `src/`, `experiments/`, `tests/`, `final_docs/`, `demo_web/`, `32 passed`, the architecture figure, and the README as one maintainability evidence chain.
+- `R10`: Present `src/`, `experiments/`, `tests/`, `final_docs/`, `demo_web/`, `38 passed`, the architecture figure, and the README as one maintainability evidence chain.
 
 ## 6. High-Priority Risk Analysis
 
 ### 6.1 `R1`: FR Coverage Exposition Risk
 
-This is not a “missing feature” problem. It is a “finished features may still look unfinished if they are not explained against the requirement map” problem. The repository already supports:
+This is not a "missing feature" problem. It is a "finished features may still look unfinished if they are not explained against the requirement map" problem. The repository already supports:
 
 - `FR 1.0`: `run`, `run-text`, `batch-csv`
 - `FR 2.0`: risk scoring and priority promotion
@@ -144,10 +144,11 @@ If these statements stay consistent across the risk report, PPT, and demo script
 
 `NFR 4.2.1` is one of the most sensitive non-functional items in this final project. The most accurate wording is:
 
-- the primary workflow is still `CLI + artifact-based workflow`
-- the final defense package adds the `demo_web/` lightweight web UI backed by FastAPI
-- it already supports direct text input, CSV import, a formal-result dashboard, and state-model generation
-- it is a prototype-grade interface, not a large polished product frontend
+- the primary defense interaction surface is the `demo_web/` Web demo backed by FastAPI
+- it supports formal requirement selection, direct text input, CSV import, a formal-result dashboard, and state-model generation
+- built-in formal examples replay the frozen formal outputs so that displayed coverage and selected cases match the official evidence root
+- CLI commands and exported artifacts remain the reproducibility path rather than the main presentation surface
+- it is a stable course-project demonstration UI, not a production SaaS frontend
 
 This wording avoids both extremes: denying the UI entirely and overclaiming a mature web product.
 
@@ -174,7 +175,7 @@ This boundary should not be hidden; it should be explained clearly:
 The supporting hard evidence is already strong:
 
 - `15 passed`
-- `32 passed`
+- `38 passed`
 - `100% statement coverage`
 - `100% branch coverage`
 - `4 / 4 mutants killed`
@@ -198,11 +199,13 @@ The demo only needs to prove three things:
 
 It is not a live benchmark, and it is not a provider-determinism demonstration. If that explanation remains intact, the risk stays manageable.
 
+The current Web demo reduces this risk by making the source of each displayed result explicit. For formal examples, the Direct and CSV tabs show frozen replay evidence from `report_assets/final_demo_package/frontend_focus/formal_results_snapshot/`; for edited ad hoc inputs, the UI labels the run as local mock generation. The state-model tab is also backed by a five-item workflow catalog whose legal transitions were checked by regression tests, avoiding the earlier empty-transition interpretation problem.
+
 ## 8. Honest Boundaries That Should Remain Visible
 
 The following points should remain visible in the final submission rather than being polished away:
 
-- the current UI is a lightweight web UI plus the original CLI workflow, not a polished standalone product frontend
+- the current UI is a stable Web demo plus the original CLI/audit workflow, not a polished standalone product frontend
 - current performance evidence mainly proves that the local/mock path is fast enough; live latency remains provider-bound
 - the project implements a seed-controlled pipeline, repeatability studies, and replay, but it must not claim that the upstream live provider is fully deterministic
 - `checker_score` is not correctness itself, and the `gold spec` is not training data
@@ -212,7 +215,7 @@ Keeping these boundaries explicit strengthens the credibility of the final submi
 
 ## 9. Conclusion
 
-From a final-submission perspective, the current risk posture of `ARG-Test` is positive. The core `FR` items and main `NFR` items are already supported by implementation and evidence, and the main remaining challenge is not “how to build a new system,” but “how to avoid being misunderstood.”
+From a final-submission perspective, the current risk posture of `ARG-Test` is positive. The core `FR` items and main `NFR` items are already supported by implementation and evidence, and the main remaining challenge is not "how to build a new system," but "how to avoid being misunderstood."
 
 The highest-priority risks are concentrated in `FR coverage exposition`, `claim interpretation`, `UI boundary`, and `performance wording`, and each of these already has a clear mitigation path with repository-backed evidence.
 

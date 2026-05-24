@@ -1,0 +1,9 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table,Booking Creation,User logged in,Status=Booked,Rule 1,High,pending,"Seats=Yes, Payment=Yes"
+T02,Boundary Analysis,Ticket Classification,Active Session,Category=Child,Rule 2 (Lower),Medium,pending,Age=2
+T03,Boundary Analysis,Ticket Classification,Active Session,Category=Adult,Rule 2 (Boundary),Medium,pending,Age=13
+T04,Boundary Analysis,Ticket Classification,Active Session,Category=Senior,Rule 2 (Upper),Medium,pending,Age=60
+T05,Decision Table,Refund Calculation,Active Booking (Std),RefundPercent=90%,Rule 3,High,pending,TimeBefore>48h
+T06,Boundary Analysis,Refund Calculation,Active Booking (Std),RefundPercent=50%,Rule 4 (Bound),High,pending,TimeBefore=24h
+T07,Decision Table,Refund Calculation,Active Booking (Std),RefundPercent=0%,Rule 5,High,pending,TimeBefore<24h
+T08,Decision Table,Refund Calculation,Active Booking (Promo),RefundPercent=0%,Rule 6,Critical,pending,TimeBefore=100h

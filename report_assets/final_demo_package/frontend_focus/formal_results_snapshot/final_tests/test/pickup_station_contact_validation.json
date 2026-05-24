@@ -1,0 +1,139 @@
+{
+  "requirement_id": "pickup_station_contact_validation",
+  "category": "input_validation",
+  "risk_assessment": {
+    "level": "Medium",
+    "score": 6.7,
+    "rule_count": 7,
+    "numeric_constraint_count": 2,
+    "technique_count": 3,
+    "drivers": [
+      "category=input_validation",
+      "7 explicit rule lines",
+      "2 numeric constraints",
+      "decision-table logic",
+      "strict rejection/constraint language: required, unless"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "boundary coverage",
+      "decision combinations",
+      "invalid partitions",
+      "negative/error handling"
+    ]
+  },
+  "state_model": null,
+  "analysis": "This task involves validating the input parameters for a pickup fulfillment service. The focus is on ensuring data integrity, format compliance, and conditional logic handling. Key variables include `recipient_name`, `recipient_phone`, `pickup_station_id`, `contactless_pickup`, `pickup_code`, and `note`. The primary goal is to verify that the system rejects invalid data (format, length, condition) and accepts valid data according to defined business rules.",
+  "pattern": "To ensure comprehensive coverage while maintaining efficiency, the following black-box techniques are selected:\n1. **Decision Table Testing**: Applied to Rule 4 and 5 (`contactless_pickup` dependency on `pickup_code`) to evaluate logical combinations.\n2. **Boundary Value Analysis**: Applied to Rules 3, 6, and 7 (digit counts and string lengths) to test edges (min/max values).\n3. **Equivalence Partitioning**: Applied to Rule 2 (`pickup_station_id` format) to distinguish between valid and invalid character sets.",
+  "steps": [
+    "1. Identify valid and invalid equivalence classes for mandatory field formats (Station ID, Phone).",
+    "2. Calculate boundary conditions for `recipient_phone` (8 vs 16 digits), `recipient_name` (0, 1, 40, 41 chars), and `note` (120, 121 chars).",
+    "3. Construct a decision matrix for the interaction between `contactless_pickup` boolean state and `pickup_code` presence/validity.",
+    "4. Design test inputs mapping specifically to Rule violations and Rule passes.",
+    "5. Execute tests against the validation endpoint and capture HTTP status codes or error messages."
+  ],
+  "verification": "- Verified against Step 2 and Step 3. All boundary conditions (min/max lengths) identified in Step 2 are explicitly mapped to Test Cases T03, T04, T06, and T07.\n- Confirmed that Decision Table logic from Step 3 covers the conditional requirement where `contactless_pickup` alters `pickup_code` necessity.\n- Checked that Step 1 equivalence classes ensure both compliant and non-compliant Station ID and Phone formats are tested.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "Contactless Logic",
+      "preconditions": "System Ready",
+      "expected_output": "200 OK",
+      "covered_item": "Rule 4",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "{contactless_pickup: false, code: null}"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Equivalence Partitioning",
+      "requirement_target": "Station ID Format",
+      "preconditions": "System Ready",
+      "expected_output": "400 Bad Request",
+      "covered_item": "Rule 2",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "{station_id: PS-ABCDEF}"
+    },
+    {
+      "test_id": "T03",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Phone Digit Count",
+      "preconditions": "System Ready",
+      "expected_output": "400 Bad Request",
+      "covered_item": "Rule 3 (Min)",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "{phone: +123456789}"
+    },
+    {
+      "test_id": "T04",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Name Character Count",
+      "preconditions": "System Ready",
+      "expected_output": "400 Bad Request",
+      "covered_item": "Rule 6 (Min)",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "{name: \"\", length: 1}"
+    },
+    {
+      "test_id": "T05",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Name Character Count",
+      "preconditions": "System Ready",
+      "expected_output": "200 OK",
+      "covered_item": "Rule 6 (Max)",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "{name: \"A...A\", length: 40}"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table",
+      "requirement_target": "Contactless Code Validation",
+      "preconditions": "System Ready",
+      "expected_output": "400 Bad Request",
+      "covered_item": "Rule 5 (Invalid Len)",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "{contactless_pickup: true, code: \"abc\"}"
+    },
+    {
+      "test_id": "T07",
+      "technique": "Decision Table",
+      "requirement_target": "Contactless Mandatory Code",
+      "preconditions": "System Ready",
+      "expected_output": "400 Bad Request",
+      "covered_item": "Rule 4 & 5",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "{contactless_pickup: true, code: null}"
+    },
+    {
+      "test_id": "T08",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Note Max Length",
+      "preconditions": "System Ready",
+      "expected_output": "400 Bad Request",
+      "covered_item": "Rule 7",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "{note: \"x\" repeated 121 times}"
+    },
+    {
+      "test_id": "T09",
+      "technique": "Equivalence Partitioning",
+      "requirement_target": "Station ID Format Valid",
+      "preconditions": "System Ready",
+      "expected_output": "200 OK",
+      "covered_item": "Rule 2",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "{station_id: PS-123456}"
+    }
+  ]
+}

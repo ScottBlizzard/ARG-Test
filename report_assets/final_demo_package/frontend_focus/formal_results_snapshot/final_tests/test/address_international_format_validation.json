@@ -1,0 +1,143 @@
+{
+  "requirement_id": "address_international_format_validation",
+  "category": "input_validation",
+  "risk_assessment": {
+    "level": "High",
+    "score": 7.1,
+    "rule_count": 5,
+    "numeric_constraint_count": 2,
+    "technique_count": 3,
+    "drivers": [
+      "category=input_validation",
+      "5 explicit rule lines",
+      "2 numeric constraints",
+      "decision-table logic",
+      "business impact keywords: shipping",
+      "strict rejection/constraint language: required"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "boundary coverage",
+      "decision combinations",
+      "invalid partitions",
+      "business-critical rules",
+      "negative/error handling"
+    ]
+  },
+  "state_model": null,
+  "analysis": "The requirement defines a validation schema for shipping addresses with strict formatting rules. Key logical dependencies exist between `country_code` and `postal_code` necessity/format. Quantitative constraints apply to `address_line1` (1-80), `phone` (+8 to 15 digits), and `postal_code` length. Fields like `full_name` and `city` are mandatory across all countries. `address_line2` is optional. Validation failures return errors; successes allow submission.",
+  "pattern": "Primary technique: **Decision Table Testing** (to handle country-specific postal code logic). Secondary technique: **Boundary Value Analysis** (for length constraints and digit counts). Tertiary technique: **Equivalence Partitioning** (valid vs. invalid formats). These cover conditional logic and limit verification without internal system knowledge.",
+  "steps": [
+    "1.  Execute input with Valid US Country Code and compliant ZIP codes (Standard and Extended).",
+    "2.  Execute input with Valid UK Country Code and compliant Postcode format.",
+    "3.  Execute input with Valid CN Country Code and compliant 6-digit Postal Code.",
+    "4.  Execute input with Invalid US Postal Code format while keeping other fields valid.",
+    "5.  Execute input with Missing Postal Code for US Country Code.",
+    "6.  Execute input with Boundary Address Line 1 length (Minimum 1 char, Maximum 81 chars).",
+    "7.  Execute input with Invalid Phone number (Outside +8 to 15 digit range)."
+  ],
+  "verification": "- Verified against Step 1 and Step 2 confirms successful acceptance for valid country-specific formats.\n- Verified against Step 3 ensures Asian region specificity.\n- Verified against Step 4 and Step 5 confirms Decision Table logic regarding conditional postal requirements.\n- Verified against Step 6 and Step 7 confirms Boundary Value Analysis on length and digit constraints.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "US Postal Format",
+      "preconditions": "All required fields present",
+      "expected_output": "Pass Validation",
+      "covered_item": "Rule 3 (US Format)",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "country_code: US, postal_code: 12345-6789"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table Testing",
+      "requirement_target": "UK Postal Format",
+      "preconditions": "All required fields present",
+      "expected_output": "Pass Validation",
+      "covered_item": "Rule 3 (UK Format)",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "country_code: UK, postal_code: SW1A 1AA"
+    },
+    {
+      "test_id": "T03",
+      "technique": "Decision Table Testing",
+      "requirement_target": "CN Postal Format",
+      "preconditions": "All required fields present",
+      "expected_output": "Pass Validation",
+      "covered_item": "Rule 2 & 3 (CN Req)",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "country_code: CN, postal_code: 100000"
+    },
+    {
+      "test_id": "T04",
+      "technique": "Equivalence Partitioning",
+      "requirement_target": "US Postal Invalid",
+      "preconditions": "All required fields present",
+      "expected_output": "Fail Validation",
+      "covered_item": "Rule 3 (US Format Error)",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "country_code: US, postal_code: A12345"
+    },
+    {
+      "test_id": "T05",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Missing Postal Code",
+      "preconditions": "All required fields present",
+      "expected_output": "Fail Validation",
+      "covered_item": "Rule 2 (Req for US)",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "country_code: US, postal_code: \"\""
+    },
+    {
+      "test_id": "T06",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Address Line Length",
+      "preconditions": "All required fields present",
+      "expected_output": "Pass Validation",
+      "covered_item": "Rule 5 (Max Length)",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "address_line1: 80 chars"
+    },
+    {
+      "test_id": "T07",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Phone Digit Count",
+      "preconditions": "All required fields present",
+      "expected_output": "Pass Validation",
+      "covered_item": "Rule 4 (Max Digits)",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "phone: +12345678901234 (15 digits)"
+    },
+    {
+      "test_id": "T08",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Phone Digit Count",
+      "preconditions": "All required fields present",
+      "expected_output": "Fail Validation",
+      "covered_item": "Rule 4 (Min Digits)",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "phone: +1234567 (7 digits)"
+    },
+    {
+      "test_id": "T09",
+      "technique": "BVA",
+      "requirement_target": "address_international_format_validation",
+      "preconditions": "None",
+      "expected_output": "boundary behavior verified",
+      "covered_item": "boundary case (repair)",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "repaired boundary input"
+    }
+  ]
+}

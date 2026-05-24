@@ -1,0 +1,6 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table,"Rules 2, 3","Cart = $100 ($80 sub, $10 ship, $10 tax); Coupon 10% off; GC=$50",Apply 10% to $80 sub ($72 rem). Add Ship/Tax ($92). Deduct GC ($42). Final: $42.,"Math Order, Mix Allowed",High,pending,"1 Coupon (Valid), 1 GC (Valid)"
+T02,Decision Table,Rule 1,Cart = $100; Coupon Set A (Valid); Coupon Set B (Valid); GC=$50,"Error: ""Cannot combine more than one coupon"". Transaction Rejected.",Max Coupon Limit,Critical,pending,"2 Coupons (Valid), 1 GC (Valid)"
+T03,Boundary Value,Rule 5,"Cart = $50 (Sub $40, Ship $5, Tax $5); Coupon $45 value; GC=$100",Coupon reduces to $0. Total Due $0. GC Balance Unused ($55). Final Payable: $0.00,Non-negative Balance,Critical,pending,"1 Coupon (Valid), 1 GC (Valid)"
+T04,Equivalence Part,"Rule 6, 4",Cart = $100; Coupon Set Expired (Exp Date < Apr 10 2026); GC=$50,"Error: ""Coupon has expired"". Transaction Rejected. Coupon Logic Skipped.",Expiry Validation,High,pending,"1 Coupon (Expired), 1 GC (Valid)"
+T05,Equivalence Part,Rule 6,Cart = $100; Coupon (Valid); Gift Card (Invalid Code),"Error: ""Invalid gift card code"". Transaction Rejected. No Discount Applied.",Code Validation,High,pending,"1 Coupon (Valid), 1 GC (Invalid)"

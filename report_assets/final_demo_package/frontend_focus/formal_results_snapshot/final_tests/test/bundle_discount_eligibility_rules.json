@@ -1,0 +1,105 @@
+{
+  "requirement_id": "bundle_discount_eligibility_rules",
+  "category": "business_rules",
+  "risk_assessment": {
+    "level": "High",
+    "score": 8.2,
+    "rule_count": 8,
+    "numeric_constraint_count": 3,
+    "technique_count": 2,
+    "drivers": [
+      "category=business_rules",
+      "8 explicit rule lines",
+      "3 numeric constraints",
+      "decision-table logic",
+      "business impact keywords: coupon, discount, price",
+      "strict rejection/constraint language: at least, only one"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "boundary coverage",
+      "decision combinations",
+      "business-critical rules",
+      "negative/error handling"
+    ]
+  },
+  "state_model": null,
+  "analysis": "The requirement defines conditional promotion logic based on cart composition (item types, counts, prices) and external factors (coupon usage). Key input variables include Item Type (Laptop, Mouse, Console, Game), Quantity, Unit Price, and Coupon Code. Key output variables include Applied Discount Amount and Error Status. Rules dictate eligibility criteria (Rule 1, 2), price thresholds (Rule 6), quantity constraints (Rule 2), conflict resolution (Rule 5), and stackability restrictions (Rule 8). Black-box testing will validate these conditions without inspecting internal code logic.",
+  "pattern": "Primary Technique: **Decision Table Testing** to map logical combinations of item types and eligibility (Rules 1, 2, 4, 5, 8). \nSecondary Technique: **Boundary Value Analysis** to test edge cases on numeric thresholds (Rule 6: Laptop Price >= 4000, Rule 2: Exactly 2 Games). \nRationale: Logic complexity requires exhaustive condition coverage, while numeric limits require boundary precision.",
+  "steps": [
+    "1. Execute Decision Table test to verify Bundle A eligibility with Laptop prices at the boundary of 4000 (High/Low).",
+    "2. Execute Decision Table test to verify Bundle B eligibility requiring exactly 2 games and console inclusion.",
+    "3. Execute Negative Boundary/Conflict tests to verify priority selection (highest discount) and invalid coupon stacking (BUNDLE-EXTRA)."
+  ],
+  "verification": "- Verified against Step 1 and Rule 6 logic (Threshold 4000).\n- Verified against Step 3 and Rule 8 logic (Coupon exclusion).",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Rule 1, Rule 6",
+      "preconditions": "Cart contains 1 Laptop, 1 Mouse",
+      "expected_output": "Discount: 120",
+      "covered_item": "Rule 6 (Price Threshold)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Laptop Price: 4000, Mouse: Eligible"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Rule 1, Rule 6",
+      "preconditions": "Cart contains 1 Laptop, 1 Mouse",
+      "expected_output": "Discount: 80",
+      "covered_item": "Rule 6 (Price Threshold)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Laptop Price: 3999, Mouse: Eligible"
+    },
+    {
+      "test_id": "T03",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 2, Rule 7",
+      "preconditions": "Cart contains 1 Console, 2 Games",
+      "expected_output": "Discount: 150",
+      "covered_item": "Rule 2 (Quantity Exact)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Console: Eligible, Games: 2"
+    },
+    {
+      "test_id": "T04",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 4, Rule 5",
+      "preconditions": "Cart qualifies for A (120) & B (150)",
+      "expected_output": "Discount: 150 (Bundle B)",
+      "covered_item": "Rule 5 (Max Discount)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Laptop>=4k, Mouse=1, Console=1, Game=2"
+    },
+    {
+      "test_id": "T05",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 3, Rule 8",
+      "preconditions": "Cart qualifies for Bundle A",
+      "expected_output": "Discount: None / Error",
+      "covered_item": "Rule 3 (Sale Items)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Laptop, Mouse, Item Tag: Sale"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 8",
+      "preconditions": "Cart qualifies for Bundle A",
+      "expected_output": "Discount: None / Error",
+      "covered_item": "Rule 8 (No Stack)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Laptop, Mouse, Coupon: BUNDLE-EXTRA"
+    }
+  ]
+}

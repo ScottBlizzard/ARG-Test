@@ -1,0 +1,272 @@
+{
+  "requirement_id": "warehouse_pickup_order_workflow",
+  "category": "workflow_state",
+  "risk_assessment": {
+    "level": "Medium",
+    "score": 6.55,
+    "rule_count": 8,
+    "numeric_constraint_count": 0,
+    "technique_count": 3,
+    "drivers": [
+      "category=workflow_state",
+      "8 explicit rule lines",
+      "stateful workflow behavior",
+      "strict rejection/constraint language: must not"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "legal transitions",
+      "illegal transitions",
+      "invalid partitions",
+      "negative/error handling"
+    ]
+  },
+  "state_model": {
+    "states": [
+      "READY_FOR_PICKUP",
+      "PICKED_UP",
+      "EXPIRED",
+      "RETURN_IN_TRANSIT",
+      "HOLD_FOR_REVIEW"
+    ],
+    "start_states": [
+      "READY_FOR_PICKUP"
+    ],
+    "legal_transitions": [
+      {
+        "source_state": "READY_FOR_PICKUP",
+        "trigger": "the customer provides the correct pickup code within the pickup window",
+        "target_state": "PICKED_UP",
+        "legal": true,
+        "source_rule": "If the customer provides the correct pickup code within the pickup window, the order moves to PICKED_UP."
+      },
+      {
+        "source_state": "PICKED_UP",
+        "trigger": "the pickup window expires before pickup",
+        "target_state": "EXPIRED",
+        "legal": true,
+        "source_rule": "If the pickup window expires before pickup, the order moves to EXPIRED."
+      },
+      {
+        "source_state": "EXPIRED",
+        "trigger": "staff may",
+        "target_state": "RETURN_IN_TRANSIT",
+        "legal": true,
+        "source_rule": "From EXPIRED, staff may transition the order to RETURN_IN_TRANSIT."
+      },
+      {
+        "source_state": "RETURN_IN_TRANSIT",
+        "trigger": "station staff report parcel damage",
+        "target_state": "HOLD_FOR_REVIEW",
+        "legal": true,
+        "source_rule": "If station staff report parcel damage, the order moves to HOLD_FOR_REVIEW."
+      }
+    ],
+    "illegal_transitions": [
+      {
+        "source_state": "Illegal",
+        "trigger": "ILLEGAL",
+        "target_state": "PICKED_UP",
+        "legal": false,
+        "source_rule": "Illegal: PICKED_UP back to READY_FOR_PICKUP."
+      }
+    ],
+    "coverage_plans": [
+      {
+        "coverage_goal": "All States",
+        "sequence_count": 2,
+        "fully_covered": true,
+        "sequences": [
+          {
+            "sequence_id": "AS01",
+            "coverage_goal": "All States",
+            "steps": [
+              "Start in READY_FOR_PICKUP",
+              "Trigger `the customer provides the correct pickup code within the pickup window`: READY_FOR_PICKUP -> PICKED_UP",
+              "Trigger `the pickup window expires before pickup`: PICKED_UP -> EXPIRED"
+            ],
+            "covered_states": [
+              "READY_FOR_PICKUP",
+              "PICKED_UP",
+              "EXPIRED"
+            ],
+            "covered_transitions": [
+              "READY_FOR_PICKUP -> PICKED_UP [the customer provides the correct pickup code within the pickup window]",
+              "PICKED_UP -> EXPIRED [the pickup window expires before pickup]"
+            ]
+          },
+          {
+            "sequence_id": "AS02",
+            "coverage_goal": "All States",
+            "steps": [
+              "Start in READY_FOR_PICKUP",
+              "Trigger `the customer provides the correct pickup code within the pickup window`: READY_FOR_PICKUP -> PICKED_UP",
+              "Trigger `the pickup window expires before pickup`: PICKED_UP -> EXPIRED",
+              "Trigger `staff may`: EXPIRED -> RETURN_IN_TRANSIT",
+              "Trigger `station staff report parcel damage`: RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW"
+            ],
+            "covered_states": [
+              "READY_FOR_PICKUP",
+              "PICKED_UP",
+              "EXPIRED",
+              "RETURN_IN_TRANSIT",
+              "HOLD_FOR_REVIEW"
+            ],
+            "covered_transitions": [
+              "READY_FOR_PICKUP -> PICKED_UP [the customer provides the correct pickup code within the pickup window]",
+              "PICKED_UP -> EXPIRED [the pickup window expires before pickup]",
+              "EXPIRED -> RETURN_IN_TRANSIT [staff may]",
+              "RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW [station staff report parcel damage]"
+            ]
+          }
+        ]
+      },
+      {
+        "coverage_goal": "All Transitions",
+        "sequence_count": 1,
+        "fully_covered": true,
+        "sequences": [
+          {
+            "sequence_id": "AT01",
+            "coverage_goal": "All Transitions",
+            "steps": [
+              "Start in READY_FOR_PICKUP",
+              "Trigger `the customer provides the correct pickup code within the pickup window`: READY_FOR_PICKUP -> PICKED_UP",
+              "Trigger `the pickup window expires before pickup`: PICKED_UP -> EXPIRED",
+              "Trigger `staff may`: EXPIRED -> RETURN_IN_TRANSIT",
+              "Trigger `station staff report parcel damage`: RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW"
+            ],
+            "covered_states": [
+              "READY_FOR_PICKUP",
+              "PICKED_UP",
+              "EXPIRED",
+              "RETURN_IN_TRANSIT",
+              "HOLD_FOR_REVIEW"
+            ],
+            "covered_transitions": [
+              "READY_FOR_PICKUP -> PICKED_UP [the customer provides the correct pickup code within the pickup window]",
+              "PICKED_UP -> EXPIRED [the pickup window expires before pickup]",
+              "EXPIRED -> RETURN_IN_TRANSIT [staff may]",
+              "RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW [station staff report parcel damage]"
+            ]
+          }
+        ]
+      }
+    ],
+    "notes": []
+  },
+  "analysis": "The requirement defines a lifecycle for a warehouse pickup order involving states (READY_FOR_PICKUP, PICKED_UP, EXPIRED, RETURN_IN_TRANSIT, HOLD_FOR_REVIEW) and strict transition rules. Key variables include `pickup_code` (validity), `current_time` (window), and `pickup_attempt_count`. Critical failure points involve boundary conditions on time and counts, and validation of prohibited state transitions. The primary goal is to validate state progression under normal conditions, boundaries, and error handling without accessing internal system architecture.",
+  "pattern": "1.  **State Transition Testing (STT)**: Used to validate the workflow states and allowable transitions (Rules 1-7).\n2.  **Boundary Value Analysis (BVA)**: Applied to `pickup_attempt_count` (Rule 8) around values 3 and 4.\n3.  **Equivalence Partitioning (EP)**: Grouped inputs for `pickup_code` into Valid and Invalid partitions to determine state flow outcomes efficiently (Rule 2).",
+  "steps": [
+    "1.  Initialize a new order to verify Rule 1 (READY_FOR_PICKUP) upon parcel arrival simulation.",
+    "2.  Execute a successful pickup using a valid code within the time window to verify Rule 2 (Transition to PICKED_UP).",
+    "3.  Allow the pickup window to expire without interaction to verify Rule 3 (Transition to EXPIRED).",
+    "4.  Simulate exceeding the maximum attempt threshold (4 attempts) while in READY state to verify Rule 8 (Transition to HOLD_FOR_REVIEW).",
+    "5.  Attempt to move from EXPIRED directly to PICKED_UP using valid code to verify Rule 7 (Illegal Transition block).",
+    "6.  Report parcel damage while the order is in READY or PICKED_UP state to verify Rule 5 (Transition to HOLD_FOR_REVIEW)."
+  ],
+  "verification": "- Verified against Step 1 and Step 2 to ensure initial state readiness correctly precedes the happy path transition.\n- Confirmed Step 3 result validates the timeout logic preventing indefinite waiting.\n- Checked Step 4 boundary value to ensure the system blocks further processing after 3 failed attempts (Rule 8).\n- Validated Step 5 and 6 confirmations against Expected Outputs to reject illegal transitions defined in Rules 6 and 7.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "EP",
+      "requirement_target": "Rule 1",
+      "preconditions": "Parcel Arrival",
+      "expected_output": "Order Status = READY_FOR_PICKUP",
+      "covered_item": "Workflow Start",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "None"
+    },
+    {
+      "test_id": "T02",
+      "technique": "STT/EP",
+      "requirement_target": "Rule 2",
+      "preconditions": "Order = READY",
+      "expected_output": "Order Status = PICKED_UP",
+      "covered_item": "Successful Pickup",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "Code=Valid, Time=Within"
+    },
+    {
+      "test_id": "T03",
+      "technique": "STT/BVA",
+      "requirement_target": "Rule 3",
+      "preconditions": "Order = READY",
+      "expected_output": "Order Status = EXPIRED",
+      "covered_item": "Expiration Flow",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "Time=Expired"
+    },
+    {
+      "test_id": "T04",
+      "technique": "STT",
+      "requirement_target": "Rule 4",
+      "preconditions": "Order = EXPIRED",
+      "expected_output": "Order Status = RETURN_IN_TRANSIT",
+      "covered_item": "Post-Expired",
+      "priority": "Medium",
+      "checker_status": "Pending",
+      "input": "Staff Action=Return"
+    },
+    {
+      "test_id": "T05",
+      "technique": "STT",
+      "requirement_target": "Rule 5",
+      "preconditions": "Order = READY/PICKED",
+      "expected_output": "Order Status = HOLD_FOR_REVIEW",
+      "covered_item": "Damage Handling",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "Damage Report=True"
+    },
+    {
+      "test_id": "T06",
+      "technique": "BVA",
+      "requirement_target": "Rule 8",
+      "preconditions": "Order = READY",
+      "expected_output": "Order Status = HOLD_FOR_REVIEW",
+      "covered_item": "Attempt Limit",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "Attempt_Count=4"
+    },
+    {
+      "test_id": "T07",
+      "technique": "STT",
+      "requirement_target": "Rule 6",
+      "preconditions": "Order = PICKED_UP",
+      "expected_output": "Error/Status Remains PICKED_UP",
+      "covered_item": "Illegal Reverse",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "Action=BackToReady"
+    },
+    {
+      "test_id": "T08",
+      "technique": "STT",
+      "requirement_target": "Rule 7",
+      "preconditions": "Order = EXPIRED",
+      "expected_output": "Error/Status Remains EXPIRED",
+      "covered_item": "Illegal Late Pickup",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "Action=Pickup"
+    },
+    {
+      "test_id": "T09",
+      "technique": "BVA",
+      "requirement_target": "warehouse_pickup_order_workflow",
+      "preconditions": "None",
+      "expected_output": "boundary behavior verified",
+      "covered_item": "boundary case (repair)",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "repaired boundary input"
+    }
+  ]
+}

@@ -95,7 +95,7 @@ Baselines:
 Detailed module evidence:
 
 - `15 module tests passed`
-- `32 repo tests passed`
+- `38 repo tests passed`
 - `100% statement coverage`
 - `100% branch coverage`
 - `4 / 4 mutants killed`
@@ -230,9 +230,9 @@ Test Plan 里的 `system under test` 必须明确写成：
 
 Test Plan 里必须提前给口径：
 
-- current final deliverable uses a CLI-centered prototype interface
-- direct text, CSV batch, and state-model commands serve as the current usable interface
-- this is a prototype-grade interface rather than a polished frontend product
+- current final deliverable includes a lightweight FastAPI Web UI plus the original CLI/artifact workflow
+- direct text, CSV batch, state-model extraction, and formal-evidence dashboard are available through the Web UI
+- this is a course-demo-grade frontend, not a production SaaS UI; final quality claims still come from frozen formal evidence
 
 ### 5.5 不要怎么写
 
@@ -294,7 +294,7 @@ Detailed document 里最好显式区分两层：
 这些是你最硬的证据，必须保住：
 
 - `15 passed`
-- `32 passed`
+- `38 passed`
 - `100% statement`
 - `100% branch`
 - `4/4 mutants killed`

@@ -1,0 +1,78 @@
+{
+  "states": [
+    "SUBMITTED",
+    "REVIEWING",
+    "APPROVED",
+    "LABEL_ISSUED",
+    "REFUNDED",
+    "EXPIRED"
+  ],
+  "start_states": [
+    "SUBMITTED"
+  ],
+  "legal_transitions": [],
+  "illegal_transitions": [],
+  "coverage_plans": [
+    {
+      "coverage_goal": "All States",
+      "sequence_count": 5,
+      "fully_covered": false,
+      "sequences": [
+        {
+          "sequence_id": "AS01",
+          "coverage_goal": "All States",
+          "steps": [
+            "Target state `APPROVED` is currently unreachable from the declared start states."
+          ],
+          "covered_states": [],
+          "covered_transitions": []
+        },
+        {
+          "sequence_id": "AS02",
+          "coverage_goal": "All States",
+          "steps": [
+            "Target state `EXPIRED` is currently unreachable from the declared start states."
+          ],
+          "covered_states": [],
+          "covered_transitions": []
+        },
+        {
+          "sequence_id": "AS03",
+          "coverage_goal": "All States",
+          "steps": [
+            "Target state `LABEL_ISSUED` is currently unreachable from the declared start states."
+          ],
+          "covered_states": [],
+          "covered_transitions": []
+        },
+        {
+          "sequence_id": "AS04",
+          "coverage_goal": "All States",
+          "steps": [
+            "Target state `REFUNDED` is currently unreachable from the declared start states."
+          ],
+          "covered_states": [],
+          "covered_transitions": []
+        },
+        {
+          "sequence_id": "AS05",
+          "coverage_goal": "All States",
+          "steps": [
+            "Target state `REVIEWING` is currently unreachable from the declared start states."
+          ],
+          "covered_states": [],
+          "covered_transitions": []
+        }
+      ]
+    },
+    {
+      "coverage_goal": "All Transitions",
+      "sequence_count": 0,
+      "fully_covered": true,
+      "sequences": []
+    }
+  ],
+  "notes": [
+    "No explicit legal transitions were extracted from the requirement text."
+  ]
+}

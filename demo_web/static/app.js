@@ -5,6 +5,11 @@ const formalSummary = document.getElementById("formal-summary");
 const textResult = document.getElementById("text-result");
 const csvResult = document.getElementById("csv-result");
 const stateResult = document.getElementById("state-result");
+let requirementCatalog = {
+  direct_requirements: [],
+  state_requirements: [],
+  byId: new Map(),
+};
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -20,6 +25,10 @@ function pct(value) {
     return "n/a";
   }
   return `${(Number(value) * 100).toFixed(1)}%`;
+}
+
+function pctOrUnknown(value) {
+  return value === null || value === undefined || Number.isNaN(Number(value)) ? "coverage n/a" : pct(value);
 }
 
 function num(value) {
@@ -48,8 +57,94 @@ document.querySelectorAll(".nav-tab").forEach((button) => {
   button.addEventListener("click", () => activateTab(button.dataset.tabTarget));
 });
 
+document.getElementById("text-requirement-id").addEventListener("change", () => {
+  applyRequirementSelection("text-requirement-id", "text-requirement", "text-split");
+  setStatus("text-status", "Selected requirement loaded.");
+  resetDirectPreview();
+});
+
+document.getElementById("state-requirement-id").addEventListener("change", () => {
+  applyRequirementSelection("state-requirement-id", "state-requirement", "state-split");
+  setStatus("state-status", "Selected workflow loaded.");
+  resetStatePreview();
+});
+
 function setStatus(id, message) {
   document.getElementById(id).textContent = message;
+}
+
+function resetDirectPreview() {
+  textResult.classList.add("empty-state");
+  textResult.innerHTML = `
+    <h3>Run the direct input demo</h3>
+    <p>The selected frozen requirement has been loaded. Generate to inspect checker score, coverage, risk, cases, and artifacts.</p>
+  `;
+}
+
+function resetStatePreview() {
+  stateResult.classList.add("empty-state");
+  stateResult.innerHTML = `
+    <h3>Build the workflow model</h3>
+    <p>The selected workflow requirement has been loaded. Build to inspect states, transitions, coverage plans, and artifacts.</p>
+  `;
+}
+
+function buildRequirementLabel(item) {
+  const category = item.category ? titleCase(item.category) : "Unknown";
+  return `${item.requirement_id} | ${category} | ${pctOrUnknown(item.overall_coverage)}`;
+}
+
+function populateRequirementSelect(selectId, items, preferredId) {
+  const select = document.getElementById(selectId);
+  const selectedId = items.some((item) => item.requirement_id === preferredId)
+    ? preferredId
+    : items[0]?.requirement_id;
+  select.innerHTML = "";
+  items.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = item.requirement_id;
+    option.textContent = buildRequirementLabel(item);
+    option.selected = item.requirement_id === selectedId;
+    select.appendChild(option);
+  });
+}
+
+function applyRequirementSelection(selectId, textareaId, splitId) {
+  const select = document.getElementById(selectId);
+  const item = requirementCatalog.byId.get(select.value);
+  if (!item) {
+    return;
+  }
+  document.getElementById(textareaId).value = item.requirement_text || "";
+  document.getElementById(splitId).value = item.split || "test";
+}
+
+async function loadDemoRequirements() {
+  try {
+    const response = await fetch("/api/demo-requirements");
+    if (!response.ok) {
+      throw new Error("Failed to load demo requirement catalog.");
+    }
+    const payload = await response.json();
+    const directRequirements = payload.direct_requirements || [];
+    const stateRequirements = payload.state_requirements || [];
+    requirementCatalog = {
+      direct_requirements: directRequirements,
+      state_requirements: stateRequirements,
+      byId: new Map([...directRequirements, ...stateRequirements].map((item) => [item.requirement_id, item])),
+    };
+    if (directRequirements.length) {
+      populateRequirementSelect("text-requirement-id", directRequirements, "pickup_station_contact_validation");
+      applyRequirementSelection("text-requirement-id", "text-requirement", "text-split");
+    }
+    if (stateRequirements.length) {
+      populateRequirementSelect("state-requirement-id", stateRequirements, "warehouse_pickup_order_workflow");
+      applyRequirementSelection("state-requirement-id", "state-requirement", "state-split");
+    }
+  } catch (error) {
+    setStatus("text-status", "Catalog fallback loaded.");
+    setStatus("state-status", "Catalog fallback loaded.");
+  }
 }
 
 function renderMetricGrid(items, primaryIndex = -1) {
@@ -140,14 +235,28 @@ function renderDirectResult(payload) {
   const metrics = summary.metrics || {};
   const goldSpecFound = Boolean(metrics.gold_spec_found);
   const categoryLabel = summary.category || (summary.split === "adhoc" ? "adhoc demo input" : "dataset category unavailable");
+  const frozenReplay = payload.replay_source === "frozen_formal_run" || summary.demo_mode === "frozen_formal_replay";
+  const modeMetric = frozenReplay
+    ? { label: "Run Mode", value: "Replay", note: "Frozen formal output" }
+    : { label: "Selected Candidate", value: summary.candidate_index || "n/a", note: summary.repaired ? "Repaired version accepted" : "Original candidate kept" };
   textResult.classList.remove("empty-state");
   textResult.innerHTML = `
     ${renderMetricGrid([
-      { label: "Checker Score", value: num(summary.score), note: `Category: ${categoryLabel}` },
-      { label: "Overall Coverage", value: goldSpecFound ? pct(metrics.overall_coverage) : "N/A", note: goldSpecFound ? `${metrics.test_count || 0} test cases` : "No gold spec for this live input" },
-      { label: "Selected Candidate", value: summary.candidate_index || "n/a", note: summary.repaired ? "Repaired version accepted" : "Original candidate kept" },
+      { label: "Structural Checker", value: num(summary.score), note: `Contract checks; category: ${categoryLabel}` },
+      { label: "Overall Coverage", value: goldSpecFound ? pct(metrics.overall_coverage) : "N/A", note: frozenReplay ? `${metrics.test_count || 0} frozen test cases` : goldSpecFound ? `${metrics.test_count || 0} generated test cases` : "No gold spec for this live input" },
+      modeMetric,
       { label: "Requirement", value: summary.requirement_id || "n/a", note: summary.split || "n/a" },
     ], 0)}
+    ${frozenReplay ? `
+      <div class="panel-card">
+        <h3>Result Source</h3>
+        <div class="chip-row">
+          <span class="chip signal">Frozen formal replay</span>
+          <span class="chip">Matches Formal Evidence coverage</span>
+          <span class="chip">No live API call</span>
+        </div>
+      </div>
+    ` : ""}
     ${renderRiskBlock(summary.risk_assessment)}
     <div class="panel-card">
       <h3>Diagnostics</h3>
@@ -190,8 +299,8 @@ function renderStateModel(payload) {
   stateResult.innerHTML = `
     ${renderMetricGrid([
       { label: "States", value: (stateModel.states || []).length, note: (stateModel.states || []).join(", ") || "n/a" },
-      { label: "Legal Transitions", value: legalTransitions.length, note: "Derived from requirement rules" },
-      { label: "Illegal Transitions", value: illegalTransitions.length, note: "Negative workflow tests" },
+      { label: "Legal Transitions", value: legalTransitions.length, note: legalTransitions.length ? "Derived from requirement rules" : "No legal transition extracted" },
+      { label: "Illegal Transitions", value: illegalTransitions.length, note: illegalTransitions.length ? "Negative workflow tests" : "No explicit illegal rule" },
       { label: "Coverage Plans", value: coveragePlans.length, note: "All-states / all-transitions" },
     ], 0)}
     ${renderRiskBlock(summary.risk_assessment)}
@@ -224,13 +333,15 @@ function renderCsvBatch(payload) {
         const summary = record.summary || {};
         const metrics = summary.metrics || {};
         const goldSpecFound = Boolean(metrics.gold_spec_found);
+        const frozenReplay = record.replay_source === "frozen_formal_run" || summary.demo_mode === "frozen_formal_replay";
         return `
           <div class="result-card">
             <h3>${escapeHtml(summary.requirement_id || "unknown requirement")}</h3>
             <div class="chip-row">
               <span class="chip">${escapeHtml(summary.category || "n/a")}</span>
-              <span class="chip">Checker ${escapeHtml(num(summary.score))}</span>
+              <span class="chip">Structural ${escapeHtml(num(summary.score))}</span>
               <span class="chip">${escapeHtml(goldSpecFound ? pct(metrics.overall_coverage) : "N/A coverage")}</span>
+              ${frozenReplay ? `<span class="chip signal">Frozen replay</span>` : `<span class="chip">Mock generated</span>`}
               <span class="chip signal">Risk ${(escapeHtml((summary.risk_assessment || {}).level || "n/a"))}</span>
             </div>
             ${goldSpecFound ? "" : "<p>This row has no gold spec. Official coverage should be interpreted from the frozen dashboard, not from an ad hoc live input.</p>"}
@@ -291,15 +402,15 @@ function renderFormalEvidence(payload) {
       </div>
       ${renderMetricGrid([
         { label: "Official Test Requirements", value: official.requirement_count, note: "Frozen held-out split" },
-        { label: "Avg Checker Score", value: num(official.avg_checker_score), note: "Main pipeline" },
+        { label: "Avg Structural Checker", value: num(official.avg_checker_score), note: "Contract-level checks" },
         { label: "Avg Overall Coverage", value: pct(official.avg_overall_coverage), note: "Against gold specs" },
         { label: "Avg Test Count", value: num(official.avg_test_count), note: `${official.high_risk_count} high-risk requirements` },
       ], 2)}
     </div>
 
     <div class="two-column">
-      ${renderSmallTable("Baselines", ["Method", "Checker", "Coverage", "Tests"], baselineRows)}
-      ${renderSmallTable("Category Generalization", ["Category", "Count", "Checker", "Coverage"], categoryRows)}
+      ${renderSmallTable("Baselines", ["Method", "Structural", "Coverage", "Tests"], baselineRows)}
+      ${renderSmallTable("Category Generalization", ["Category", "Count", "Structural", "Coverage"], categoryRows)}
     </div>
 
     <div class="two-column">
@@ -469,5 +580,9 @@ async function maybeAutorun() {
   }
 }
 
-loadFormalSummary();
-maybeAutorun();
+async function initializePage() {
+  await Promise.all([loadFormalSummary(), loadDemoRequirements()]);
+  await maybeAutorun();
+}
+
+initializePage();

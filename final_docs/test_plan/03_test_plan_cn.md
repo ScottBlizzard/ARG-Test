@@ -6,7 +6,7 @@
 
 `ARG-Test` is the implementation workspace for the requirement-driven `AutoTestDesign AI App`. It converts natural-language requirements into structured and auditable black-box test suites. This final course project implements and verifies the `AutoTestDesign AI App` according to the teacher-provided `Requirement_Specification.md`. Therefore, the system under test in this test plan is explicitly the `AutoTestDesign AI App`, not a generic framework, a testing idea, or a standalone sample execution module.
 
-The current deliverable is a prototype-level application interface built around the core pipeline. The system provides a lightweight Web demo supported by FastAPI and keeps a stable CLI-centered workflow. Direct text input, CSV batch input, file input, the `state-model` command, and structured export together form the currently usable interface. This project does not claim to have delivered a fully polished standalone frontend product.
+The current deliverable is a prototype-level application interface built around the core pipeline. The system provides a stable FastAPI-backed Web demo as the primary final-defense interaction surface, while keeping CLI commands and exported artifacts as the reproducibility and audit path. Direct text input, CSV batch input, file input, state-model extraction, formal-result viewing, and structured export together form the currently usable interface. This project does not claim to have delivered a fully polished standalone frontend product.
 
 This final project extends the midterm prototype into a submit-ready version. The extension is not merely the addition of isolated features. It connects requirement structuring, risk analysis and prioritization, multi-technique black-box test generation, state-model extraction, and sequence planning into an auditable pipeline. At the same time, the project adds detailed executable evidence for one major module and builds an evidence chain for non-functional verification, result reproduction, and archive replay to support the final submission.
 
@@ -43,7 +43,7 @@ The following table directly maps the formal `Requirement_Specification.md`. It 
 | --- | --- | --- | --- |
 | `NFR 4.1.1` | Batch analysis performance | Measure processing behavior on the local/mock path and explain that live provider latency is not fully controlled by the local system. This project does not overclaim that strict indicators such as "100 requirements within 5 seconds" are fully satisfied under live LLM calls. | Mock run checks, formal workflow logs, final report interpretation |
 | `NFR 4.1.2` | Single-requirement case generation time | Check whether small demo inputs can complete within a practical time on the mock/local path, while treating live model latency as a provider-bound variable. | Demo runs, smoke runs, formal run metadata |
-| `NFR 4.2.1` | Interface usability | Verify the current prototype interface: a lightweight FastAPI Web demo plus CLI workflow, covering direct text, CSV batch, file input, `state-model` generation, and output viewing. This is a prototype-level interface, not a polished frontend product. | `README.md`, `demo_web/app.py`, CLI commands, exported artifacts |
+| `NFR 4.2.1` | Interface usability | Verify the current prototype interface: a FastAPI Web demo covering formal requirement selection, direct text, CSV batch, state-model generation, formal-dashboard viewing, and output inspection. CLI commands remain the reproducibility path. This is a stable demo interface, not a production frontend product. | `demo_web/app.py`, `demo_web/static/`, `tests/test_demo_web_api.py`, CLI commands, exported artifacts |
 | `NFR 4.2.2` | Traceability | Confirm that generated test cases can be traced back to original requirement IDs, design techniques, checker diagnostics, and exported summaries. | Markdown/JSON/CSV exports, manifests, final result package |
 | `NFR 4.3.1` | Security and data handling | Check that final artifacts do not leak API keys or other secrets, and treat requirement data as local course project artifacts. | Secret-leak scan, manifest review, `.env.example` separation |
 | `NFR 4.4.1` | Technology stack | Confirm that the implementation uses an open Python technology stack suitable for AI integration, testing scripts, and Web/CLI demos. | `src/`, `experiments/`, `demo_web/`, `pytest`, `coverage.py` |
@@ -91,9 +91,18 @@ The overall strategy is risk-aware and evidence-driven. High-risk business rules
 
 ### 3.3 Interface Verification Strategy
 
-Because the formal requirements mention the application UI, this plan treats the interface as a necessary test item while accurately explaining the current deliverable form. The `AutoTestDesign AI App` provides a lightweight Web demo for demonstration and a stable CLI-centered prototype interface for repeatable verification. The concrete interface paths cover direct requirement text input through `run-text`, CSV batch requirement import through `batch-csv`, file-based requirement batch processing, state-model generation through `state-model`, and structured artifact viewing through Markdown, JSON, CSV, and summary outputs.
+Because the formal requirements mention the application UI, this plan treats the interface as a necessary test item while accurately explaining the current deliverable form. The `AutoTestDesign AI App` provides a Web demo for final demonstration and a CLI/artifact workflow for repeatable verification. The concrete interface paths cover direct requirement selection and direct text input, CSV batch requirement import, file-based requirement batch processing, state-model generation, formal-result dashboard viewing, and structured artifact viewing through Markdown, JSON, CSV, and summary outputs.
 
-The acceptance objective is not frontend visual polish. It is that the user can input requirements, run supported workflows, inspect generated test artifacts, and trace outputs to requirement IDs and design techniques.
+The acceptance objective is not frontend visual polish. It is that the user can input requirements, run supported workflows, inspect generated test artifacts, and trace outputs to requirement IDs and design techniques. For built-in formal samples, the Web demo must replay the frozen formal result instead of generating unrelated mock metrics; for edited ad hoc inputs, it must clearly show that the result is local mock generation rather than official benchmark evidence.
+
+The following Web demo consistency checks are therefore part of the final acceptance strategy:
+
+| Interface path | Acceptance check | Required outcome |
+| --- | --- | --- |
+| Direct requirement input | Select any of the 16 formal test requirements and run the Direct tab. | UI reports `frozen_formal_run` and matches the official formal coverage/checker score. |
+| CSV upload | Upload rows matching formal test requirements. | Matching rows replay frozen formal results; non-matching ad hoc rows are labeled as mock-generated. |
+| State-model extraction | Select each of the 5 workflow examples. | Every catalog workflow produces at least one legal transition; illegal transitions are shown when explicitly present in the requirement. |
+| Formal evidence dashboard | Open the Formal Evidence tab. | Dashboard shows the canonical final test-set aggregates, including average overall coverage `61.5%`. |
 
 ### 3.4 Test Plan Evidence Chain and Traceability Path
 
@@ -119,7 +128,7 @@ The role of this evidence chain is to tighten the test plan from a chapter-style
 | Unit | Verify helper functions, parser behavior, and checker logic. | Targeted Python tests | No critical unit failure |
 | Integration | Verify that generated traces flow correctly through parsing, checking, repair, and export. | Pipeline scripts and intermediate artifacts | Full pipeline has no structural failure |
 | System | Verify complete requirement-to-suite behavior on the frozen evaluation set. | Formal report bundles | Canonical summaries are generated successfully |
-| Acceptance | Verify that the final package can support the report, PPT, demo, and Q&A. | `final_docs`, figures, report assets, evidence summaries | All referenced artifacts exist and are traceable |
+| Acceptance | Verify that the final package can support the report, PPT, demo, and Q&A. | `final_docs`, figures, report assets, Web demo screenshots, evidence summaries | All referenced artifacts exist and are traceable; Web demo replay and state-model consistency tests pass |
 
 ## 5. Schedule and Checklist
 
@@ -210,6 +219,8 @@ Therefore, the cost estimate of this project is not "AI replaces all testers". I
 ## 9. Exit Criteria
 
 When the canonical formal result bundle has been fixed and is fully traceable, and when the final report, risk report, test plan, and detailed execution document have all been completed, this test plan reaches the basic delivery condition. On this basis, the selected major module also needs to have black-box and white-box execution evidence, and NFR and reproducibility evidence must be locatable and explainable. The final submission package should support the demo and Q&A, and should not contain confusion about result sources, file paths, or the interpretation of the system under test.
+
+The final exit criteria also include Web demo consistency: all 16 formal Direct-tab examples replay frozen results, the CSV sample can replay matching formal rows, all 5 workflow catalog examples produce non-empty legal-transition state models, and the repository regression suite passes with `38 passed`.
 
 ## 10. Conclusion
 

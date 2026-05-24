@@ -1,0 +1,106 @@
+{
+  "requirement_id": "checkout_promo_stack_and_priority",
+  "category": "business_rules",
+  "risk_assessment": {
+    "level": "Medium",
+    "score": 6.7,
+    "rule_count": 6,
+    "numeric_constraint_count": 0,
+    "technique_count": 2,
+    "drivers": [
+      "category=business_rules",
+      "6 explicit rule lines",
+      "business impact keywords: coupon, discount, shipping",
+      "strict rejection/constraint language: cannot, invalid, reject",
+      "workflow cues: after, expired"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "invalid partitions",
+      "business-critical rules",
+      "negative/error handling",
+      "state-dependent behavior"
+    ]
+  },
+  "state_model": null,
+  "analysis": "The requirement defines a checkout promotion system with strict constraints on coupon application, monetary thresholds, and calculation interactions with tax and loyalty points. Key test objectives include validating input integrity (coupon validity), ensuring mathematical accuracy at thresholds (boundary values), enforcing business rules (stacking prohibition), and confirming financial isolation (tax exclusion and payment caps). The primary risks involve incorrect discount application, over-discounting resulting in negative payables, or tax miscalculations.",
+  "pattern": "We employ **Equivalence Partitioning (EP)** to categorize coupon codes into valid and invalid sets, reducing redundant testing on status codes. We utilize **Boundary Value Analysis (BVA)** to test exact monetary thresholds (e.g., 79.00 vs 80.00) where behavior changes. These techniques allow us to efficiently target the core logic without exhaustive enumeration while adhering to black-box principles.",
+  "steps": [
+    "1. Execute input validation for unknown or expired coupon codes to confirm rejection.",
+    "2. Execute threshold boundary tests (below, at, and above) for subsidy eligibility rules.",
+    "3. Execute negative testing scenarios involving multiple coupon inputs to enforce single-use policy.",
+    "4. Validate financial calculations to ensure tax components remain untouched during discount application.",
+    "5. Validate post-discount financial limits to ensure loyalty points cannot reduce payable balance below zero."
+  ],
+  "verification": "- Verified Test Case T01 against Step 1 (Coupon Validation).\n- Verified Test Cases T02 and T03 against Step 2 (Threshold Boundaries).\n- Verified Test Case T04 against Step 3 (Stacking Restriction).\n- Verified Test Case T05 against Step 4 (Tax Isolation) and Step 5 (Payable Cap).",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Equivalence Partitioning",
+      "requirement_target": "Invalid Coupon Handling",
+      "preconditions": "Subtotal = 150; Valid Cart",
+      "expected_output": "System rejects code; Message: \"Code invalid\"; Total unchanged",
+      "covered_item": "Rule 5",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Code: \"INVALID_CODE99\"; Items: $150"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Shipping Subsidy Threshold",
+      "preconditions": "Subtotal near 80; SHIPFREE selected",
+      "expected_output": "Discount N/A; Original shipping fee charged",
+      "covered_item": "Rule 2",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Code: \"SHIPFREE\"; Subtotal: 79.99"
+    },
+    {
+      "test_id": "T03",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Percentage Discount Activation",
+      "preconditions": "Subtotal near 100; PERCENT10 selected",
+      "expected_output": "Merchandise price reduced 10%; Correct new total",
+      "covered_item": "Rule 2",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Code: \"PERCENT10\"; Subtotal: 100.00"
+    },
+    {
+      "test_id": "T04",
+      "technique": "Decision Logic (Rule Based)",
+      "requirement_target": "Multiple Coupon Rejection",
+      "preconditions": "Valid cart; Attempting stack",
+      "expected_output": "System rejects input; Error: \"Only one promo allowed\"",
+      "covered_item": "Rule 1, 6",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "Code 1: \"PERCENT10\"; Code 2: \"FIXED20\""
+    },
+    {
+      "test_id": "T05",
+      "technique": "Integration Testing",
+      "requirement_target": "Tax & Points Calculation",
+      "preconditions": "Subtotal 200, Tax 20, Points 500",
+      "expected_output": "Discount on merch only (Tax 20 kept); Points deducted max to current payable; No negative balance",
+      "covered_item": "Rule 3, 4",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Code: \"FIXED20\"; Apply 500pts"
+    },
+    {
+      "test_id": "T06",
+      "technique": "BVA",
+      "requirement_target": "checkout_promo_stack_and_priority",
+      "preconditions": "None",
+      "expected_output": "boundary behavior verified",
+      "covered_item": "boundary case (repair)",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "repaired boundary input"
+    }
+  ]
+}

@@ -25,9 +25,9 @@ python -m coverage xml -o final_docs\execution_evidence\coupon_discount_engine_b
 ## Results
 
 - module-specific tests passed: `15`
-- repo-level tests passed: `32`
+- repo-level tests passed: `38`
 - module pytest result: `15 passed`
-- repo pytest result: `32 passed`
+- repo pytest result: `38 passed`
 - statement coverage for `reference_impl/coupon_discount_engine.py`: `100%`
 - branch coverage for `reference_impl/coupon_discount_engine.py`: `100%`
 

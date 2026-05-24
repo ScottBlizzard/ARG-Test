@@ -1,0 +1,134 @@
+{
+  "states": [
+    "READY_FOR_PICKUP",
+    "PICKED_UP",
+    "EXPIRED",
+    "RETURN_IN_TRANSIT",
+    "HOLD_FOR_REVIEW"
+  ],
+  "start_states": [
+    "READY_FOR_PICKUP"
+  ],
+  "legal_transitions": [
+    {
+      "source_state": "READY_FOR_PICKUP",
+      "trigger": "the customer provides the correct pickup code within the pickup window",
+      "target_state": "PICKED_UP",
+      "legal": true,
+      "source_rule": "If the customer provides the correct pickup code within the pickup window, the order moves to PICKED_UP."
+    },
+    {
+      "source_state": "PICKED_UP",
+      "trigger": "the pickup window expires before pickup",
+      "target_state": "EXPIRED",
+      "legal": true,
+      "source_rule": "If the pickup window expires before pickup, the order moves to EXPIRED."
+    },
+    {
+      "source_state": "EXPIRED",
+      "trigger": "staff may",
+      "target_state": "RETURN_IN_TRANSIT",
+      "legal": true,
+      "source_rule": "From EXPIRED, staff may transition the order to RETURN_IN_TRANSIT."
+    },
+    {
+      "source_state": "RETURN_IN_TRANSIT",
+      "trigger": "station staff report parcel damage",
+      "target_state": "HOLD_FOR_REVIEW",
+      "legal": true,
+      "source_rule": "If station staff report parcel damage, the order moves to HOLD_FOR_REVIEW."
+    }
+  ],
+  "illegal_transitions": [
+    {
+      "source_state": "Illegal",
+      "trigger": "ILLEGAL",
+      "target_state": "PICKED_UP",
+      "legal": false,
+      "source_rule": "Illegal: PICKED_UP back to READY_FOR_PICKUP."
+    }
+  ],
+  "coverage_plans": [
+    {
+      "coverage_goal": "All States",
+      "sequence_count": 2,
+      "fully_covered": true,
+      "sequences": [
+        {
+          "sequence_id": "AS01",
+          "coverage_goal": "All States",
+          "steps": [
+            "Start in READY_FOR_PICKUP",
+            "Trigger `the customer provides the correct pickup code within the pickup window`: READY_FOR_PICKUP -> PICKED_UP",
+            "Trigger `the pickup window expires before pickup`: PICKED_UP -> EXPIRED"
+          ],
+          "covered_states": [
+            "READY_FOR_PICKUP",
+            "PICKED_UP",
+            "EXPIRED"
+          ],
+          "covered_transitions": [
+            "READY_FOR_PICKUP -> PICKED_UP [the customer provides the correct pickup code within the pickup window]",
+            "PICKED_UP -> EXPIRED [the pickup window expires before pickup]"
+          ]
+        },
+        {
+          "sequence_id": "AS02",
+          "coverage_goal": "All States",
+          "steps": [
+            "Start in READY_FOR_PICKUP",
+            "Trigger `the customer provides the correct pickup code within the pickup window`: READY_FOR_PICKUP -> PICKED_UP",
+            "Trigger `the pickup window expires before pickup`: PICKED_UP -> EXPIRED",
+            "Trigger `staff may`: EXPIRED -> RETURN_IN_TRANSIT",
+            "Trigger `station staff report parcel damage`: RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW"
+          ],
+          "covered_states": [
+            "READY_FOR_PICKUP",
+            "PICKED_UP",
+            "EXPIRED",
+            "RETURN_IN_TRANSIT",
+            "HOLD_FOR_REVIEW"
+          ],
+          "covered_transitions": [
+            "READY_FOR_PICKUP -> PICKED_UP [the customer provides the correct pickup code within the pickup window]",
+            "PICKED_UP -> EXPIRED [the pickup window expires before pickup]",
+            "EXPIRED -> RETURN_IN_TRANSIT [staff may]",
+            "RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW [station staff report parcel damage]"
+          ]
+        }
+      ]
+    },
+    {
+      "coverage_goal": "All Transitions",
+      "sequence_count": 1,
+      "fully_covered": true,
+      "sequences": [
+        {
+          "sequence_id": "AT01",
+          "coverage_goal": "All Transitions",
+          "steps": [
+            "Start in READY_FOR_PICKUP",
+            "Trigger `the customer provides the correct pickup code within the pickup window`: READY_FOR_PICKUP -> PICKED_UP",
+            "Trigger `the pickup window expires before pickup`: PICKED_UP -> EXPIRED",
+            "Trigger `staff may`: EXPIRED -> RETURN_IN_TRANSIT",
+            "Trigger `station staff report parcel damage`: RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW"
+          ],
+          "covered_states": [
+            "READY_FOR_PICKUP",
+            "PICKED_UP",
+            "EXPIRED",
+            "RETURN_IN_TRANSIT",
+            "HOLD_FOR_REVIEW"
+          ],
+          "covered_transitions": [
+            "READY_FOR_PICKUP -> PICKED_UP [the customer provides the correct pickup code within the pickup window]",
+            "PICKED_UP -> EXPIRED [the pickup window expires before pickup]",
+            "EXPIRED -> RETURN_IN_TRANSIT [staff may]",
+            "RETURN_IN_TRANSIT -> HOLD_FOR_REVIEW [station staff report parcel damage]"
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": []
+}

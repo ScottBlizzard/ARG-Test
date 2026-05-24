@@ -1,0 +1,132 @@
+{
+  "requirement_id": "payment_card_expiry_and_cvv_validation",
+  "category": "input_validation",
+  "risk_assessment": {
+    "level": "High",
+    "score": 8.35,
+    "rule_count": 8,
+    "numeric_constraint_count": 3,
+    "technique_count": 3,
+    "drivers": [
+      "category=input_validation",
+      "8 explicit rule lines",
+      "3 numeric constraints",
+      "decision-table logic",
+      "business impact keywords: card, cvv, payment",
+      "strict rejection/constraint language: invalid, required",
+      "workflow cues: after"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "boundary coverage",
+      "decision combinations",
+      "invalid partitions",
+      "business-critical rules",
+      "negative/error handling",
+      "state-dependent behavior"
+    ]
+  },
+  "state_model": null,
+  "analysis": "The requirement mandates validation of six fields during checkout. Critical constraints include alphanumeric character restrictions on names (2-40 chars), numeric digit counts for cards (13-19), calendar logic for expiry (1-12 months, 2026-2041 years, non-past dates), and conditional logic for CVV length (3 digits for Visa/MC, 4 for Amex). The system date is April 11, 2026, establishing the baseline for \"current\" expiration validity. Input validation must reject masked numbers (*).",
+  "pattern": "We apply **Boundary Value Analysis (BVA)** for numeric ranges (name length, card digits, expiry dates) and **Equivalence Partitioning (EP)** to select representative valid and invalid values for character sets. **Decision Table Testing** principles are applied to map Card Brand to CVV length requirements.",
+  "steps": [
+    "1. Execute input form with minimum valid parameters for all fields to establish a positive baseline.",
+    "2. Execute inputs at lower boundaries (e.g., 1-char name, 12-digit card, month 0) to trigger error messages.",
+    "3. Execute inputs at upper boundaries (e.g., 41-char name, 20-digit card, year 2042) to verify rejection.",
+    "4. Execute inputs utilizing mismatched CVV lengths relative to specified card brands.",
+    "5. Execute inputs with masked card numbers (* characters) and past dates to verify rejection."
+  ],
+  "verification": "- Verified against Step 1 to ensure basic functionality works.\n- Verified against Step 2 to ensure boundary rejections occur.\n- Verified against Step 4 to confirm brand-dependent CVV logic holds.\n- Ensures all expected outputs align with requirement failure conditions.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "EP",
+      "requirement_target": "Valid Input",
+      "preconditions": "None",
+      "expected_output": "Validation Passed",
+      "covered_item": "All Rules (Valid)",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Name=\"Alice Smith\", Card=\"4539123456789012\", Exp=\"12/2028\", CVV=\"123\", Brand=\"Visa\""
+    },
+    {
+      "test_id": "T02",
+      "technique": "BVA",
+      "requirement_target": "Name Length",
+      "preconditions": "None",
+      "expected_output": "Error: Name length must be 2 to 40",
+      "covered_item": "Name Min Boundary",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Name=\"A\", Card=\"4539123456789012\", Exp=\"12/2028\", CVV=\"123\", Brand=\"Visa\""
+    },
+    {
+      "test_id": "T03",
+      "technique": "BVA",
+      "requirement_target": "Card Digits",
+      "preconditions": "None",
+      "expected_output": "Error: Card number must contain 13 to 19 digits",
+      "covered_item": "Card Min Boundary",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Name=\"Alice\", Card=\"123456789012\", Exp=\"12/2028\", CVV=\"123\", Brand=\"Visa\""
+    },
+    {
+      "test_id": "T04",
+      "technique": "EP",
+      "requirement_target": "Card Characters",
+      "preconditions": "None",
+      "expected_output": "Error: Masked card numbers not accepted",
+      "covered_item": "Illegal Input",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Name=\"Alice\", Card=\"4539***89012\", Exp=\"12/2028\", CVV=\"123\", Brand=\"Visa\""
+    },
+    {
+      "test_id": "T05",
+      "technique": "BVA",
+      "requirement_target": "Expiry Date",
+      "preconditions": "None",
+      "expected_output": "Error: Expiry date cannot be in the past",
+      "covered_item": "Date Past Check",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Name=\"Alice\", Card=\"4539123456789012\", Exp=\"03/2026\", CVV=\"123\", Brand=\"Visa\""
+    },
+    {
+      "test_id": "T06",
+      "technique": "BVA",
+      "requirement_target": "Expiry Year",
+      "preconditions": "None",
+      "expected_output": "Error: Expiry year must be within 2026 to 2041",
+      "covered_item": "Year Max Boundary",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Name=\"Alice\", Card=\"4539123456789012\", Exp=\"01/2042\", CVV=\"123\", Brand=\"Visa\""
+    },
+    {
+      "test_id": "T07",
+      "technique": "Decision Table",
+      "requirement_target": "CVV Length",
+      "preconditions": "None",
+      "expected_output": "Error: CVV length invalid for brand",
+      "covered_item": "Brand CVV Mismatch",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Name=\"Alice\", Card=\"4539123456789012\", Exp=\"12/2028\", CVV=\"1234\", Brand=\"Visa\""
+    },
+    {
+      "test_id": "T08",
+      "technique": "Decision Table",
+      "requirement_target": "CVV Length",
+      "preconditions": "None",
+      "expected_output": "Error: CVV length invalid for brand (Amex requires 4)",
+      "covered_item": "Brand CVV Mismatch",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Name=\"Alice\", Card=\"378282246310005\", Exp=\"12/2028\", CVV=\"123\", Brand=\"American Express\""
+    }
+  ]
+}

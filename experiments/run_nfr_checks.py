@@ -55,12 +55,18 @@ def collect_usability_evidence() -> dict:
     parser = build_parser()
     command_names = sorted(parser._subparsers._group_actions[0].choices.keys())
     readme = (ROOT / "README.md").read_text(encoding="utf-8", errors="ignore")
+    web_app = ROOT / "demo_web" / "app.py"
+    web_static = ROOT / "demo_web" / "static"
+    formal_snapshot = ROOT / "report_assets" / "final_demo_package" / "frontend_focus" / "formal_results_snapshot"
     return {
         "supported_cli_commands": command_names,
         "has_quick_start": "Quick start" in readme,
         "has_formal_run_workflow": "Formal run workflow" in readme,
         "supports_direct_text_input": "run-text" in readme,
         "supports_csv_input": "batch-csv" in readme,
+        "web_demo_available": web_app.exists() and web_static.exists(),
+        "web_demo_formal_replay_snapshot_available": formal_snapshot.exists(),
+        "web_demo_tabs": ["Direct Input", "CSV Batch", "State Model", "Formal Evidence"],
         "export_formats": ["JSON", "CSV", "Markdown"],
     }
 
@@ -164,6 +170,9 @@ def build_markdown(payload: dict) -> str:
             f"- Formal run workflow documented: `{str(usability['has_formal_run_workflow']).lower()}`",
             f"- Direct text input supported: `{str(usability['supports_direct_text_input']).lower()}`",
             f"- CSV input supported: `{str(usability['supports_csv_input']).lower()}`",
+            f"- Web demo available: `{str(usability['web_demo_available']).lower()}`",
+            f"- Web demo formal replay snapshot available: `{str(usability['web_demo_formal_replay_snapshot_available']).lower()}`",
+            f"- Web demo tabs: `{', '.join(usability['web_demo_tabs'])}`",
             f"- Export formats: `{', '.join(usability['export_formats'])}`",
             "",
             "## Security",

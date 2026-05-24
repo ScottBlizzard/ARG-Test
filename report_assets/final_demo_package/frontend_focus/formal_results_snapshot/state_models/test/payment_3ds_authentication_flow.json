@@ -1,0 +1,98 @@
+{
+  "states": [
+    "INITIATED",
+    "AUTH_REQUIRED",
+    "FAILED",
+    "AUTHENTICATED",
+    "PENDING_REVIEW"
+  ],
+  "start_states": [
+    "INITIATED"
+  ],
+  "legal_transitions": [
+    {
+      "source_state": "AUTH_REQUIRED",
+      "trigger": "3DS fails or the customer cancels",
+      "target_state": "FAILED",
+      "legal": true,
+      "source_rule": "If 3DS fails or the customer cancels, the payment becomes FAILED."
+    }
+  ],
+  "illegal_transitions": [
+    {
+      "source_state": "AUTH_REQUIRED",
+      "trigger": "CAPTURE",
+      "target_state": "CAPTURED",
+      "legal": false,
+      "source_rule": "Illegal: capture before authentication when 3DS is required."
+    }
+  ],
+  "coverage_plans": [
+    {
+      "coverage_goal": "All States",
+      "sequence_count": 4,
+      "fully_covered": false,
+      "sequences": [
+        {
+          "sequence_id": "AS01",
+          "coverage_goal": "All States",
+          "steps": [
+            "Target state `AUTHENTICATED` is currently unreachable from the declared start states."
+          ],
+          "covered_states": [],
+          "covered_transitions": []
+        },
+        {
+          "sequence_id": "AS02",
+          "coverage_goal": "All States",
+          "steps": [
+            "Target state `AUTH_REQUIRED` is currently unreachable from the declared start states."
+          ],
+          "covered_states": [],
+          "covered_transitions": []
+        },
+        {
+          "sequence_id": "AS03",
+          "coverage_goal": "All States",
+          "steps": [
+            "Target state `FAILED` is currently unreachable from the declared start states."
+          ],
+          "covered_states": [],
+          "covered_transitions": []
+        },
+        {
+          "sequence_id": "AS04",
+          "coverage_goal": "All States",
+          "steps": [
+            "Target state `PENDING_REVIEW` is currently unreachable from the declared start states."
+          ],
+          "covered_states": [],
+          "covered_transitions": []
+        }
+      ]
+    },
+    {
+      "coverage_goal": "All Transitions",
+      "sequence_count": 1,
+      "fully_covered": true,
+      "sequences": [
+        {
+          "sequence_id": "AT01",
+          "coverage_goal": "All Transitions",
+          "steps": [
+            "Start in AUTH_REQUIRED",
+            "Trigger `3DS fails or the customer cancels`: AUTH_REQUIRED -> FAILED"
+          ],
+          "covered_states": [
+            "AUTH_REQUIRED",
+            "FAILED"
+          ],
+          "covered_transitions": [
+            "AUTH_REQUIRED -> FAILED [3DS fails or the customer cancels]"
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": []
+}

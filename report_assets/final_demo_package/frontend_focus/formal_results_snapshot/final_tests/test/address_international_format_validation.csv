@@ -1,0 +1,10 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Boundary Value Analysis,US Postal Format,All required fields present,Pass Validation,Rule 3 (US Format),High,repaired,"country_code: US, postal_code: 12345-6789"
+T02,Decision Table Testing,UK Postal Format,All required fields present,Pass Validation,Rule 3 (UK Format),High,repaired,"country_code: UK, postal_code: SW1A 1AA"
+T03,Decision Table Testing,CN Postal Format,All required fields present,Pass Validation,Rule 2 & 3 (CN Req),High,repaired,"country_code: CN, postal_code: 100000"
+T04,Equivalence Partitioning,US Postal Invalid,All required fields present,Fail Validation,Rule 3 (US Format Error),Medium,repaired,"country_code: US, postal_code: A12345"
+T05,Decision Table Testing,Missing Postal Code,All required fields present,Fail Validation,Rule 2 (Req for US),Critical,repaired,"country_code: US, postal_code: """""
+T06,Boundary Value Analysis,Address Line Length,All required fields present,Pass Validation,Rule 5 (Max Length),Medium,repaired,address_line1: 80 chars
+T07,Boundary Value Analysis,Phone Digit Count,All required fields present,Pass Validation,Rule 4 (Max Digits),Medium,repaired,phone: +12345678901234 (15 digits)
+T08,Boundary Value Analysis,Phone Digit Count,All required fields present,Fail Validation,Rule 4 (Min Digits),Critical,repaired,phone: +1234567 (7 digits)
+T09,BVA,address_international_format_validation,None,boundary behavior verified,boundary case (repair),Medium,repaired,repaired boundary input

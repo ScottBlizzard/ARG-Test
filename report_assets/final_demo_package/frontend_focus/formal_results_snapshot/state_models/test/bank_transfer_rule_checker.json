@@ -1,0 +1,38 @@
+{
+  "states": [
+    "The"
+  ],
+  "start_states": [],
+  "legal_transitions": [],
+  "illegal_transitions": [],
+  "coverage_plans": [
+    {
+      "coverage_goal": "All States",
+      "sequence_count": 1,
+      "fully_covered": true,
+      "sequences": [
+        {
+          "sequence_id": "AS01",
+          "coverage_goal": "All States",
+          "steps": [
+            "Start in The"
+          ],
+          "covered_states": [
+            "The"
+          ],
+          "covered_transitions": []
+        }
+      ]
+    },
+    {
+      "coverage_goal": "All Transitions",
+      "sequence_count": 0,
+      "fully_covered": true,
+      "sequences": []
+    }
+  ],
+  "notes": [
+    "No explicit start state was detected from the requirement text.",
+    "No explicit legal transitions were extracted from the requirement text."
+  ]
+}

@@ -1,71 +1,50 @@
 # Final Demo Recording Checklist
 
+这份清单给负责录制 demo 视频的同学使用。最终视频建议以 Web UI 为主，不再按旧命令行脚本逐条录。
+
 ## 1. 录制前准备
 
 - 打开仓库根目录：`D:\软件测试\Final\ARG-Test`
-- 把终端工作目录切到仓库根目录
-- 终端窗口字号调大一点
-- 提前把下面这些文件放到容易点开的地方
-- 不要在录制时现场找路径
+- 打开 PowerShell，工作目录切到仓库根目录。
+- 运行 Web demo：
 
-建议提前开好的资源：
+```powershell
+python -m uvicorn demo_web.app:app --host 127.0.0.1 --port 8000
+```
 
-- PowerShell 终端
-- 文件管理器到 `.local_runs/final_demo_mock`
-- 图片查看器或浏览器可打开 `report_assets/final_demo_package/figures/`
+- 浏览器打开：`http://127.0.0.1:8000/`
+- 准备好示例 CSV：`final_docs/execution_evidence/sample_requirement_batch.csv`
+- 可以提前打开截图目录：`report_assets/final_demo_package/frontend_focus/screenshots/`
 
-## 2. 录制时不要做的事
+## 2. 推荐录制顺序
 
-- 不要使用 live provider
-- 不要现场改代码
-- 不要在屏幕上滚太长的 JSON
-- 不要展示太多原始 markdown 行
-- 不要把无关目录都点开
+1. 先说明：本视频用 `mock` 保证交互稳定，用 `frozen formal replay` 支撑正式质量数字。
+2. 打开 `Formal Evidence` tab，展示 `16` 个 test requirements、`Avg Overall Coverage = 61.5%`、baseline 和 category generalization。
+3. 切到 `Direct Input`，选择 `pickup_station_contact_validation`，点击 `Generate Test Suite`。
+4. 指出页面显示 `Replay`、`Frozen formal replay`、`Matches Formal Evidence coverage`、`No live API call`。
+5. 切到 `CSV Batch`，上传 sample CSV，展示匹配正式样例的行显示 `Frozen replay`。
+6. 切到 `State Model`，选择 `warehouse_pickup_order_workflow`，点击 `Build State Model`。
+7. 展示 `States = 5`、`Legal Transitions = 4`、`Illegal Transitions = 2`、`Coverage Plans = 2`。
+8. 最后回到 `Formal Evidence`，强调正式结论来自冻结结果，不来自临时 ad hoc mock。
 
-## 3. 推荐录制顺序
+## 3. 必须讲清楚的话
 
-1. 先说这次 demo 用 `mock` 做 live interaction，用 frozen formal results 展示最终质量
-2. 运行 `run_demo_commands.ps1`
-3. 打开 `direct_text_demo_summary.json`
-4. 打开 `csv_order_workflow.md`
-5. 打开 `warehouse_pickup_order_workflow.md`
-6. 展示 `final_result_scorecard.png`
-7. 展示 `main_vs_baselines.png`
-8. 展示 `reproducibility_stability_overview.png`
-9. 展示 `coupon_module_evidence_scorecard.png`
-10. 结束
+- `mock` 只用于稳定交互，不是 final benchmark 本身。
+- 正式样例的 Direct/CSV 结果会 replay frozen formal output，所以 coverage 与 Formal Evidence 一致。
+- 如果手动改 requirement 文本，页面会走本地 mock 生成，这种结果不能引用为正式实验质量。
+- `checker_score` 不是正确率；它是结构化契约检查分数。
+- `overall_coverage` 来自人工 gold spec 的 obligation 覆盖，不是模型训练标签。
 
-## 4. 录制时必须讲清楚的话
+## 4. 不要做的事
 
-- live 部分用 `mock` 是为了稳定、快速、可重复
-- final 质量看的是 frozen formal result
-- 我们不是只输出 test list，还有 risk score、state model、structured export
-- 详细模块还有 executable evidence
+- 不要选择 `openai` 或其他 live provider；当前正式 demo 只保留 `mock`。
+- 不要现场修改代码。
+- 不要展示 API key、`.env`、长 JSON 或无关目录。
+- 不要把 coverage 为 `N/A` 或 ad hoc mock 的结果说成正式结果。
+- 不要说 live provider 完全 deterministic。
 
-## 5. 容易说错的话
+## 5. 时间控制
 
-不要说：
-
-- `we trained the model`
-- `the rule-based baseline comes from a paper`
-- `the live provider is fully deterministic`
-- `checker score is the same as correctness`
-
-## 6. 如果时间不够
-
-优先保留：
-
-1. live command run
-2. direct-text summary
-3. main_vs_baselines
-4. coupon module evidence
-
-可以缩短：
-
-- CSV 结果展示时间
-- reproducibility 讲解时间
-
-## 7. 最佳录屏长度
-
-- `4` 分钟左右最好
-- 最长不要超过 `5` 分钟
+- 最佳长度：`4` 分钟左右。
+- 最长不建议超过 `5` 分钟。
+- 如果时间不够，优先保留 Formal Evidence、Direct replay、State Model 三段。

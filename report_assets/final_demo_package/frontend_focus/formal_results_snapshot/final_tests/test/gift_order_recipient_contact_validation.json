@@ -1,0 +1,107 @@
+{
+  "requirement_id": "gift_order_recipient_contact_validation",
+  "category": "input_validation",
+  "risk_assessment": {
+    "level": "Medium",
+    "score": 6.85,
+    "rule_count": 7,
+    "numeric_constraint_count": 3,
+    "technique_count": 3,
+    "drivers": [
+      "category=input_validation",
+      "7 explicit rule lines",
+      "3 numeric constraints",
+      "decision-table logic",
+      "strict rejection/constraint language: required"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "boundary coverage",
+      "decision combinations",
+      "invalid partitions",
+      "negative/error handling"
+    ]
+  },
+  "state_model": null,
+  "analysis": "The requirement defines validation logic for a gift order form involving conditional data entry based on `delivery_channel` (EMAIL/SMS). \nKey Inputs: `recipient_name`, `delivery_channel`, `recipient_email`, `recipient_phone`, `scheduled_send_days_ahead`, `gift_message`.\nConstraints: \n1. Mandatory Name.\n2. Channel-specific contacts (Email requires valid email string [5-100 chars], SMS requires E.164 phone [+8-15 digits]).\n3. Date range [0-365] for scheduling if provided.\n4. Max 200 chars for message.\nLogic depends heavily on the combination of Channel and available contact fields (Decision logic).",
+  "pattern": "We utilize Decision Table Testing (DTT) to handle the logical dependency between `delivery_channel` and contact fields. Boundary Value Analysis (BVA) is applied to strict numeric limits (0-365 days, 5-100 email chars, 200 message chars). Equivalence Partitioning (EP) distinguishes between valid formats and invalid formats (e.g., malformed emails).",
+  "steps": [
+    "1. Execute DTT Valid Scenario for EMAIL channel ensuring email length is within bounds.",
+    "2. Execute DTT Valid Scenario for SMS channel ensuring phone is E.164 compliant.",
+    "3. Apply BVA Min Boundary to `scheduled_send_days_ahead` (Input: 0).",
+    "4. Apply BVA Max Boundary to `scheduled_send_days_ahead` (Input: 365).",
+    "5. Apply EP Invalid Scenario: Provide EMAIL channel without `recipient_email`.",
+    "6. Apply BVA to `gift_message` exceeding max length (Input: 201 chars)."
+  ],
+  "verification": "- Verified against Step 1 to ensure EMAIL submission succeeds with 100-character email.\n- Verified against Step 2 to confirm SMS requires phone presence regardless of email value.\n- Verified against Step 4 and Step 5 to validate rejection of out-of-range dates and missing mandatory contact details.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "DTT",
+      "requirement_target": "Req 2, 3",
+      "preconditions": "Logged In User",
+      "expected_output": "Order Submitted",
+      "covered_item": "EMAIL Path Valid",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Channel:EMAIL, Email:test@ex.co, Name:Alice"
+    },
+    {
+      "test_id": "T02",
+      "technique": "DTT",
+      "requirement_target": "Req 2, 4",
+      "preconditions": "Logged In User",
+      "expected_output": "Order Submitted",
+      "covered_item": "SMS Path Valid",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Channel:SMS, Phone:+12125551234, Name:Alice"
+    },
+    {
+      "test_id": "T03",
+      "technique": "BVA",
+      "requirement_target": "Req 5",
+      "preconditions": "Logged In User",
+      "expected_output": "Scheduled Future (Today)",
+      "covered_item": "Day Boundary Min (0)",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Days:0, Name:Bob"
+    },
+    {
+      "test_id": "T04",
+      "technique": "BVA",
+      "requirement_target": "Req 5",
+      "preconditions": "Logged In User",
+      "expected_output": "Scheduled Future (1 Year)",
+      "covered_item": "Day Boundary Max (365)",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Days:365, Name:Charlie"
+    },
+    {
+      "test_id": "T05",
+      "technique": "EP",
+      "requirement_target": "Req 7",
+      "preconditions": "Logged In User",
+      "expected_output": "Error: Missing Email",
+      "covered_item": "Missing Contact Valid",
+      "priority": "Critical",
+      "checker_status": "repaired",
+      "input": "Channel:EMAIL, No Email Provided, Name:Dave"
+    },
+    {
+      "test_id": "T06",
+      "technique": "BVA",
+      "requirement_target": "Req 6",
+      "preconditions": "Logged In User",
+      "expected_output": "Error: Message Too Long",
+      "covered_item": "Message Boundary Fail",
+      "priority": "High",
+      "checker_status": "repaired",
+      "input": "Msg:201 Chars, Name:Eve"
+    }
+  ]
+}

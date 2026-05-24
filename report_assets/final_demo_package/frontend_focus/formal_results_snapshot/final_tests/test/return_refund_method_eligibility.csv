@@ -1,0 +1,7 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table Testing,Rule 2 (Card Payment),Order Delivered Apr 05 2026; Paid Mar 20 2026,Eligible=true; Method=Original Card; Ship_Rev=false,"R1 Eligibility, R2 Card Logic",High,repaired,Method: CARD; Reason: CHANGE_OF_MIND
+T02,Decision Table Testing,Rule 2 (Card Payment >180d),Order Delivered Apr 05 2026; Paid Oct 01 2025,Eligible=true; Method=Store_Credit; Ship_Rev=false,"R1 Eligibility, R2 Card Logic",High,repaired,Method: CARD; Reason: CHANGE_OF_MIND
+T03,Decision Table Testing,Rule 1 (Eligibility Time),Order Delivered Mar 01 2026; Not Final_Sale,"Eligible=false; Method=N/A; Error=""Outside Window""",R1 Time Limit,Critical,repaired,Method: CARD; Date_Diff>30Days
+T04,Decision Table Testing,Rule 2 (COD Payment),Order Delivered Apr 05 2026; Paid Apr 01 2026,Eligible=true; Method=Store_Credit; Ship_Rev=false,R2 COD Logic,Medium,repaired,Method: COD; Reason: CHANGE_OF_MIND
+T05,Decision Table Testing,Rule 3 (Shipping Fee),Order Delivered Apr 05 2026; Paid Apr 01 2026,Eligible=true; Method=Original Card; Ship_Rev=true,R3 Shipping Logic,Medium,repaired,Method: CARD; Reason: SELLER_FAULT
+T06,BVA,return_refund_method_eligibility,None,boundary behavior verified,boundary case (repair),Medium,repaired,repaired boundary input

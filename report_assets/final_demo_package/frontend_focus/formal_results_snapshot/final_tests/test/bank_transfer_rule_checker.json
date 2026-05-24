@@ -1,0 +1,214 @@
+{
+  "requirement_id": "bank_transfer_rule_checker",
+  "category": "business_rules",
+  "risk_assessment": {
+    "level": "High",
+    "score": 9.1,
+    "rule_count": 7,
+    "numeric_constraint_count": 2,
+    "technique_count": 4,
+    "drivers": [
+      "category=business_rules",
+      "7 explicit rule lines",
+      "2 numeric constraints",
+      "decision-table logic",
+      "stateful workflow behavior",
+      "business impact keywords: balance",
+      "strict rejection/constraint language: must not, reject, rejected"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "boundary coverage",
+      "decision combinations",
+      "legal transitions",
+      "illegal transitions",
+      "invalid partitions",
+      "business-critical rules",
+      "negative/error handling"
+    ]
+  },
+  "state_model": {
+    "states": [
+      "The"
+    ],
+    "start_states": [],
+    "legal_transitions": [],
+    "illegal_transitions": [],
+    "coverage_plans": [
+      {
+        "coverage_goal": "All States",
+        "sequence_count": 1,
+        "fully_covered": true,
+        "sequences": [
+          {
+            "sequence_id": "AS01",
+            "coverage_goal": "All States",
+            "steps": [
+              "Start in The"
+            ],
+            "covered_states": [
+              "The"
+            ],
+            "covered_transitions": []
+          }
+        ]
+      },
+      {
+        "coverage_goal": "All Transitions",
+        "sequence_count": 0,
+        "fully_covered": true,
+        "sequences": []
+      }
+    ],
+    "notes": [
+      "No explicit start state was detected from the requirement text.",
+      "No explicit legal transitions were extracted from the requirement text."
+    ]
+  },
+  "analysis": "The `bank_transfer_rule_checker` involves multiple conditional rules governing user permissions (Standard vs. Verified), financial limits (amount, daily total, balance), security controls (OTP), and fraud prevention (blacklist, self-transfer). Inputs include user credentials, transaction details, and account states. Outputs indicate success or specific failure codes. The goal is to verify system compliance with business rules without inspecting internal code logic. Key complexity arises from overlapping constraints (e.g., amount limits vs. daily totals) and security triggers (amount threshold triggering OTP).",
+  "pattern": "To cover numerical thresholds effectively, **Boundary Value Analysis (BVA)** is selected to test limits (1, 5000, 20000, 10000, 50000). To handle logical interactions between conditions (Amount > 2000 AND OTP provided/daily limit exceeded), **Decision Table Testing (DTT)** is applied. Equivalence Partitioning groups users and amounts, but BVA ensures edge cases are captured. State Transition is less applicable as the transfer is atomic rather than lifecycle-based, though balance checking implies state dependency.",
+  "steps": [
+    "1. Execute Step T01-T02 (Standard Limits): Validate minimum (1) and maximum (5000) transfers for a Standard user with sufficient funds.",
+    "2. Execute Step T06-T07 (OTP Logic): Initiate transfer > 2000 with valid OTP and invalid OTP to enforce security policy.",
+    "3. Execute Step T08-T09 (Fraud Checks): Attempt transfer to blacklisted account and transfer to own account.",
+    "4. Execute Step T11-T12 (Daily Totals): Simulate daily totals exceeding limits for both Standard and Verified profiles.",
+    "5. Execute Step T10 (Balance Check): Initiate transfer exceeding available balance regardless of other rules."
+  ],
+  "verification": "- Verified against Step 1 to confirm standard users cannot exceed single transaction limits (Rule 1).\n- Verified against Step 2 to ensure secure channels are activated when amount exceeds 2000 (Rule 4).\n- Verified against Step 3 to validate rejection of prohibited destinations (Rule 5, 6).\n- Verified against Step 4 to confirm cumulative daily restrictions per user tier (Rule 3).\n- Verified against Step 5 to ensure solvency checks precede authorization (Rule 7).",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Rule 1",
+      "preconditions": "Standard User",
+      "expected_output": "Success Transaction",
+      "covered_item": "Single Limit Min",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "Amt: 1, OTP: N/A, Daily: 0, Bal: 100"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Rule 1",
+      "preconditions": "Standard User",
+      "expected_output": "Success Transaction",
+      "covered_item": "Single Limit Max",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "Amt: 5000, OTP: N/A, Daily: 0, Bal: 6000"
+    },
+    {
+      "test_id": "T03",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Rule 1",
+      "preconditions": "Standard User",
+      "expected_output": "Rejected: Amount Limit Exceeded",
+      "covered_item": "Single Limit Over",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Amt: 5001, OTP: Required, Daily: 0, Bal: 6000"
+    },
+    {
+      "test_id": "T04",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Rule 2",
+      "preconditions": "Verified User",
+      "expected_output": "Success Transaction",
+      "covered_item": "Verified Limit Max",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "Amt: 20000, OTP: Y, Daily: 0, Bal: 21000"
+    },
+    {
+      "test_id": "T05",
+      "technique": "Boundary Value Analysis",
+      "requirement_target": "Rule 2",
+      "preconditions": "Verified User",
+      "expected_output": "Rejected: Amount Limit Exceeded",
+      "covered_item": "Verified Limit Over",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Amt: 20001, OTP: Y, Daily: 0, Bal: 22000"
+    },
+    {
+      "test_id": "T06",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 4",
+      "preconditions": "Verified User",
+      "expected_output": "Rejected: Invalid OTP Required",
+      "covered_item": "OTP Logic Fail",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Amt: 2500, OTP: Invalid, Daily: 0, Bal: 3000"
+    },
+    {
+      "test_id": "T07",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 4",
+      "preconditions": "Verified User",
+      "expected_output": "Success Transaction",
+      "covered_item": "OTP Logic Pass",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Amt: 2500, OTP: Valid, Daily: 0, Bal: 3000"
+    },
+    {
+      "test_id": "T08",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 5",
+      "preconditions": "Any User",
+      "expected_output": "Rejected: Account Blacklisted",
+      "covered_item": "Fraud Detection",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Amt: 1000, OTP: N/A, Daily: 0, Dest: Blacklisted"
+    },
+    {
+      "test_id": "T09",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 6",
+      "preconditions": "Any User",
+      "expected_output": "Rejected: Cannot Transfer to Self",
+      "covered_item": "Duplicate Source Check",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Amt: 500, OTP: N/A, Daily: 0, Src=Dst"
+    },
+    {
+      "test_id": "T10",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 3",
+      "preconditions": "Verified User",
+      "expected_output": "Rejected: Daily Limit Exceeded",
+      "covered_item": "Cumulative Limit Fail",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Amt: 10000, OTP: Y, Daily: 50001, Bal: 60000"
+    },
+    {
+      "test_id": "T11",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 3",
+      "preconditions": "Standard User",
+      "expected_output": "Rejected: Daily Limit Exceeded",
+      "covered_item": "Cumulative Limit Fail",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Amt: 5000, OTP: Y, Daily: 10001, Bal: 20000"
+    },
+    {
+      "test_id": "T12",
+      "technique": "Decision Table Testing",
+      "requirement_target": "Rule 7",
+      "preconditions": "Any User",
+      "expected_output": "Rejected: Insufficient Funds",
+      "covered_item": "Balance Check",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Amt: 1000, OTP: N/A, Daily: 0, Bal: 500"
+    }
+  ]
+}

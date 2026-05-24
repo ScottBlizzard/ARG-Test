@@ -1,0 +1,142 @@
+{
+  "requirement_id": "order_split_shipment_state_machine",
+  "category": "workflow_state",
+  "risk_assessment": {
+    "level": "Medium",
+    "score": 6.75,
+    "rule_count": 5,
+    "numeric_constraint_count": 0,
+    "technique_count": 2,
+    "drivers": [
+      "category=workflow_state",
+      "5 explicit rule lines",
+      "decision-table logic",
+      "stateful workflow behavior",
+      "strict rejection/constraint language: at least, cannot"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "decision combinations",
+      "legal transitions",
+      "illegal transitions",
+      "negative/error handling"
+    ]
+  },
+  "state_model": {
+    "states": [
+      "Multiple",
+      "Packed"
+    ],
+    "start_states": [],
+    "legal_transitions": [],
+    "illegal_transitions": [],
+    "coverage_plans": [
+      {
+        "coverage_goal": "All States",
+        "sequence_count": 1,
+        "fully_covered": false,
+        "sequences": [
+          {
+            "sequence_id": "AS01",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `Packed` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          }
+        ]
+      },
+      {
+        "coverage_goal": "All Transitions",
+        "sequence_count": 0,
+        "fully_covered": true,
+        "sequences": []
+      }
+    ],
+    "notes": [
+      "No explicit start state was detected from the requirement text.",
+      "No explicit legal transitions were extracted from the requirement text."
+    ]
+  },
+  "analysis": "The requirement defines a composite state machine where individual shipment lifecycles drive an aggregate Order State. The core risks involve incorrect aggregation logic when handling mixed shipment states, invalid state transitions (regression), and improper constraint enforcement on cancellations. The system must enforce strict forward progress for shipments (pending to delivered) and aggregate these states mathematically.",
+  "pattern": "We utilize **State Transition Testing** to verify individual shipment lifecycle integrity (PENDING to DELIVERED) and negative transition constraints. We supplement this with **Decision Table Testing** to validate the complex combinatorial logic used to derive the Order State based on subsets of shipments (e.g., mixed PENDING and SHIPPED states).",
+  "steps": [
+    "1. Initialize an order containing two shipments; verify initial status is ORDER_PENDING.",
+    "2. Execute forward state transitions on Shipment A: PENDING -> PACKED -> SHIPPED -> DELIVERED.",
+    "3. Construct a decision matrix with Shipment A=SHIPPED and Shipment B=PENDING; verify aggregation.",
+    "4. Attempt to cancel Shipment A after it reaches PACKED status.",
+    "5. Attempt to revert Shipment A from DELIVERED back to SHIPPED."
+  ],
+  "verification": "- Verified against Step 1 (Initialization) and Step 2 (Forward Transitions) to confirm state propagation logic holds.\n- Verified against Step 3 (Aggregation) to ensure Decision Table outcomes match expected derivation rules.\n- Verified against Step 4 and Step 5 (Constraint Enforcement) to ensure illegal operations are blocked via expected error codes.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "STT",
+      "requirement_target": "Init State",
+      "preconditions": "New Order Created",
+      "expected_output": "Order State: ORDER_PENDING",
+      "covered_item": "Rule 3a",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "Action: Create Order with 2 items"
+    },
+    {
+      "test_id": "T02",
+      "technique": "STT",
+      "requirement_target": "Lifecycle",
+      "preconditions": "Order Exists, Shipments=PENDING",
+      "expected_output": "Order State: ORDER_PARTIALLY_FULFILLED",
+      "covered_item": "Rule 2, 3b",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "Action: Advance Ship A to PACKED"
+    },
+    {
+      "test_id": "T03",
+      "technique": "STT",
+      "requirement_target": "Lifecycle",
+      "preconditions": "Ship A=PACKED, Ship B=DELIVERED",
+      "expected_output": "Order State: ORDER_DELIVERED",
+      "covered_item": "Rule 2, 3d",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "Action: Advance Ship A to DELIVERED"
+    },
+    {
+      "test_id": "T04",
+      "technique": "DTT",
+      "requirement_target": "Aggregation",
+      "preconditions": "Ship A=SHIPPED, Ship B=PENDING",
+      "expected_output": "Order State: ORDER_PARTIALLY_FULFILLED",
+      "covered_item": "Rule 3b",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "Action: Query Order Status"
+    },
+    {
+      "test_id": "T05",
+      "technique": "STT",
+      "requirement_target": "Cancellation",
+      "preconditions": "Ship A=PACKED",
+      "expected_output": "Result: Error \"Cannot Cancel Non-Pending\"",
+      "covered_item": "Rule 4",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "Action: Cancel Shipment A"
+    },
+    {
+      "test_id": "T06",
+      "technique": "STT",
+      "requirement_target": "Legal Constraint",
+      "preconditions": "Ship A=DELIVERED",
+      "expected_output": "Result: Error \"Illegal State Transition\"",
+      "covered_item": "Rule 5",
+      "priority": "High",
+      "checker_status": "pending",
+      "input": "Action: Revert Ship A to SHIPPED"
+    }
+  ]
+}

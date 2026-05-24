@@ -1,0 +1,6 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,State Transition,"Req 2, 3",None,Status: AUTH_REQUIRED,Initial Flow Start,High,pending,Card flagged for 3DS
+T02,State Transition,Req 3,Status: AUTH_REQUIRED,Status: AUTHENTICATED,Successful Auth,High,pending,Valid 3DS Token
+T03,State Transition,Req 6,Status: FAILED,Error: MAX_RETRY_EXCEEDED,Retry Limit Enforcement,Medium,pending,3rd Retry Attempt
+T04,State Transition,Req 7,Status: INITIATED,Error: MISSING_AUTH,Illegal Transition Blocking,Critical,pending,POST /Capture
+T05,State Transition,Req 5,Status: AUTH_REQUIRED,Status: PENDING_REVIEW,Timeout Handling,Medium,pending,Provider Timeout Event

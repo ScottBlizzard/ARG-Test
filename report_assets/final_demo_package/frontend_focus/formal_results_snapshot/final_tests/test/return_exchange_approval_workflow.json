@@ -1,0 +1,182 @@
+{
+  "requirement_id": "return_exchange_approval_workflow",
+  "category": "workflow_state",
+  "risk_assessment": {
+    "level": "High",
+    "score": 7.4,
+    "rule_count": 8,
+    "numeric_constraint_count": 0,
+    "technique_count": 2,
+    "drivers": [
+      "category=workflow_state",
+      "8 explicit rule lines",
+      "stateful workflow behavior",
+      "business impact keywords: refund",
+      "strict rejection/constraint language: reject, rejected"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "legal transitions",
+      "illegal transitions",
+      "business-critical rules",
+      "negative/error handling"
+    ]
+  },
+  "state_model": {
+    "states": [
+      "SUBMITTED",
+      "REVIEWING",
+      "APPROVED",
+      "LABEL_ISSUED",
+      "REFUNDED",
+      "EXPIRED"
+    ],
+    "start_states": [
+      "SUBMITTED"
+    ],
+    "legal_transitions": [],
+    "illegal_transitions": [],
+    "coverage_plans": [
+      {
+        "coverage_goal": "All States",
+        "sequence_count": 5,
+        "fully_covered": false,
+        "sequences": [
+          {
+            "sequence_id": "AS01",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `APPROVED` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          },
+          {
+            "sequence_id": "AS02",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `EXPIRED` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          },
+          {
+            "sequence_id": "AS03",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `LABEL_ISSUED` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          },
+          {
+            "sequence_id": "AS04",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `REFUNDED` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          },
+          {
+            "sequence_id": "AS05",
+            "coverage_goal": "All States",
+            "steps": [
+              "Target state `REVIEWING` is currently unreachable from the declared start states."
+            ],
+            "covered_states": [],
+            "covered_transitions": []
+          }
+        ]
+      },
+      {
+        "coverage_goal": "All Transitions",
+        "sequence_count": 0,
+        "fully_covered": true,
+        "sequences": []
+      }
+    ],
+    "notes": [
+      "No explicit legal transitions were extracted from the requirement text."
+    ]
+  },
+  "analysis": "The requirement specifies a state-based workflow for return and exchange requests. The system operates as a Finite State Machine (FSM) with defined states (SUBMITTED, REVIEWING, APPROVED, etc.) and transitions triggered by user actions or system events. Key constraints include data-dependent transitions (method/type), temporal boundaries (14-day expiry), and prohibited state jumps (Rule 6, 7). The complexity arises from the combination of state validity and condition checks.",
+  "pattern": "State Transition Testing (STT). \nThis technique is explicitly chosen because the domain logic is dominated by state changes and guard conditions rather than calculation inputs. STT allows for the mapping of all possible state transitions to identify missing paths and validate illegal transitions defined in Rules 6 and 7. Boundary Value Analysis is implied for the 14-day rule but STT covers the structural flow best.",
+  "steps": [
+    "1. Execute end-to-end happy path for a \"return_by_mail\" request from submission to refund.",
+    "2. Attempt to force a REFUNDED state directly from LABEL_ISSUED without entering ITEM_RECEIVED.",
+    "3. Simulate a system timer triggering the EXPIRED state after 14 days of inactivity post-LABEL_ISSUED.",
+    "4. Attempt to manually override a REJECTED state to APPROVED without initiating a new request."
+  ],
+  "verification": "- Verified Step 1 against Requirements 1-5 to ensure valid lifecycle progression and conditional routing (LABEL_ISSUED).\n- Verified Step 2 against Requirement 6 to confirm the system blocks illegal refund processing prior to receipt.\n- Verified Step 3 against Requirement 8 to confirm automatic state aging and expiration handling.\n- Verified Step 4 against Requirement 7 to ensure state immutability regarding rejection without recreation.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "---",
+      "technique": "---",
+      "requirement_target": "---",
+      "preconditions": "---",
+      "expected_output": ":---",
+      "covered_item": ":---",
+      "priority": "Medium",
+      "checker_status": ":---",
+      "input": ":---"
+    },
+    {
+      "test_id": "T01",
+      "technique": "STT",
+      "requirement_target": "Req 1, 2, 4, 5",
+      "preconditions": "Request created as SUBMITTED",
+      "expected_output": "State: REFUNDED",
+      "covered_item": "Happy Path",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Submit Request > Approve > Ship Mail"
+    },
+    {
+      "test_id": "T02",
+      "technique": "STT",
+      "requirement_target": "Req 6",
+      "preconditions": "Request State: LABEL_ISSUED",
+      "expected_output": "Error: Illegal State Transition",
+      "covered_item": "Invalid Transition",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Click Action: Process Refund"
+    },
+    {
+      "test_id": "T03",
+      "technique": "STT",
+      "requirement_target": "Req 8",
+      "preconditions": "Request State: LABEL_ISSUED",
+      "expected_output": "State: EXPIRED",
+      "covered_item": "Time Boundary",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Advance Time by 15 days"
+    },
+    {
+      "test_id": "T04",
+      "technique": "STT",
+      "requirement_target": "Req 7",
+      "preconditions": "Request State: REJECTED",
+      "expected_output": "Error: Rejected State Immutable",
+      "covered_item": "Invalid Override",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Click Action: Approve"
+    },
+    {
+      "test_id": "T05",
+      "technique": "STT",
+      "requirement_target": "Req 4, 5",
+      "preconditions": "Request State: APPROVED, Type: Exchange, Method: InStore",
+      "expected_output": "State: EXCHANGED",
+      "covered_item": "Alternative Path",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "Click Action: Receive Item"
+    }
+  ]
+}

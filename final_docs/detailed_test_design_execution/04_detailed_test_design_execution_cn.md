@@ -178,7 +178,7 @@ Together, the black-box and white-box tests form a layered design. The black-box
 | Item | Observed result |
 | --- | --- |
 | Module-specific executable tests | `15 passed` |
-| Repository regression suite at report-preparation time | `32 passed` |
+| Repository regression suite at report-preparation time | `38 passed` |
 | Statement coverage on the reference module | `100%` |
 | Branch coverage on the reference module | `100%` |
 | Mutation result | `4 / 4 mutants killed` |
@@ -207,7 +207,36 @@ Second, the white-box suite is not decorative. It exercises the explicit negativ
 
 Third, the combined suite is compact. With only `15` module-focused cases, it achieves complete statement and branch coverage on the selected implementation, which is a good tradeoff between completeness and maintainability for this module-level validation.
 
-## 7. Mutation-Based Usefulness Demonstration
+## 7. Web Demo Consistency Validation
+
+The final delivery also validates that the Web demo presents the same formal evidence used by the report instead of mixing official results with unrelated local mock outputs. This check matters because the demo is the primary presentation surface for the final defense, while the formal result bundle remains the source of quantitative evidence.
+
+![Direct Frozen Replay Evidence](figures/web_demo_direct_frozen_replay.png)
+
+The Direct tab now uses a formal requirement catalog. When a built-in formal test requirement is selected, the backend returns `frozen_formal_run` replay data from the archived result snapshot. This prevents mismatches such as a selected label showing one coverage value while the generated local mock result displays another value.
+
+| Web demo consistency check | Observed result |
+| --- | --- |
+| Direct-tab formal catalog replay | `16 / 16` formal test requirements replayed frozen outputs |
+| CSV sample replay | `2 / 2` matching CSV rows replayed frozen outputs |
+| Formal dashboard aggregate | Average overall coverage shown as `61.5%` |
+| Repository regression after Web demo fixes | `38 passed` |
+
+The State-Model tab was also checked on the five workflow examples included in the demo catalog. Each catalog workflow now produces a non-empty legal-transition model, and illegal transitions are only reported when the requirement text explicitly supports them.
+
+![State Model Extraction Evidence](figures/web_demo_state_model_extraction.png)
+
+| Workflow example | States | Legal transitions | Illegal transitions |
+| --- | ---: | ---: | ---: |
+| `order_approval_state_machine` | `6` | `7` | `0` |
+| `order_split_shipment_state_machine` | `4` | `3` | `2` |
+| `payment_3ds_authentication_flow` | `6` | `6` | `2` |
+| `return_exchange_approval_workflow` | `9` | `8` | `1` |
+| `warehouse_pickup_order_workflow` | `5` | `4` | `2` |
+
+This Web-level validation does not replace the detailed executable module evidence. Instead, it protects the final demonstration from interpretation errors: official quantitative results come from frozen formal replay, while ad hoc edited inputs remain clearly labeled as local mock generation.
+
+## 8. Mutation-Based Usefulness Demonstration
 
 The evaluation also includes defect-seeded usefulness evidence. Four representative mutants were created:
 
@@ -231,7 +260,7 @@ Mutation-to-test mapping:
 
 This is important because it shows that the detailed suite is not only structurally complete. It is also effective at detecting realistic logic defects that correspond to the selected business rules and boundaries.
 
-## 8. Evidence Paths
+## 9. Evidence Paths
 
 Primary evidence files:
 
@@ -239,8 +268,11 @@ Primary evidence files:
 - `final_docs/execution_evidence/coupon_discount_engine_coverage.xml`
 - `final_docs/execution_evidence/coupon_discount_engine_branch_coverage.xml`
 - `final_docs/execution_evidence/coupon_discount_engine_mutation_demo.md`
+- `demo_web/app.py`
+- `tests/test_demo_web_api.py`
+- `report_assets/final_demo_package/frontend_focus/formal_results_snapshot/`
 
-## 9. Conclusion
+## 10. Conclusion
 
 The `coupon_discount_engine` module is supported by a complete detailed-design and execution chain. The module is covered by multiple black-box techniques, executable white-box tests, complete statement and branch coverage, and a successful mutation demonstration. This makes it a credible detailed anchor for the overall ARG-Test submission rather than a merely illustrative example.
 

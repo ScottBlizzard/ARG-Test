@@ -1,27 +1,27 @@
 {
   "performance": {
     "sample_size": 5,
-    "average_seconds_per_requirement": 0.005,
+    "average_seconds_per_requirement": 0.014,
     "per_requirement": [
       {
         "requirement_id": "address_international_format_validation",
-        "seconds": 0.0071
+        "seconds": 0.0189
       },
       {
         "requirement_id": "bank_transfer_rule_checker",
-        "seconds": 0.004
+        "seconds": 0.0123
       },
       {
         "requirement_id": "bundle_discount_eligibility_rules",
-        "seconds": 0.0042
+        "seconds": 0.0138
       },
       {
         "requirement_id": "checkout_promo_stack_and_priority",
-        "seconds": 0.0056
+        "seconds": 0.0117
       },
       {
         "requirement_id": "coupon_discount_engine",
-        "seconds": 0.0042
+        "seconds": 0.0135
       }
     ]
   },
@@ -37,6 +37,14 @@
     "has_formal_run_workflow": true,
     "supports_direct_text_input": true,
     "supports_csv_input": true,
+    "web_demo_available": true,
+    "web_demo_formal_replay_snapshot_available": true,
+    "web_demo_tabs": [
+      "Direct Input",
+      "CSV Batch",
+      "State Model",
+      "Formal Evidence"
+    ],
     "export_formats": [
       "JSON",
       "CSV",
@@ -59,9 +67,9 @@
     "src_module_count": 27,
     "experiment_script_count": 18,
     "test_file_count": 7,
-    "test_case_count": 32,
+    "test_case_count": 38,
     "pytest_exit_code": 0,
-    "pytest_summary": "32 passed in 3.57s",
+    "pytest_summary": "38 passed in 5.72s",
     "runtime_output_isolation_supported": true
   }
 }

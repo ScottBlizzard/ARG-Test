@@ -1,0 +1,11 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,STT,Initiate Workflow,System Active,State=Draft,Rule 1,High,Pending,NewOrder
+T02,STT,Submit Draft,State=Draft,State=Submitted,Rule 2,High,Pending,SubmitAction
+T03,STT,Manager Approve,State=Submitted,State=ManagerApproved,Rule 3,High,Pending,ManagerApprove
+T04,STT,Manager Reject,State=Submitted,State=Rejected,Rule 4,Medium,Pending,ManagerReject
+T05,STT,Finance Approve,State=ManagerApproved,State=FinanceApproved,Rule 5,High,Pending,FinanceApprove
+T06,STT,Finance Reject,State=ManagerApproved,State=Rejected,Rule 6,Medium,Pending,FinanceReject
+T07,STT,Finalize Order,State=FinanceApproved,State=Closed,Rule 7,Critical,Pending,CloseAction
+T08,STT,Resubmit Rejection,State=Rejected,State=Draft,Rule 8,Medium,Pending,EditAndResubmit
+T09,STT,Invalid Action,State=Draft,Error: Invalid State,Rule 2,Low,Pending,ManagerApprove
+T10,STT,Terminal Lock,State=Closed,Error: No Action Allowed,Rule 7,Low,Pending,CloseAction

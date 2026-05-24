@@ -1,0 +1,336 @@
+{
+  "requirement_id": "order_approval_state_machine",
+  "category": "workflow_state",
+  "risk_assessment": {
+    "level": "Medium",
+    "score": 6.2,
+    "rule_count": 8,
+    "numeric_constraint_count": 0,
+    "technique_count": 1,
+    "drivers": [
+      "category=workflow_state",
+      "8 explicit rule lines",
+      "stateful workflow behavior",
+      "strict rejection/constraint language: reject, rejected"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "legal transitions",
+      "illegal transitions",
+      "negative/error handling"
+    ]
+  },
+  "state_model": {
+    "states": [
+      "Draft",
+      "Submitted",
+      "ManagerApproved",
+      "FinanceApproved",
+      "Rejected",
+      "Closed"
+    ],
+    "start_states": [
+      "Draft"
+    ],
+    "legal_transitions": [
+      {
+        "source_state": "Draft",
+        "trigger": "Submit",
+        "target_state": "Submitted",
+        "legal": true,
+        "source_rule": "Submit is allowed only from Draft and moves the order to Submitted."
+      },
+      {
+        "source_state": "Submitted",
+        "trigger": "ManagerApprove",
+        "target_state": "ManagerApproved",
+        "legal": true,
+        "source_rule": "ManagerApprove is allowed only from Submitted and moves the order to ManagerApproved."
+      },
+      {
+        "source_state": "Submitted",
+        "trigger": "ManagerReject",
+        "target_state": "Rejected",
+        "legal": true,
+        "source_rule": "ManagerReject is allowed only from Submitted and moves the order to Rejected."
+      },
+      {
+        "source_state": "ManagerApproved",
+        "trigger": "FinanceApprove",
+        "target_state": "FinanceApproved",
+        "legal": true,
+        "source_rule": "FinanceApprove is allowed only from ManagerApproved and moves the order to FinanceApproved."
+      },
+      {
+        "source_state": "ManagerApproved",
+        "trigger": "FinanceReject",
+        "target_state": "Rejected",
+        "legal": true,
+        "source_rule": "FinanceReject is allowed only from ManagerApproved and moves the order to Rejected."
+      },
+      {
+        "source_state": "FinanceApproved",
+        "trigger": "Close",
+        "target_state": "Closed",
+        "legal": true,
+        "source_rule": "Close is allowed only from FinanceApproved and moves the order to Closed."
+      },
+      {
+        "source_state": "Rejected",
+        "trigger": "EditAndResubmit",
+        "target_state": "Draft",
+        "legal": true,
+        "source_rule": "EditAndResubmit is allowed only from Rejected and moves the order to Draft."
+      }
+    ],
+    "illegal_transitions": [],
+    "coverage_plans": [
+      {
+        "coverage_goal": "All States",
+        "sequence_count": 2,
+        "fully_covered": true,
+        "sequences": [
+          {
+            "sequence_id": "AS01",
+            "coverage_goal": "All States",
+            "steps": [
+              "Start in Draft",
+              "Trigger `Submit`: Draft -> Submitted",
+              "Trigger `ManagerApprove`: Submitted -> ManagerApproved",
+              "Trigger `FinanceApprove`: ManagerApproved -> FinanceApproved",
+              "Trigger `Close`: FinanceApproved -> Closed"
+            ],
+            "covered_states": [
+              "Draft",
+              "Submitted",
+              "ManagerApproved",
+              "FinanceApproved",
+              "Closed"
+            ],
+            "covered_transitions": [
+              "Draft -> Submitted [Submit]",
+              "Submitted -> ManagerApproved [ManagerApprove]",
+              "ManagerApproved -> FinanceApproved [FinanceApprove]",
+              "FinanceApproved -> Closed [Close]"
+            ]
+          },
+          {
+            "sequence_id": "AS02",
+            "coverage_goal": "All States",
+            "steps": [
+              "Start in Draft",
+              "Trigger `Submit`: Draft -> Submitted",
+              "Trigger `ManagerReject`: Submitted -> Rejected"
+            ],
+            "covered_states": [
+              "Draft",
+              "Submitted",
+              "Rejected"
+            ],
+            "covered_transitions": [
+              "Draft -> Submitted [Submit]",
+              "Submitted -> Rejected [ManagerReject]"
+            ]
+          }
+        ]
+      },
+      {
+        "coverage_goal": "All Transitions",
+        "sequence_count": 3,
+        "fully_covered": true,
+        "sequences": [
+          {
+            "sequence_id": "AT01",
+            "coverage_goal": "All Transitions",
+            "steps": [
+              "Start in Draft",
+              "Trigger `Submit`: Draft -> Submitted",
+              "Trigger `ManagerApprove`: Submitted -> ManagerApproved",
+              "Trigger `FinanceApprove`: ManagerApproved -> FinanceApproved",
+              "Trigger `Close`: FinanceApproved -> Closed"
+            ],
+            "covered_states": [
+              "Draft",
+              "Submitted",
+              "ManagerApproved",
+              "FinanceApproved",
+              "Closed"
+            ],
+            "covered_transitions": [
+              "Draft -> Submitted [Submit]",
+              "Submitted -> ManagerApproved [ManagerApprove]",
+              "ManagerApproved -> FinanceApproved [FinanceApprove]",
+              "FinanceApproved -> Closed [Close]"
+            ]
+          },
+          {
+            "sequence_id": "AT02",
+            "coverage_goal": "All Transitions",
+            "steps": [
+              "Start in Draft",
+              "Trigger `Submit`: Draft -> Submitted",
+              "Trigger `ManagerApprove`: Submitted -> ManagerApproved",
+              "Trigger `FinanceReject`: ManagerApproved -> Rejected",
+              "Trigger `EditAndResubmit`: Rejected -> Draft"
+            ],
+            "covered_states": [
+              "Draft",
+              "Submitted",
+              "ManagerApproved",
+              "Rejected"
+            ],
+            "covered_transitions": [
+              "Draft -> Submitted [Submit]",
+              "Submitted -> ManagerApproved [ManagerApprove]",
+              "ManagerApproved -> Rejected [FinanceReject]",
+              "Rejected -> Draft [EditAndResubmit]"
+            ]
+          },
+          {
+            "sequence_id": "AT03",
+            "coverage_goal": "All Transitions",
+            "steps": [
+              "Start in Draft",
+              "Trigger `Submit`: Draft -> Submitted",
+              "Trigger `ManagerReject`: Submitted -> Rejected"
+            ],
+            "covered_states": [
+              "Draft",
+              "Submitted",
+              "Rejected"
+            ],
+            "covered_transitions": [
+              "Draft -> Submitted [Submit]",
+              "Submitted -> Rejected [ManagerReject]"
+            ]
+          }
+        ]
+      }
+    ],
+    "notes": []
+  },
+  "analysis": "The requirement defines a finite state machine (FSM) for an order approval process. There are six distinct states (Draft, Submitted, ManagerApproved, FinanceApproved, Rejected, Closed) and eight defined transitions governing state movement. The core objective is to verify that the system enforces strict state dependency rules, allowing transitions only when preconditions are met (valid states) and rejecting actions initiated from unauthorized states. We must test all valid paths sequentially and confirm error handling for invalid state-action combinations.",
+  "pattern": "State Transition Testing (STT). This technique is selected over others because the requirement is fundamentally defined by state logic and permissible transitions between states. It allows us to systematically derive test cases covering all nodes (states) and edges (transitions) identified in Rules 1-8, including invalid edge validation.",
+  "steps": [
+    "1. Initialize a new order instance entering the 'Draft' state.",
+    "2. Execute the 'Submit' transition to move the state from 'Draft' to 'Submitted'.",
+    "3. Iterate through the approval hierarchy using Manager and Finance actions based on the current state.",
+    "4. Execute the 'EditAndResubmit' action to verify the rejection-to-draft loop functionality.",
+    "5. Attempt invalid actions (e.g., 'Submit' from 'Submitted', 'Close' from 'Draft') to validate state locking."
+  ],
+  "verification": "- Verified valid state progression against Step 2 and Step 3 outcomes (Draft -> Submitted -> ManagerApproved/Rejected).\n- Verified termination conditions against Step 3 (FinanceApproved -> Closed).\n- Verified constraint enforcement against Step 5 (Invalid transitions return error status).",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "STT",
+      "requirement_target": "Initiate Workflow",
+      "preconditions": "System Active",
+      "expected_output": "State=Draft",
+      "covered_item": "Rule 1",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "NewOrder"
+    },
+    {
+      "test_id": "T02",
+      "technique": "STT",
+      "requirement_target": "Submit Draft",
+      "preconditions": "State=Draft",
+      "expected_output": "State=Submitted",
+      "covered_item": "Rule 2",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "SubmitAction"
+    },
+    {
+      "test_id": "T03",
+      "technique": "STT",
+      "requirement_target": "Manager Approve",
+      "preconditions": "State=Submitted",
+      "expected_output": "State=ManagerApproved",
+      "covered_item": "Rule 3",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "ManagerApprove"
+    },
+    {
+      "test_id": "T04",
+      "technique": "STT",
+      "requirement_target": "Manager Reject",
+      "preconditions": "State=Submitted",
+      "expected_output": "State=Rejected",
+      "covered_item": "Rule 4",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "ManagerReject"
+    },
+    {
+      "test_id": "T05",
+      "technique": "STT",
+      "requirement_target": "Finance Approve",
+      "preconditions": "State=ManagerApproved",
+      "expected_output": "State=FinanceApproved",
+      "covered_item": "Rule 5",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "FinanceApprove"
+    },
+    {
+      "test_id": "T06",
+      "technique": "STT",
+      "requirement_target": "Finance Reject",
+      "preconditions": "State=ManagerApproved",
+      "expected_output": "State=Rejected",
+      "covered_item": "Rule 6",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "FinanceReject"
+    },
+    {
+      "test_id": "T07",
+      "technique": "STT",
+      "requirement_target": "Finalize Order",
+      "preconditions": "State=FinanceApproved",
+      "expected_output": "State=Closed",
+      "covered_item": "Rule 7",
+      "priority": "Critical",
+      "checker_status": "Pending",
+      "input": "CloseAction"
+    },
+    {
+      "test_id": "T08",
+      "technique": "STT",
+      "requirement_target": "Resubmit Rejection",
+      "preconditions": "State=Rejected",
+      "expected_output": "State=Draft",
+      "covered_item": "Rule 8",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "EditAndResubmit"
+    },
+    {
+      "test_id": "T09",
+      "technique": "STT",
+      "requirement_target": "Invalid Action",
+      "preconditions": "State=Draft",
+      "expected_output": "Error: Invalid State",
+      "covered_item": "Rule 2",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "ManagerApprove"
+    },
+    {
+      "test_id": "T10",
+      "technique": "STT",
+      "requirement_target": "Terminal Lock",
+      "preconditions": "State=Closed",
+      "expected_output": "Error: No Action Allowed",
+      "covered_item": "Rule 7",
+      "priority": "High",
+      "checker_status": "Pending",
+      "input": "CloseAction"
+    }
+  ]
+}

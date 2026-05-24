@@ -1,0 +1,10 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,EP,Rule 1,Parcel Arrival,Order Status = READY_FOR_PICKUP,Workflow Start,High,Pending,None
+T02,STT/EP,Rule 2,Order = READY,Order Status = PICKED_UP,Successful Pickup,High,Pending,"Code=Valid, Time=Within"
+T03,STT/BVA,Rule 3,Order = READY,Order Status = EXPIRED,Expiration Flow,High,Pending,Time=Expired
+T04,STT,Rule 4,Order = EXPIRED,Order Status = RETURN_IN_TRANSIT,Post-Expired,Medium,Pending,Staff Action=Return
+T05,STT,Rule 5,Order = READY/PICKED,Order Status = HOLD_FOR_REVIEW,Damage Handling,High,Pending,Damage Report=True
+T06,BVA,Rule 8,Order = READY,Order Status = HOLD_FOR_REVIEW,Attempt Limit,High,Pending,Attempt_Count=4
+T07,STT,Rule 6,Order = PICKED_UP,Error/Status Remains PICKED_UP,Illegal Reverse,Medium,Pending,Action=BackToReady
+T08,STT,Rule 7,Order = EXPIRED,Error/Status Remains EXPIRED,Illegal Late Pickup,Medium,Pending,Action=Pickup
+T09,BVA,warehouse_pickup_order_workflow,None,boundary behavior verified,boundary case (repair),Medium,repaired,repaired boundary input

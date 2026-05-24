@@ -35,24 +35,27 @@
           <div class="section-heading">
             <p class="eyebrow">Live Interaction</p>
             <h2 id="direct-tab-title">Direct Requirement Input</h2>
-            <p>Use a real test requirement ID for meaningful coverage, or use ad hoc input for interaction only.</p>
+            <p>Choose a frozen test requirement; the official ID, split, and requirement text are filled automatically.</p>
           </div>
 
           <form id="text-form" class="stack-form">
             <div class="field-grid compact">
               <label>
-                Requirement ID
-                <input type="text" id="text-requirement-id" value="pickup_station_contact_validation">
+                Requirement Case
+                <select id="text-requirement-id">
+                  <option value="pickup_station_contact_validation" selected>pickup_station_contact_validation</option>
+                </select>
               </label>
               <label>
                 Split
-                <input type="text" id="text-split" value="test">
+                <select id="text-split">
+                  <option value="test" selected>test</option>
+                </select>
               </label>
               <label>
                 Provider
                 <select id="text-provider">
                   <option value="mock" selected>mock</option>
-                  <option value="openai">openai</option>
                 </select>
               </label>
               <label>
@@ -70,7 +73,7 @@
             </div>
 
             <label>
-              Requirement Text
+              Auto-filled Requirement Text
               <textarea id="text-requirement" rows="9">Requirement ID: pickup_station_contact_validation
 Domain: pickup fulfillment validation
 
@@ -84,7 +87,7 @@ Rules:
 7. note is optional with maximum length 120.</textarea>
             </label>
 
-            <p class="helper-note">If a live input has no gold spec, the live card shows N/A. Use the Formal Evidence tab for official coverage.</p>
+            <p class="helper-note">Choose a frozen test requirement to auto-fill its text. Keep provider as mock for stable recorded interaction.</p>
             <div class="form-actions">
               <button type="submit">Generate Test Suite</button>
               <span class="status-note" id="text-status">Idle</span>
@@ -109,7 +112,7 @@ Rules:
           <div class="section-heading">
             <p class="eyebrow">FR 1.0</p>
             <h2 id="csv-tab-title">CSV Batch Import</h2>
-            <p>Demonstrates file-based requirement input and batch processing through the same pipeline.</p>
+            <p>Demonstrates file-based input. Bundled formal test rows replay frozen results; edited rows use the local mock path.</p>
           </div>
 
           <form id="csv-form" class="stack-form">
@@ -118,7 +121,6 @@ Rules:
                 Provider
                 <select id="csv-provider">
                   <option value="mock" selected>mock</option>
-                  <option value="openai">openai</option>
                 </select>
               </label>
               <label>
@@ -167,18 +169,21 @@ Rules:
           <form id="state-form" class="stack-form">
             <div class="field-grid compact">
               <label>
-                Requirement ID
-                <input type="text" id="state-requirement-id" value="warehouse_pickup_order_workflow">
+                Workflow Case
+                <select id="state-requirement-id">
+                  <option value="warehouse_pickup_order_workflow" selected>warehouse_pickup_order_workflow</option>
+                </select>
               </label>
               <label>
                 Split
-                <input type="text" id="state-split" value="test">
+                <select id="state-split">
+                  <option value="test" selected>test</option>
+                </select>
               </label>
               <label>
                 Provider
                 <select id="state-provider">
                   <option value="mock" selected>mock</option>
-                  <option value="openai">openai</option>
                 </select>
               </label>
               <label>
@@ -188,7 +193,7 @@ Rules:
             </div>
 
             <label>
-              Workflow Requirement
+              Auto-filled Workflow Requirement
               <textarea id="state-requirement" rows="9">Requirement ID: warehouse_pickup_order_workflow
 Domain: pickup workflow
 

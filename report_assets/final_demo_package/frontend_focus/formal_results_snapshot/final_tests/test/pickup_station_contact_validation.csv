@@ -1,0 +1,10 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Decision Table,Contactless Logic,System Ready,200 OK,Rule 4,High,pending,"{contactless_pickup: false, code: null}"
+T02,Equivalence Partitioning,Station ID Format,System Ready,400 Bad Request,Rule 2,High,pending,{station_id: PS-ABCDEF}
+T03,Boundary Value Analysis,Phone Digit Count,System Ready,400 Bad Request,Rule 3 (Min),High,pending,{phone: +123456789}
+T04,Boundary Value Analysis,Name Character Count,System Ready,400 Bad Request,Rule 6 (Min),High,pending,"{name: """", length: 1}"
+T05,Boundary Value Analysis,Name Character Count,System Ready,200 OK,Rule 6 (Max),Medium,pending,"{name: ""A...A"", length: 40}"
+T06,Decision Table,Contactless Code Validation,System Ready,400 Bad Request,Rule 5 (Invalid Len),High,pending,"{contactless_pickup: true, code: ""abc""}"
+T07,Decision Table,Contactless Mandatory Code,System Ready,400 Bad Request,Rule 4 & 5,High,pending,"{contactless_pickup: true, code: null}"
+T08,Boundary Value Analysis,Note Max Length,System Ready,400 Bad Request,Rule 7,Medium,pending,"{note: ""x"" repeated 121 times}"
+T09,Equivalence Partitioning,Station ID Format Valid,System Ready,200 OK,Rule 2,High,pending,{station_id: PS-123456}

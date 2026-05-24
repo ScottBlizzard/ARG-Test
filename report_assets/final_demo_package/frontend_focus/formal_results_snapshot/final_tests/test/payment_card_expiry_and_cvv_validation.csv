@@ -1,0 +1,9 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,EP,Valid Input,None,Validation Passed,All Rules (Valid),High,pending,"Name=""Alice Smith"", Card=""4539123456789012"", Exp=""12/2028"", CVV=""123"", Brand=""Visa"""
+T02,BVA,Name Length,None,Error: Name length must be 2 to 40,Name Min Boundary,Medium,pending,"Name=""A"", Card=""4539123456789012"", Exp=""12/2028"", CVV=""123"", Brand=""Visa"""
+T03,BVA,Card Digits,None,Error: Card number must contain 13 to 19 digits,Card Min Boundary,High,pending,"Name=""Alice"", Card=""123456789012"", Exp=""12/2028"", CVV=""123"", Brand=""Visa"""
+T04,EP,Card Characters,None,Error: Masked card numbers not accepted,Illegal Input,High,pending,"Name=""Alice"", Card=""4539***89012"", Exp=""12/2028"", CVV=""123"", Brand=""Visa"""
+T05,BVA,Expiry Date,None,Error: Expiry date cannot be in the past,Date Past Check,High,pending,"Name=""Alice"", Card=""4539123456789012"", Exp=""03/2026"", CVV=""123"", Brand=""Visa"""
+T06,BVA,Expiry Year,None,Error: Expiry year must be within 2026 to 2041,Year Max Boundary,Medium,pending,"Name=""Alice"", Card=""4539123456789012"", Exp=""01/2042"", CVV=""123"", Brand=""Visa"""
+T07,Decision Table,CVV Length,None,Error: CVV length invalid for brand,Brand CVV Mismatch,High,pending,"Name=""Alice"", Card=""4539123456789012"", Exp=""12/2028"", CVV=""1234"", Brand=""Visa"""
+T08,Decision Table,CVV Length,None,Error: CVV length invalid for brand (Amex requires 4),Brand CVV Mismatch,High,pending,"Name=""Alice"", Card=""378282246310005"", Exp=""12/2028"", CVV=""123"", Brand=""American Express"""

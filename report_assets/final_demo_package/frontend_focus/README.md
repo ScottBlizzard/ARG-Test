@@ -1,102 +1,78 @@
-# Frontend Focus
+# Frontend Demo Focus Guide
 
-如果你是负责 `demo UI / 前端展示` 的同学，**只看这个目录就够了**。  
-上一级目录里的其他脚本和讲稿保留作归档参考，不是你当前最优先要看的材料。
+如果你负责 `demo UI / 前端展示 / 录屏`，优先看这份文件。旧的命令行脚本和旧讲稿只作为备份材料；最终展示应以 `demo_web/` 前端页面为主。
 
-## 1. 你现在真正要关心的文件
+## 1. 需要关注的文件
 
 - 前端页面：`demo_web/static/index.html`
 - 前端脚本：`demo_web/static/app.js`
 - 前端样式：`demo_web/static/styles.css`
 - 后端接口：`demo_web/app.py`
-- 前端示例 CSV：`final_docs/execution_evidence/sample_requirement_batch.csv`
+- 示例 CSV：`final_docs/execution_evidence/sample_requirement_batch.csv`
 - 正式结果快照：`formal_results_snapshot/`
+- 已截好的前端截图：`screenshots/`
 
-## 2. 前端页面必须分析和展示哪些数据
+## 2. 录制前怎么运行
 
-### 2.1 Direct Requirement Input
+在仓库根目录运行：
 
-你需要关注：
+```powershell
+python -m uvicorn demo_web.app:app --host 127.0.0.1 --port 8000
+```
 
-1. `Checker Score`
-2. `Overall Coverage`
-3. `Selected Candidate`
-4. `Risk Assessment`
-5. `Generated Test Cases`
-6. `Diagnostics`
+然后打开：
 
-注意：
+```text
+http://127.0.0.1:8000/
+```
 
-- 如果当前输入没有对应 `gold spec`，覆盖率必须显示成 `N/A`，不能误导成 `0.0%`
-- 页面默认示例已经换成 test split 里的真实 requirement，所以默认情况下应能看到有效 coverage
+只使用页面里的 `mock` provider。这里的 `mock` 是为了保证录屏稳定，不代表 final 质量来自临时 mock 输出。
 
-### 2.2 CSV Batch Import
+## 3. 页面上必须讲清楚的数据
 
-你需要关注：
+### Direct Input
 
-1. `Batch Size`
-2. 每条 requirement 的 `Category`
-3. 每条 requirement 的 `Checker`
-4. 每条 requirement 的 `Coverage`
-5. 每条 requirement 的 `Risk`
+- 先选择下拉框里的正式 requirement，例如 `pickup_station_contact_validation`。
+- 点击 `Generate Test Suite` 后，重点看 `Structural Checker`、`Overall Coverage`、`Run Mode`、`Result Source`。
+- 如果显示 `Frozen formal replay`，说明它读取的是冻结正式输出，coverage 应与 Formal Evidence Dashboard 一致。
+- 如果你手动改了 requirement 文本，结果会走本地 mock 生成路径，这种结果不能当作正式实验结论。
 
-注意：
+### CSV Batch
 
-- CSV 示例现在也换成了正式测试集 requirement
-- 如果别人上传的是 adhoc CSV，没有 gold spec，就应该显示 `N/A`
+- 使用 `Download Sample CSV` 或上传 `final_docs/execution_evidence/sample_requirement_batch.csv`。
+- 关注每行的 `Structural`、`Coverage`、`Risk`、`Source`。
+- 匹配正式 requirement 的行应该显示 `Frozen replay`。
 
-### 2.3 State-Model Extraction
+### State Model
 
-你需要关注：
+- 推荐展示 `warehouse_pickup_order_workflow`。
+- 重点讲 `States`、`Legal Transitions`、`Illegal Transitions`、`Coverage Plans`。
+- 如果某个 requirement 的 illegal transition 数量是 `0`，不要说这是失败；没有显式非法规则时，非法迁移为 0 是合理结果。
 
-1. `States`
-2. `Legal Transitions`
-3. `Illegal Transitions`
-4. `Coverage Plans`
-5. 对应的 `Risk Assessment`
+### Formal Evidence
 
-这里的重点不是 overall coverage，而是状态建模和迁移展示是否清楚。
+- 这是正式数字的最高优先来源。
+- 必须能看到 `Official Test Requirements = 16`、`Avg Structural Checker = 0.959`、`Avg Overall Coverage = 61.5%`、`Avg Test Count = 7.312`。
+- PPT 和答辩中的正式实验数字都应以这里和 frozen formal snapshot 为准。
 
-### 2.4 Formal Evidence Dashboard
+## 4. 已准备好的截图
 
-这是最重要的一块，因为它承接 final report 的正式结果。你要重点看：
+- `screenshots/web_demo_direct_frozen_replay.png`
+- `screenshots/web_demo_state_model_extraction.png`
+- `screenshots/web_demo_formal_evidence_dashboard.png`
 
-1. `Tracked Formal Data Source`
-2. `Official Test Requirements`
-3. `Avg Checker Score`
-4. `Avg Overall Coverage`
-5. `Avg Test Count`
-6. `Baseline Averages`
-7. `Category Generalization`
-8. `Reproducibility Snapshot`
-9. `Recommended Cases`
-10. `Figure Gallery`
+这些截图可以直接给 PPT 同学使用。录屏同学仍建议自己实际操作一遍，保证视频里能展示真实交互。
 
-## 3. 哪些数据是正式可引用的
+## 5. 正确讲法
 
-正式展示和答辩时，优先引用这里的快照：
+- `We use mock mode for stable interaction, and frozen formal replay for official claims.`
+- `The formal dashboard is the safest source for final numerical claims.`
+- `Checker score measures structural contract consistency, not real-world correctness.`
+- `Coverage is measured against manually authored gold specifications, not training labels.`
 
-- `formal_results_snapshot/reports/test/run_main_summary.json`
-- `formal_results_snapshot/reports/test/baseline_summary.json`
-- `formal_results_snapshot/reports/test/generalization_by_category.json`
-- `formal_results_snapshot/reports/test/ablation_summary.json`
-- `formal_results_snapshot/repeatability/`
+## 6. 不要这样说
 
-这些是专门为了前端演示和仓库追踪整理出来的版本，不依赖 `.local_runs`。
-
-## 4. 你现在不需要关心什么
-
-你现在不需要先看：
-
-1. 旧的 CLI 录屏脚本
-2. 旧的命令行讲稿
-3. 归档式 asset map
-
-除非你后面要录传统终端 demo，否则先别被这些文件干扰。
-
-## 5. 你最终应该做什么
-
-1. 把页面视觉再做顺一点
-2. 检查默认示例能稳定跑出好看的结果
-3. 确保 formal dashboard 读取的是这里的 tracked snapshot
-4. 最后录一个以网页为主的 demo，而不是命令行为主的 demo
+- 不要说我们训练或微调了模型。
+- 不要说 rule-based baseline 来自某篇论文或现成系统。
+- 不要说 live provider 在 3 seed 下完全 deterministic。
+- 不要把 ad hoc mock 结果当成 final benchmark。

@@ -17,11 +17,44 @@ FROM_RE = re.compile(
     flags=re.IGNORECASE,
 )
 CONDITIONAL_RE = re.compile(
-    rf"^(?P<prefix>If|After) (?P<trigger>.+?), (?:the )?(?:order|payment|system) (?:moves to|becomes|enters) (?P<target>{STATE_PATTERN})\.?$",
+    rf"^(?P<prefix>If|After) (?P<trigger>.+?), (?:the )?(?:order|payment|system|request) (?:moves to|becomes|enters) (?P<target>{STATE_PATTERN})(?:\b.*)?\.?$",
+    flags=re.IGNORECASE,
+)
+LEADS_TO_RE = re.compile(
+    rf"^(?P<trigger>.+?) leads? to (?P<target>{STATE_PATTERN})(?:\b.*)?\.?$",
+    flags=re.IGNORECASE,
+)
+RETRY_AFTER_RE = re.compile(
+    rf"^(?:A|An|The) (?P<subject>.+?) may be retried .* after (?P<source>{STATE_PATTERN})\.?$",
     flags=re.IGNORECASE,
 )
 ILLEGAL_ARROW_RE = re.compile(
     rf"^Illegal:\s*(?P<source>{STATE_PATTERN})\s*(?:->|to)\s*(?P<target>{STATE_PATTERN})\.?$",
+    flags=re.IGNORECASE,
+)
+ARROW_SEQUENCE_RE = re.compile(r"\b(?P<chain>[A-Z][A-Z0-9_]+(?:\s*->\s*[A-Z][A-Z0-9_]+)+)\b")
+MAY_MOVE_RE = re.compile(
+    rf"^(?P<trigger>.+?) may move (?P<source>{STATE_PATTERN}) to (?P<target>{STATE_PATTERN})(?:\b.*)?\.?$",
+    flags=re.IGNORECASE,
+)
+MAY_TRANSITION_RE = re.compile(
+    rf"^(?P<source>{STATE_PATTERN}) may transition to (?P<targets>{STATE_PATTERN}(?:\s+or\s+{STATE_PATTERN})*)(?:\b.*)?\.?$",
+    flags=re.IGNORECASE,
+)
+ILLEGAL_RETURN_RE = re.compile(
+    rf"^Illegal:\s*(?P<source>{STATE_PATTERN}).*?cannot return to (?P<targets>{STATE_PATTERN}(?:\s*/\s*{STATE_PATTERN})*)(?:\b.*)?\.?$",
+    flags=re.IGNORECASE,
+)
+ILLEGAL_BEFORE_RE = re.compile(
+    rf"^Illegal:\s*(?P<target>{STATE_PATTERN}) before (?P<source>{STATE_PATTERN})(?:\b.*)?\.?$",
+    flags=re.IGNORECASE,
+)
+ILLEGAL_BACK_TO_RE = re.compile(
+    rf"^Illegal:\s*(?P<source>{STATE_PATTERN}) back to (?P<target>{STATE_PATTERN})(?:\b.*)?\.?$",
+    flags=re.IGNORECASE,
+)
+ILLEGAL_DIRECT_TO_RE = re.compile(
+    rf"^Illegal:\s*(?P<source>{STATE_PATTERN}).*?directly to (?P<target>{STATE_PATTERN})(?:\b.*)?\.?$",
     flags=re.IGNORECASE,
 )
 
@@ -29,6 +62,15 @@ ILLEGAL_ARROW_RE = re.compile(
 def _title_or_original(value: str) -> str:
     cleaned = value.strip().strip(".")
     return cleaned if cleaned.upper() == cleaned else cleaned[:1].upper() + cleaned[1:]
+
+
+def _normalize_state_token(value: str, known_states: list[str] | None = None) -> str:
+    cleaned = value.strip().strip(".")
+    if known_states:
+        for state in known_states:
+            if state.lower() == cleaned.lower():
+                return state
+    return _title_or_original(cleaned)
 
 
 def _dedupe_states(states: list[str]) -> list[str]:
@@ -59,12 +101,16 @@ def _extract_explicit_states(requirement_text: str) -> list[str]:
     states: list[str] = []
     for rule in extract_rule_lines(requirement_text):
         content = re.sub(r"^\d+\.\s+", "", rule).strip()
+        if any(token in content.lower() for token in ["state", "transition", "move", "moves", "illegal:"]):
+            states.extend(_title_or_original(match) for match in re.findall(r"\b[A-Z][A-Z0-9_]{2,}\b", content))
         for match in re.finditer(
-            rf"(?:starts in|from|to|becomes|enters)\s+(?P<state>{STATE_PATTERN})",
+            rf"\b(?:starts in|from|to|becomes|enters)\s+(?P<state>{STATE_PATTERN})",
             content,
             flags=re.IGNORECASE,
         ):
-            states.append(_title_or_original(match.group("state")))
+            raw_state = match.group("state")
+            if raw_state[:1].isupper():
+                states.append(_title_or_original(raw_state))
         arrow_match = ILLEGAL_ARROW_RE.match(content)
         if arrow_match:
             states.append(_title_or_original(arrow_match.group("source")))
@@ -80,11 +126,18 @@ def _infer_conditional_source(
 ) -> str | None:
     lowered = trigger_text.lower()
     state_set = set(known_states)
+    if "provider requires" in lowered and "INITIATED" in state_set:
+        return "INITIATED"
     if "3ds" in lowered or "authentication" in lowered:
         if "AUTH_REQUIRED" in state_set:
             return "AUTH_REQUIRED"
         if "AuthRequired" in state_set:
             return "AuthRequired"
+    if "timeout" in lowered and start_states:
+        return start_states[0]
+    for state in known_states:
+        if state and state.lower() in lowered:
+            return state
     if "retry" in lowered and "FAILED" in state_set:
         return "FAILED"
     if "expired" in lowered and "EXPIRED" in state_set:
@@ -102,6 +155,22 @@ def _extract_legal_transitions(requirement_text: str, start_states: list[str]) -
     previous_target: str | None = None
     for rule in extract_rule_lines(requirement_text):
         content = re.sub(r"^\d+\.\s+", "", rule).strip()
+        sequence_match = ARROW_SEQUENCE_RE.search(content)
+        if sequence_match:
+            states_in_chain = [item.strip() for item in re.split(r"\s*->\s*", sequence_match.group("chain"))]
+            for source, target in zip(states_in_chain, states_in_chain[1:]):
+                transitions.append(
+                    StateTransition(
+                        source_state=_title_or_original(source),
+                        trigger="next state",
+                        target_state=_title_or_original(target),
+                        legal=True,
+                        source_rule=content,
+                    )
+                )
+            previous_target = _title_or_original(states_in_chain[-1])
+            continue
+
         match = ALLOWED_RE.match(content)
         if match:
             source = _title_or_original(match.group("source"))
@@ -136,6 +205,40 @@ def _extract_legal_transitions(requirement_text: str, start_states: list[str]) -
             previous_target = target
             continue
 
+        match = MAY_MOVE_RE.match(content)
+        if match:
+            source = _title_or_original(match.group("source"))
+            target = _title_or_original(match.group("target"))
+            transitions.append(
+                StateTransition(
+                    source_state=source,
+                    trigger=match.group("trigger").strip(),
+                    target_state=target,
+                    legal=True,
+                    source_rule=content,
+                )
+            )
+            previous_target = target
+            continue
+
+        match = MAY_TRANSITION_RE.match(content)
+        if match:
+            source = _title_or_original(match.group("source"))
+            transition_tail = content.split(" may transition to ", 1)[1]
+            targets = re.findall(r"\b[A-Z][A-Z0-9_]{2,}\b", transition_tail)
+            for target_text in targets:
+                transitions.append(
+                    StateTransition(
+                        source_state=source,
+                        trigger="transition",
+                        target_state=_title_or_original(target_text),
+                        legal=True,
+                        source_rule=content,
+                    )
+                )
+            previous_target = _title_or_original(targets[-1]) if targets else previous_target
+            continue
+
         match = CONDITIONAL_RE.match(content)
         if match:
             target = _title_or_original(match.group("target"))
@@ -162,6 +265,51 @@ def _extract_legal_transitions(requirement_text: str, start_states: list[str]) -
                         source_rule=content,
                     )
                 )
+            before_match = re.search(r"before (?P<next>[A-Z][A-Z0-9_]+)", content)
+            if before_match:
+                transitions.append(
+                    StateTransition(
+                        source_state=target,
+                        trigger="next workflow step",
+                        target_state=_title_or_original(before_match.group("next")),
+                        legal=True,
+                        source_rule=content,
+                    )
+                )
+            continue
+
+        match = LEADS_TO_RE.match(content)
+        if match:
+            target = _title_or_original(match.group("target"))
+            trigger = match.group("trigger").strip()
+            source = _infer_conditional_source(trigger, start_states, known_states, previous_target)
+            if source:
+                transitions.append(
+                    StateTransition(
+                        source_state=source,
+                        trigger=trigger,
+                        target_state=target,
+                        legal=True,
+                        source_rule=content,
+                    )
+                )
+            previous_target = target
+            continue
+
+        match = RETRY_AFTER_RE.match(content)
+        if match:
+            source = _title_or_original(match.group("source"))
+            target = start_states[0] if start_states else source
+            transitions.append(
+                StateTransition(
+                    source_state=source,
+                    trigger="retry payment",
+                    target_state=target,
+                    legal=True,
+                    source_rule=content,
+                )
+            )
+            previous_target = target
             continue
 
         if "may be CAPTURED" in content and previous_target:
@@ -197,6 +345,87 @@ def _extract_illegal_transitions(requirement_text: str, states: list[str]) -> li
             continue
 
         lowered = content.lower()
+        if "cannot return to" in lowered:
+            prefix, target_text = lowered.split("cannot return to", 1)
+            sources = [state for state in states if state.lower() in prefix]
+            targets = [state for state in states if state.lower() in target_text]
+            for source in sources[:1]:
+                for target in targets:
+                    transitions.append(
+                        StateTransition(
+                            source_state=source,
+                            trigger="ILLEGAL",
+                            target_state=target,
+                            legal=False,
+                            source_rule=content,
+                        )
+                    )
+            continue
+
+        match = ILLEGAL_RETURN_RE.match(content)
+        if match:
+            source = _normalize_state_token(match.group("source"), states)
+            targets = re.split(r"\s*/\s*", match.group("targets"))
+            for target_text in targets:
+                transitions.append(
+                    StateTransition(
+                        source_state=source,
+                        trigger="ILLEGAL",
+                        target_state=_normalize_state_token(target_text, states),
+                        legal=False,
+                        source_rule=content,
+                    )
+                )
+            continue
+
+        match = ILLEGAL_BEFORE_RE.match(content)
+        if match:
+            transitions.append(
+                StateTransition(
+                    source_state=_title_or_original(match.group("source")),
+                    trigger="premature transition",
+                    target_state=_title_or_original(match.group("target")),
+                    legal=False,
+                    source_rule=content,
+                )
+            )
+            continue
+
+        match = ILLEGAL_BACK_TO_RE.match(content) or ILLEGAL_DIRECT_TO_RE.match(content)
+        if match:
+            transitions.append(
+                StateTransition(
+                    source_state=_normalize_state_token(match.group("source"), states),
+                    trigger="ILLEGAL",
+                    target_state=_normalize_state_token(match.group("target"), states),
+                    legal=False,
+                    source_rule=content,
+                )
+            )
+            continue
+
+        if "must not capture" in lowered and "pending_review" in lowered:
+            source = "PENDING_REVIEW" if "PENDING_REVIEW" in state_set else "PendingReview"
+            transitions.append(
+                StateTransition(
+                    source_state=source,
+                    trigger="CAPTURE",
+                    target_state="CAPTURED",
+                    legal=False,
+                    source_rule=content,
+                )
+            )
+        if "retry" in lowered and "exceed" in lowered and "FAILED" in state_set:
+            target = "INITIATED" if "INITIATED" in state_set else (states[0] if states else "INITIATED")
+            transitions.append(
+                StateTransition(
+                    source_state="FAILED",
+                    trigger="retry beyond limit",
+                    target_state=target,
+                    legal=False,
+                    source_rule=content,
+                )
+            )
         if not lowered.startswith("illegal:"):
             continue
         if "capture before authentication" in lowered:
@@ -214,12 +443,13 @@ def _extract_illegal_transitions(requirement_text: str, states: list[str]) -> li
                 )
         elif "back to" in lowered:
             states_in_line = re.findall(STATE_PATTERN, content)
+            states_in_line = [state for state in states_in_line if state.lower() != "illegal"]
             if len(states_in_line) >= 2:
                 transitions.append(
                     StateTransition(
-                        source_state=_title_or_original(states_in_line[0]),
+                        source_state=_normalize_state_token(states_in_line[0], states),
                         trigger="ILLEGAL",
-                        target_state=_title_or_original(states_in_line[1]),
+                        target_state=_normalize_state_token(states_in_line[1], states),
                         legal=False,
                         source_rule=content,
                     )

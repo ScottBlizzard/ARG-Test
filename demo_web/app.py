@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 
 from src.input_loader import load_requirements_from_csv
 from src.pipeline import ARGTestPipeline
+from src.utils import extract_requirement_id
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -22,8 +23,12 @@ FIGURES_DIR = BASE_DIR / "report_assets" / "figures"
 FRONTEND_FOCUS_DIR = BASE_DIR / "report_assets" / "final_demo_package" / "frontend_focus"
 TRACKED_FORMAL_SNAPSHOT_DIR = FRONTEND_FOCUS_DIR / "formal_results_snapshot"
 TRACKED_FORMAL_REPORT_DIR = TRACKED_FORMAL_SNAPSHOT_DIR / "reports" / "test"
+TRACKED_FORMAL_FINAL_TEST_DIR = TRACKED_FORMAL_SNAPSHOT_DIR / "final_tests" / "test"
+TRACKED_FORMAL_STATE_MODEL_DIR = TRACKED_FORMAL_SNAPSHOT_DIR / "state_models" / "test"
 SAMPLE_CSV_PATH = BASE_DIR / "final_docs" / "execution_evidence" / "sample_requirement_batch.csv"
 WEB_RUNS_ROOT = BASE_DIR / ".local_runs" / "web_demo_sessions"
+REQUIREMENT_ROOT = BASE_DIR / "data" / "requirements"
+REQUIREMENT_MANIFEST_PATH = REQUIREMENT_ROOT / "manifest.json"
 DEFAULT_PROVIDER = "mock"
 DEFAULT_MODEL = "mock-arg-test"
 DEFAULT_CANDIDATES = 3
@@ -43,6 +48,14 @@ def _prefer_existing_path(*candidates: Path) -> Path:
 FORMAL_REPORT_DIR = _prefer_existing_path(
     TRACKED_FORMAL_REPORT_DIR,
     BASE_DIR / ".local_runs" / "formal_qwen_novpn" / "outputs" / "reports" / "test",
+)
+FORMAL_FINAL_TEST_DIR = _prefer_existing_path(
+    TRACKED_FORMAL_FINAL_TEST_DIR,
+    BASE_DIR / ".local_runs" / "formal_qwen_novpn" / "outputs" / "final_tests" / "test",
+)
+FORMAL_STATE_MODEL_DIR = _prefer_existing_path(
+    TRACKED_FORMAL_STATE_MODEL_DIR,
+    BASE_DIR / ".local_runs" / "formal_qwen_novpn" / "outputs" / "state_models" / "test",
 )
 REPEATABILITY_PATHS = {
     "Mock 3-seed": _prefer_existing_path(
@@ -83,6 +96,10 @@ class AnalyzeTextRequest(BaseModel):
 
 def _read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _normalize_requirement_text(value: str) -> str:
+    return "\n".join(line.rstrip() for line in value.replace("\ufeff", "").strip().splitlines())
 
 
 def _mean(values: list[float]) -> float:
@@ -151,6 +168,93 @@ def _load_run_payload(runtime_root: Path, split: str, requirement_id: str, summa
             "state_model_markdown": _relative(state_model_md_path) if state_model_md_path.exists() else None,
         },
     }
+
+
+def _formal_summary_item(requirement_id: str) -> dict[str, Any] | None:
+    main_path = FORMAL_REPORT_DIR / "run_main_summary.json"
+    if not main_path.exists():
+        return None
+    for item in _read_json(main_path):
+        if item.get("requirement_id") == requirement_id:
+            return item
+    return None
+
+
+def _catalog_text_matches(split: str, requirement_id: str, requirement_text: str) -> bool:
+    requirement_path = REQUIREMENT_ROOT / split / f"{requirement_id}.txt"
+    if not requirement_path.exists():
+        return False
+    expected = requirement_path.read_text(encoding="utf-8-sig")
+    return _normalize_requirement_text(expected) == _normalize_requirement_text(requirement_text)
+
+
+def _load_formal_replay_payload(split: str, requirement_id: str, requirement_text: str) -> dict[str, Any] | None:
+    if split != "test" or not _catalog_text_matches(split, requirement_id, requirement_text):
+        return None
+    summary = _formal_summary_item(requirement_id)
+    final_test_path = FORMAL_FINAL_TEST_DIR / f"{requirement_id}.json"
+    state_model_md_path = FORMAL_STATE_MODEL_DIR / f"{requirement_id}.md"
+    state_model_json_path = FORMAL_STATE_MODEL_DIR / f"{requirement_id}.json"
+    if not summary or not final_test_path.exists():
+        return None
+
+    replay_summary = dict(summary)
+    replay_summary["demo_mode"] = "frozen_formal_replay"
+    replay_summary["provider"] = DEFAULT_PROVIDER
+    replay_summary["model"] = DEFAULT_MODEL
+    diagnostics = list(replay_summary.get("diagnostics") or [])
+    diagnostics.insert(0, "demo_mode: frozen formal replay; coverage matches the official Formal Evidence dashboard")
+    replay_summary["diagnostics"] = diagnostics
+    if state_model_json_path.exists() and not replay_summary.get("state_model"):
+        replay_summary["state_model"] = _read_json(state_model_json_path)
+
+    return {
+        "summary": replay_summary,
+        "parsed_trace": _read_json(final_test_path),
+        "report_payload": replay_summary,
+        "state_model_markdown": state_model_md_path.read_text(encoding="utf-8") if state_model_md_path.exists() else None,
+        "replay_source": "frozen_formal_run",
+        "artifact_paths": {
+            "formal_report_source": _relative(FORMAL_REPORT_DIR / "run_main_summary.json"),
+            "final_test_json": _relative(final_test_path),
+            "state_model_markdown": _relative(state_model_md_path) if state_model_md_path.exists() else None,
+        },
+    }
+
+
+def _run_pipeline_payload(
+    *,
+    prefix: str,
+    provider: str,
+    model: str,
+    candidates: int,
+    api_mode: str,
+    seed: int | None,
+    temperature: float | None,
+    top_p: float | None,
+    requirement_text: str,
+    requirement_id: str | None,
+    split: str,
+) -> dict[str, Any]:
+    session_root = _build_session_root(prefix)
+    pipeline = _build_pipeline(
+        provider=provider,
+        model=model,
+        candidates=candidates,
+        api_mode=api_mode,
+        seed=seed,
+        temperature=temperature,
+        top_p=top_p,
+        output_root=session_root,
+    )
+    summary = pipeline.process_requirement_text(
+        requirement_text,
+        requirement_id=requirement_id,
+        split=split,
+        candidates=candidates,
+        export=True,
+    )
+    return _load_run_payload(pipeline.config.paths.runtime_root, summary["split"], summary["requirement_id"], summary)
 
 
 def _load_repeatability_snapshot(path: Path, label: str) -> dict[str, Any] | None:
@@ -271,6 +375,69 @@ def _build_formal_summary() -> dict[str, Any]:
     }
 
 
+def _build_demo_requirement_catalog() -> dict[str, Any]:
+    manifest_items = _read_json(REQUIREMENT_MANIFEST_PATH) if REQUIREMENT_MANIFEST_PATH.exists() else []
+    formal_items = _read_json(FORMAL_REPORT_DIR / "run_main_summary.json") if (FORMAL_REPORT_DIR / "run_main_summary.json").exists() else []
+    formal_by_id = {
+        item.get("requirement_id"): item
+        for item in formal_items
+        if item.get("requirement_id")
+    }
+    preferred_order = [
+        "pickup_station_contact_validation",
+        "warehouse_pickup_order_workflow",
+        "order_split_shipment_state_machine",
+        "return_exchange_approval_workflow",
+        "checkout_promo_stack_and_priority",
+        "coupon_discount_engine",
+    ]
+    order_rank = {requirement_id: index for index, requirement_id in enumerate(preferred_order)}
+    requirements: list[dict[str, Any]] = []
+
+    for item in manifest_items:
+        requirement_id = item.get("requirement_id")
+        split = item.get("split")
+        if split != "test" or not requirement_id:
+            continue
+        requirement_path = REQUIREMENT_ROOT / split / f"{requirement_id}.txt"
+        if not requirement_path.exists():
+            continue
+        formal_item = formal_by_id.get(requirement_id, {})
+        metrics = formal_item.get("metrics", {}) if isinstance(formal_item, dict) else {}
+        requirements.append(
+            {
+                "requirement_id": requirement_id,
+                "split": split,
+                "category": item.get("category") or formal_item.get("category"),
+                "recommended_techniques": item.get("recommended_techniques", []),
+                "requirement_text": requirement_path.read_text(encoding="utf-8-sig"),
+                "checker_score": formal_item.get("score"),
+                "overall_coverage": metrics.get("overall_coverage"),
+            }
+        )
+
+    requirements.sort(
+        key=lambda row: (
+            order_rank.get(row["requirement_id"], 100),
+            row.get("category") or "",
+            row["requirement_id"],
+        )
+    )
+    state_requirements = [
+        row
+        for row in requirements
+        if row.get("category") == "workflow_state"
+    ]
+    return {
+        "provider": DEFAULT_PROVIDER,
+        "model": DEFAULT_MODEL,
+        "seed": DEFAULT_SEED,
+        "candidates": DEFAULT_CANDIDATES,
+        "direct_requirements": requirements,
+        "state_requirements": state_requirements,
+    }
+
+
 @app.get("/")
 def serve_index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
@@ -299,10 +466,20 @@ def formal_summary() -> dict[str, Any]:
     return _build_formal_summary()
 
 
+@app.get("/api/demo-requirements")
+def demo_requirements() -> dict[str, Any]:
+    return _build_demo_requirement_catalog()
+
+
 @app.post("/api/analyze-text")
 def analyze_text(payload: AnalyzeTextRequest) -> dict[str, Any]:
-    session_root = _build_session_root("text")
-    pipeline = _build_pipeline(
+    resolved_id = extract_requirement_id(payload.requirement_text, payload.requirement_id or "adhoc_requirement")
+    replay_payload = _load_formal_replay_payload(payload.split, resolved_id, payload.requirement_text)
+    if payload.provider == DEFAULT_PROVIDER and replay_payload is not None:
+        return replay_payload
+
+    return _run_pipeline_payload(
+        prefix="text",
         provider=payload.provider,
         model=payload.model,
         candidates=payload.candidates,
@@ -310,16 +487,10 @@ def analyze_text(payload: AnalyzeTextRequest) -> dict[str, Any]:
         seed=payload.seed,
         temperature=payload.temperature,
         top_p=payload.top_p,
-        output_root=session_root,
-    )
-    summary = pipeline.process_requirement_text(
-        payload.requirement_text,
         requirement_id=payload.requirement_id,
+        requirement_text=payload.requirement_text,
         split=payload.split,
-        candidates=payload.candidates,
-        export=True,
     )
-    return _load_run_payload(pipeline.config.paths.runtime_root, summary["split"], summary["requirement_id"], summary)
 
 
 @app.post("/api/state-model")
@@ -390,6 +561,11 @@ async def analyze_csv(
     )
     rows: list[dict[str, Any]] = []
     for record in records:
+        resolved_id = extract_requirement_id(record.requirement_text, record.requirement_id)
+        replay_payload = _load_formal_replay_payload(record.split, resolved_id, record.requirement_text)
+        if provider == DEFAULT_PROVIDER and replay_payload is not None:
+            rows.append(replay_payload)
+            continue
         summary = pipeline.process_requirement_text(
             record.requirement_text,
             requirement_id=record.requirement_id,

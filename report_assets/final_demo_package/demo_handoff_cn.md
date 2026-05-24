@@ -1,127 +1,56 @@
 # Demo Handoff For Recorder
 
-## 1. 这次你要录的不是 PPT
+这份文件给负责录制 demo 的同学。当前推荐录制路径是 Web UI：`http://127.0.0.1:8000/`。旧命令行步骤只作为 fallback，不是主流程。
 
-你录的是“工具演示视频”，不是答辩 PPT，也不是报告朗读。
+## 1. 你要录的不是 PPT
 
-这个视频的目标只有一句话：
+你要录的是“工具演示视频”，不是照着 PPT 念，也不是报告朗读。视频目标很明确：
 
-`证明 ARG-Test 工具真的能运行，并且 final 项目的核心功能和最终证据都已经准备好了。`
+`证明 ARG-Test 工具可以稳定运行，并且 final 项目的核心功能、正式结果和可执行证据都已经准备好。`
 
-所以录制逻辑应该是：
+录制逻辑建议是：
 
-- 先跑工具
-- 再看输出
-- 最后展示正式结果和可执行证据
-
-不要把它录成：
-
-- 一边翻 PPT 一边念稿
-- 或者一边讲理论一边不展示运行过程
+- 先展示 Formal Evidence，锁定正式数字。
+- 再展示 Direct / CSV / State Model 三个交互入口。
+- 最后补充 executable evidence。
 
 ## 2. 你需要准备什么
 
-你只需要准备下面这些：
+- PowerShell 终端。
+- 浏览器打开 `http://127.0.0.1:8000/`。
+- 示例 CSV：`final_docs/execution_evidence/sample_requirement_batch.csv`。
+- 录制清单：`final_demo_recording_checklist_cn.md`。
+- 口播稿：`final_demo_script_cn.md` 或 `final_demo_script_en.md`。
 
-- 一个 PowerShell 终端
-- 一个能打开文件和图片的桌面环境
-- 跟着 `final_demo_script_cn.md` 或 `final_demo_script_en.md` 念
-- 按 `run_demo_commands.ps1` 跑命令
+不需要你现场改代码，不需要你自己重新设计讲法，也不要临时找文件路径。
 
-不需要你自己改代码。  
-不需要你自己想命令。  
-不需要你自己找展示文件。  
-这些我都已经在 package 里给你铺好了。
+## 3. 推荐操作顺序
 
-## 3. 你该按什么顺序做
+1. 在仓库根目录运行：
 
-### 第一步
+```powershell
+python -m uvicorn demo_web.app:app --host 127.0.0.1 --port 8000
+```
 
-先看：
+2. 打开 Web UI：`http://127.0.0.1:8000/`。
+3. 先看 `Formal Evidence`，展示 `Avg Overall Coverage = 61.5%`。
+4. 再看 `Direct Input`，选择 `pickup_station_contact_validation`，运行后指出 `Frozen formal replay`。
+5. 再看 `CSV Batch`，上传 sample CSV，展示 `Frozen replay`。
+6. 再看 `State Model`，选择 `warehouse_pickup_order_workflow`，展示 states 和 transitions。
+7. 结尾提到 `coupon_discount_engine` 的 executable evidence。
 
-- `final_demo_recording_checklist_cn.md`
+## 4. 最重要的几句话
 
-它告诉你：
+- `For stable interaction, we use mock mode in the demo.`
+- `Formal examples replay frozen formal results, so the displayed coverage matches the final evidence.`
+- `Ad hoc edited inputs are only for interaction demonstration, not final benchmark claims.`
+- `The system outputs not only test cases, but also risk metadata, state models, and structured exports.`
+- `The selected module is backed by executable black-box, white-box, and mutation evidence.`
 
-- 哪些文件提前打开
-- 哪些话不能说错
-- 如果时间不够该砍哪里
+## 5. 不要做的事
 
-### 第二步
-
-运行：
-
-- `run_demo_commands.ps1`
-
-这会自动完成三段演示：
-
-- direct text input
-- CSV batch input
-- state-model extraction
-
-### 第三步
-
-打开下面三个 live 输出：
-
-- `direct_text_demo_summary.json`
-- `csv_order_workflow.md`
-- `warehouse_pickup_order_workflow.md`
-
-你不用把所有内容念出来，只要指出关键点：
-
-- risk
-- state model
-- structured export
-
-### 第四步
-
-展示四张 final 图：
-
-- `final_result_scorecard.png`
-- `main_vs_baselines.png`
-- `reproducibility_stability_overview.png`
-- `coupon_module_evidence_scorecard.png`
-
-## 4. 录制时最重要的几句话
-
-这几句是你必须讲清楚的：
-
-1. `For stable live interaction, we use mock mode in the demo.`
-2. `The final project quality is represented by our frozen formal result bundle.`
-3. `The system outputs not only test cases, but also risk metadata, state models, and structured exports.`
-4. `The selected module is backed by executable black-box and white-box evidence.`
-
-## 5. 你千万别做的事
-
-- 不要临时切 live provider
-- 不要边录边找文件
-- 不要滚长 JSON 很久
-- 不要把某个 markdown 表从头念到尾
-- 不要自己临场编数字
-
-## 6. 如果现场卡壳怎么办
-
-如果命令已经跑完，但你不想再重复跑：
-
-- 直接打开 `.local_runs/final_demo_mock` 里的现成输出继续讲
-
-如果你讲英文不顺：
-
-- 用 `final_demo_script_cn.md` 讲中文也可以
-
-如果时间不够：
-
-- 砍掉 CSV 部分的一半
-- reproducibility 只保留一句结论
-
-## 7. 最后的判断标准
-
-你录完以后，自己检查这 5 件事：
-
-- 视频里有没有真实运行命令
-- 有没有展示 direct text / CSV / state-model 至少两种输入方式
-- 有没有展示 structured output
-- 有没有展示最终 baseline 比较图
-- 有没有展示 detailed executable evidence
-
-这 5 件事都有，这个 demo 就已经合格而且不差。
+- 不要切到 live provider。
+- 不要展示 `.env`、API key 或无关本地目录。
+- 不要长时间滚动 JSON 或 markdown 原文。
+- 不要把 ad hoc mock 输出说成正式实验结果。
+- 不要说 checker score 等于 correctness。

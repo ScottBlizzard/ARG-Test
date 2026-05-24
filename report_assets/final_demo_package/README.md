@@ -2,6 +2,8 @@
 
 This package is the recording-ready bundle for the final project video demonstration.
 
+Current primary demo path: use the Web UI at `http://127.0.0.1:8000/`. The older terminal scripts are retained as legacy archive/fallback material, not the recommended recording flow.
+
 If you are the teammate responsible for the web demo UI, use:
 
 - `frontend_focus/README.md`
@@ -17,7 +19,7 @@ Contents:
 - `final_demo_recording_checklist_cn.md`: recording checklist and operator notes
 - `demo_asset_map_cn.md`: exact files, figures, and output paths to open during recording
 - `demo_ui_handoff_cn.md`: frontend/backend scope and stability guide for the demo teammate
-- `run_demo_commands.ps1`: one-click demo command script for live terminal actions
+- `run_demo_commands.ps1`: legacy one-click terminal script kept for fallback/archive
 - `open_demo_assets.ps1`: open the key demo outputs and figures
 - `prepare_demo_workspace.ps1`: run the demo and open the assets in one go
 - `figures/`: copied figure assets used in the demo
@@ -28,9 +30,9 @@ Recommended use:
 2. Read `demo_handoff_cn.md`
 3. Read `demo_ui_handoff_cn.md` if you are polishing the web UI
 4. Read `final_demo_recording_checklist_cn.md`
-5. Run `prepare_demo_workspace.ps1`
-6. Follow `final_demo_script_cn.md` or `final_demo_script_en.md` while recording
-7. Use `demo_asset_map_cn.md` if you need to reopen assets manually
+5. Start the web backend and record the browser UI
+6. Use `prepare_demo_workspace.ps1` only if you need the legacy terminal fallback
+7. Follow `final_demo_recording_checklist_cn.md` while recording
 
 Recommended demo style:
 

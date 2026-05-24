@@ -1,0 +1,9 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,BVA/EP,Rule 2,Normal Session,"Discount: 0.00, Final Total: 40.00",Rule 2 Threshold (Below),High,Pending,"Coupon: SAVE10, Subtotal: 40.00, Member: Std, Items: Normal"
+T02,BVA/EP,Rule 2,Normal Session,"Discount: 5.00, Final Total: 45.00",Rule 2 Threshold (At),High,Pending,"Coupon: SAVE10, Subtotal: 50.00, Member: Std, Items: Normal"
+T03,Decision Table,Rule 3,Normal Session,"Discount: 20.00, Final Total: 80.00",Rule 3 Full Logic,Critical,Pending,"Coupon: SAVE20, Subtotal: 100.00, Member: Premium, Valid: Apr 2026"
+T04,Decision Table,Rule 6,Normal Session,"Discount: 0.00, Message: ""Cannot apply with sale items""",Rule 6 Conflict,Critical,Pending,"Coupon: SAVE20, Subtotal: 100.00, Member: Premium, Items: Sale"
+T05,Decision Table,Rule 4,Normal Session,"Shipping: 0.00, Applicable: True",Rule 4 Eligibility,Medium,Pending,"Coupon: FREESHIP, Subtotal: 30.00, Member: Any, Valid: Apr 2026"
+T06,EP,Rule 5,Normal Session,"Status: Invalid, Reason: ""Coupon Expired""",Rule 5 Temporal Validity,High,Pending,"Coupon: SAVE10, Expiry: Mar 2026, Current: Apr 2026"
+T07,Decision Table,Rule 1,Normal Session,"Error: ""Only one coupon allowed""",Rule 1 Exclusivity,Critical,Pending,Coupon Stack: SAVE10 + SAVE20
+T08,Boundary Analysis,Rule 7,Negative Prevention,"Discount: 0.00, Result: Non-Negative Total",Rule 7 Safety Math,High,Pending,"Coupon: SAVE10, Subtotal: 0.01"

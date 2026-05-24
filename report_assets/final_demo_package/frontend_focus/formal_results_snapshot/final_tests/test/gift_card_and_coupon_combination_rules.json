@@ -1,0 +1,97 @@
+{
+  "requirement_id": "gift_card_and_coupon_combination_rules",
+  "category": "business_rules",
+  "risk_assessment": {
+    "level": "High",
+    "score": 7.15,
+    "rule_count": 6,
+    "numeric_constraint_count": 0,
+    "technique_count": 2,
+    "drivers": [
+      "category=business_rules",
+      "6 explicit rule lines",
+      "decision-table logic",
+      "business impact keywords: balance, card, coupon, discount",
+      "strict rejection/constraint language: cannot, invalid",
+      "workflow cues: after, before, expired"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "decision combinations",
+      "invalid partitions",
+      "business-critical rules",
+      "negative/error handling",
+      "state-dependent behavior"
+    ]
+  },
+  "state_model": null,
+  "analysis": "The requirement involves logical combinations of payment methods (Gift Card, Coupon) and validation rules (counts, dates, balances). Key variables are Coupon Count (0, 1, ≥2), Coupon Status (Valid, Expired), Gift Card Status (Valid, Invalid), and Financial Boundaries (Final Payable ≥ 0, Order of Operations). We identify four equivalence partitions for coupon validity, three for gift card status, and two for payment balance results. Decision Table Testing is required to manage the mutually exclusive rules (e.g., multiple coupons vs single coupon) and ordered operations (Discount → Gift Card).",
+  "pattern": "Primary Technique: Decision Table Testing. This addresses the combinatorial logic of Rule 1 (Max 1 Coupon) and Rule 2 & 3 (Calculation Order).\nSecondary Technique: Equivalence Partitioning. Used to classify input codes into Valid/Invalid/Expired categories and amounts into Sufficient/Insufficient partitions.\nStrategy: Combine decision rules to derive specific test vectors that maximize branch coverage on the payment logic path.",
+  "steps": [
+    "1. Design Scenario 1 (Happy Path): Single valid coupon + valid gift card + partial balance coverage.",
+    "2. Design Scenario 2 (Rule Violation): Multiple coupons submitted to enforce rejection logic.",
+    "3. Design Scenario 3 (Boundary): Gift card balance exceeds calculated subtotal after discount (ensure payable is 0, not negative).",
+    "4. Design Scenario 4 (Invalid Input): Expired coupon code provided to verify date validation logic.",
+    "5. Design Scenario 5 (Invalid Input): Non-existent gift card code provided to verify code lookup logic."
+  ],
+  "verification": "- Verified against Step 1 to ensure Rules 2 and 3 calculate discount before gift card deduction correctly.\n- Verified against Step 2 to confirm Rule 1 rejects combinations exceeding one coupon.\n- Verified against Step 3 to validate Rule 5 ensuring the final payable never dips below zero currency units.\n- Confirmed Step 4 and Step 5 inputs trigger appropriate error messages per Rule 6 without processing the transaction.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "Decision Table",
+      "requirement_target": "Rules 2, 3",
+      "preconditions": "Cart = $100 ($80 sub, $10 ship, $10 tax); Coupon 10% off; GC=$50",
+      "expected_output": "Apply 10% to $80 sub ($72 rem). Add Ship/Tax ($92). Deduct GC ($42). Final: $42.",
+      "covered_item": "Math Order, Mix Allowed",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "1 Coupon (Valid), 1 GC (Valid)"
+    },
+    {
+      "test_id": "T02",
+      "technique": "Decision Table",
+      "requirement_target": "Rule 1",
+      "preconditions": "Cart = $100; Coupon Set A (Valid); Coupon Set B (Valid); GC=$50",
+      "expected_output": "Error: \"Cannot combine more than one coupon\". Transaction Rejected.",
+      "covered_item": "Max Coupon Limit",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "2 Coupons (Valid), 1 GC (Valid)"
+    },
+    {
+      "test_id": "T03",
+      "technique": "Boundary Value",
+      "requirement_target": "Rule 5",
+      "preconditions": "Cart = $50 (Sub $40, Ship $5, Tax $5); Coupon $45 value; GC=$100",
+      "expected_output": "Coupon reduces to $0. Total Due $0. GC Balance Unused ($55). Final Payable: $0.00",
+      "covered_item": "Non-negative Balance",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "1 Coupon (Valid), 1 GC (Valid)"
+    },
+    {
+      "test_id": "T04",
+      "technique": "Equivalence Part",
+      "requirement_target": "Rule 6, 4",
+      "preconditions": "Cart = $100; Coupon Set Expired (Exp Date < Apr 10 2026); GC=$50",
+      "expected_output": "Error: \"Coupon has expired\". Transaction Rejected. Coupon Logic Skipped.",
+      "covered_item": "Expiry Validation",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "1 Coupon (Expired), 1 GC (Valid)"
+    },
+    {
+      "test_id": "T05",
+      "technique": "Equivalence Part",
+      "requirement_target": "Rule 6",
+      "preconditions": "Cart = $100; Coupon (Valid); Gift Card (Invalid Code)",
+      "expected_output": "Error: \"Invalid gift card code\". Transaction Rejected. No Discount Applied.",
+      "covered_item": "Code Validation",
+      "priority": "Critical",
+      "checker_status": "pending",
+      "input": "1 Coupon (Valid), 1 GC (Invalid)"
+    }
+  ]
+}

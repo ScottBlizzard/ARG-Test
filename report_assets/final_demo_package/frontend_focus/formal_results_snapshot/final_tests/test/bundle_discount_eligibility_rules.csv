@@ -1,0 +1,7 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Boundary Value Analysis,"Rule 1, Rule 6","Cart contains 1 Laptop, 1 Mouse",Discount: 120,Rule 6 (Price Threshold),High,pending,"Laptop Price: 4000, Mouse: Eligible"
+T02,Boundary Value Analysis,"Rule 1, Rule 6","Cart contains 1 Laptop, 1 Mouse",Discount: 80,Rule 6 (Price Threshold),High,pending,"Laptop Price: 3999, Mouse: Eligible"
+T03,Decision Table Testing,"Rule 2, Rule 7","Cart contains 1 Console, 2 Games",Discount: 150,Rule 2 (Quantity Exact),Medium,pending,"Console: Eligible, Games: 2"
+T04,Decision Table Testing,"Rule 4, Rule 5",Cart qualifies for A (120) & B (150),Discount: 150 (Bundle B),Rule 5 (Max Discount),High,pending,"Laptop>=4k, Mouse=1, Console=1, Game=2"
+T05,Decision Table Testing,"Rule 3, Rule 8",Cart qualifies for Bundle A,Discount: None / Error,Rule 3 (Sale Items),High,pending,"Laptop, Mouse, Item Tag: Sale"
+T06,Decision Table Testing,Rule 8,Cart qualifies for Bundle A,Discount: None / Error,Rule 8 (No Stack),High,pending,"Laptop, Mouse, Coupon: BUNDLE-EXTRA"

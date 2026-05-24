@@ -1,0 +1,7 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+---,---,---,---,:---,:---,:---,:---,:---
+T01,STT,"Req 1, 2, 4, 5",Request created as SUBMITTED,State: REFUNDED,Happy Path,High,pending,Submit Request > Approve > Ship Mail
+T02,STT,Req 6,Request State: LABEL_ISSUED,Error: Illegal State Transition,Invalid Transition,High,pending,Click Action: Process Refund
+T03,STT,Req 8,Request State: LABEL_ISSUED,State: EXPIRED,Time Boundary,Medium,pending,Advance Time by 15 days
+T04,STT,Req 7,Request State: REJECTED,Error: Rejected State Immutable,Invalid Override,High,pending,Click Action: Approve
+T05,STT,"Req 4, 5","Request State: APPROVED, Type: Exchange, Method: InStore",State: EXCHANGED,Alternative Path,Medium,pending,Click Action: Receive Item

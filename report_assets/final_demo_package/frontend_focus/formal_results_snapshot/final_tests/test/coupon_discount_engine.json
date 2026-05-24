@@ -1,0 +1,134 @@
+{
+  "requirement_id": "coupon_discount_engine",
+  "category": "business_rules",
+  "risk_assessment": {
+    "level": "High",
+    "score": 8.85,
+    "rule_count": 7,
+    "numeric_constraint_count": 3,
+    "technique_count": 3,
+    "drivers": [
+      "category=business_rules",
+      "7 explicit rule lines",
+      "3 numeric constraints",
+      "decision-table logic",
+      "business impact keywords: coupon, discount, shipping",
+      "strict rejection/constraint language: at least, cannot, invalid, only one",
+      "workflow cues: expired"
+    ],
+    "recommended_focus": [
+      "core happy path",
+      "rule combination coverage",
+      "boundary coverage",
+      "decision combinations",
+      "invalid partitions",
+      "business-critical rules",
+      "negative/error handling",
+      "state-dependent behavior"
+    ]
+  },
+  "state_model": null,
+  "analysis": "The system handles coupon redemption with strict logical constraints involving monetary thresholds, user status, item types, and temporal validity. Key variables include Coupon Code, Order Subtotal, Customer Member Status, Presence of Sale Items, and Coupon Date Status. The complexity arises from conflicting conditions (e.g., SAVE20 vs. Sale Items) and exclusive application rules (one coupon per order). Black-box testing must cover valid paths, invalid paths, boundary conditions for pricing, and logical contradictions without accessing internal code.",
+  "pattern": "**Selected Technique:** Decision Table Testing.\n**Complementary Techniques:** Boundary Value Analysis (for subtotals) and Equivalence Partitioning (for coupon validity statuses).\n**Rationale:** Multiple conditional rules (Rule 2-6) dictate mutually exclusive outcomes based on specific combinations of inputs (subtotal ranges, membership, flags). Decision Tables allow us to map these distinct condition permutations to specific outputs (discount applied, rejection reason) ensuring full coverage of interaction logic. Numeric boundaries (30, 50, 100) will be tested using BVA within the decision table entries.",
+  "steps": [
+    "1. Initialize order with Subtotal 40.00, Standard Member, No Sale Items, Apply SAVE10.",
+    "2. Initialize order with Subtotal 50.00, Standard Member, No Sale Items, Apply SAVE10.",
+    "3. Initialize order with Subtotal 100.00, Premium Member, No Sale Items, Valid Date (April 2026), Apply SAVE20.",
+    "4. Initialize order with Subtotal 100.00, Premium Member, Has Sale Items, Valid Date, Apply SAVE20.",
+    "5. Initialize order with Subtotal 30.00, Any Member, No Sale Items, Valid Date, Apply FREESHIP.",
+    "6. Initialize order with Subtotal 200.00, Premium Member, Valid Date, Apply Expired Coupon (Expired March 2026).",
+    "7. Initialize order with Subtotal 100.00, Standard Member, No Sale Items, Apply SAVE10 then SAVE20."
+  ],
+  "verification": "- Verified logic in Step 2 aligns with Rule 2 threshold minimum (>=50).\n- Verified logic in Step 4 covers the exclusion condition defined in Rule 6 against Step 3 result.\n- Verified expiration validation in Step 6 references Rule 5 status checking mechanism.\n- Verified single coupon constraint in Step 7 references Rule 1 enforcement during input phase.",
+  "missing_sections": [],
+  "test_cases": [
+    {
+      "test_id": "T01",
+      "technique": "BVA/EP",
+      "requirement_target": "Rule 2",
+      "preconditions": "Normal Session",
+      "expected_output": "Discount: 0.00, Final Total: 40.00",
+      "covered_item": "Rule 2 Threshold (Below)",
+      "priority": "Critical",
+      "checker_status": "Pending",
+      "input": "Coupon: SAVE10, Subtotal: 40.00, Member: Std, Items: Normal"
+    },
+    {
+      "test_id": "T02",
+      "technique": "BVA/EP",
+      "requirement_target": "Rule 2",
+      "preconditions": "Normal Session",
+      "expected_output": "Discount: 5.00, Final Total: 45.00",
+      "covered_item": "Rule 2 Threshold (At)",
+      "priority": "Critical",
+      "checker_status": "Pending",
+      "input": "Coupon: SAVE10, Subtotal: 50.00, Member: Std, Items: Normal"
+    },
+    {
+      "test_id": "T03",
+      "technique": "Decision Table",
+      "requirement_target": "Rule 3",
+      "preconditions": "Normal Session",
+      "expected_output": "Discount: 20.00, Final Total: 80.00",
+      "covered_item": "Rule 3 Full Logic",
+      "priority": "Critical",
+      "checker_status": "Pending",
+      "input": "Coupon: SAVE20, Subtotal: 100.00, Member: Premium, Valid: Apr 2026"
+    },
+    {
+      "test_id": "T04",
+      "technique": "Decision Table",
+      "requirement_target": "Rule 6",
+      "preconditions": "Normal Session",
+      "expected_output": "Discount: 0.00, Message: \"Cannot apply with sale items\"",
+      "covered_item": "Rule 6 Conflict",
+      "priority": "Critical",
+      "checker_status": "Pending",
+      "input": "Coupon: SAVE20, Subtotal: 100.00, Member: Premium, Items: Sale"
+    },
+    {
+      "test_id": "T05",
+      "technique": "Decision Table",
+      "requirement_target": "Rule 4",
+      "preconditions": "Normal Session",
+      "expected_output": "Shipping: 0.00, Applicable: True",
+      "covered_item": "Rule 4 Eligibility",
+      "priority": "Critical",
+      "checker_status": "Pending",
+      "input": "Coupon: FREESHIP, Subtotal: 30.00, Member: Any, Valid: Apr 2026"
+    },
+    {
+      "test_id": "T06",
+      "technique": "EP",
+      "requirement_target": "Rule 5",
+      "preconditions": "Normal Session",
+      "expected_output": "Status: Invalid, Reason: \"Coupon Expired\"",
+      "covered_item": "Rule 5 Temporal Validity",
+      "priority": "Critical",
+      "checker_status": "Pending",
+      "input": "Coupon: SAVE10, Expiry: Mar 2026, Current: Apr 2026"
+    },
+    {
+      "test_id": "T07",
+      "technique": "Decision Table",
+      "requirement_target": "Rule 1",
+      "preconditions": "Normal Session",
+      "expected_output": "Error: \"Only one coupon allowed\"",
+      "covered_item": "Rule 1 Exclusivity",
+      "priority": "Critical",
+      "checker_status": "Pending",
+      "input": "Coupon Stack: SAVE10 + SAVE20"
+    },
+    {
+      "test_id": "T08",
+      "technique": "Boundary Analysis",
+      "requirement_target": "Rule 7",
+      "preconditions": "Negative Prevention",
+      "expected_output": "Discount: 0.00, Result: Non-Negative Total",
+      "covered_item": "Rule 7 Safety Math",
+      "priority": "Critical",
+      "checker_status": "Pending",
+      "input": "Coupon: SAVE10, Subtotal: 0.01"
+    }
+  ]
+}

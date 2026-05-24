@@ -1,0 +1,13 @@
+test_id,technique,requirement_target,preconditions,expected_output,covered_item,priority,checker_status,input
+T01,Boundary Value Analysis,Rule 1,Standard User,Success Transaction,Single Limit Min,High,pending,"Amt: 1, OTP: N/A, Daily: 0, Bal: 100"
+T02,Boundary Value Analysis,Rule 1,Standard User,Success Transaction,Single Limit Max,High,pending,"Amt: 5000, OTP: N/A, Daily: 0, Bal: 6000"
+T03,Boundary Value Analysis,Rule 1,Standard User,Rejected: Amount Limit Exceeded,Single Limit Over,High,pending,"Amt: 5001, OTP: Required, Daily: 0, Bal: 6000"
+T04,Boundary Value Analysis,Rule 2,Verified User,Success Transaction,Verified Limit Max,High,pending,"Amt: 20000, OTP: Y, Daily: 0, Bal: 21000"
+T05,Boundary Value Analysis,Rule 2,Verified User,Rejected: Amount Limit Exceeded,Verified Limit Over,High,pending,"Amt: 20001, OTP: Y, Daily: 0, Bal: 22000"
+T06,Decision Table Testing,Rule 4,Verified User,Rejected: Invalid OTP Required,OTP Logic Fail,Medium,pending,"Amt: 2500, OTP: Invalid, Daily: 0, Bal: 3000"
+T07,Decision Table Testing,Rule 4,Verified User,Success Transaction,OTP Logic Pass,Medium,pending,"Amt: 2500, OTP: Valid, Daily: 0, Bal: 3000"
+T08,Decision Table Testing,Rule 5,Any User,Rejected: Account Blacklisted,Fraud Detection,Critical,pending,"Amt: 1000, OTP: N/A, Daily: 0, Dest: Blacklisted"
+T09,Decision Table Testing,Rule 6,Any User,Rejected: Cannot Transfer to Self,Duplicate Source Check,Medium,pending,"Amt: 500, OTP: N/A, Daily: 0, Src=Dst"
+T10,Decision Table Testing,Rule 3,Verified User,Rejected: Daily Limit Exceeded,Cumulative Limit Fail,High,pending,"Amt: 10000, OTP: Y, Daily: 50001, Bal: 60000"
+T11,Decision Table Testing,Rule 3,Standard User,Rejected: Daily Limit Exceeded,Cumulative Limit Fail,High,pending,"Amt: 5000, OTP: Y, Daily: 10001, Bal: 20000"
+T12,Decision Table Testing,Rule 7,Any User,Rejected: Insufficient Funds,Balance Check,Critical,pending,"Amt: 1000, OTP: N/A, Daily: 0, Bal: 500"
