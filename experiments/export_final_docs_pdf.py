@@ -140,6 +140,15 @@ def build_styles() -> StyleSheet1:
     )
     styles.add(
         ParagraphStyle(
+            name="TableCellFinal",
+            parent=styles["BodyText"],
+            fontSize=8.4,
+            leading=10.5,
+            spaceAfter=0,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
             name="FooterFinal",
             parent=styles["BodyText"],
             fontSize=8.2,
@@ -177,7 +186,7 @@ def is_table_row(line: str) -> bool:
 
 def is_table_separator(line: str) -> bool:
     stripped = line.strip()
-    return stripped.startswith("|") and set(stripped.replace("|", "").replace(" ", "")) <= {"-"}
+    return stripped.startswith("|") and set(stripped.replace("|", "").replace(" ", "")) <= {"-", ":"}
 
 
 def split_table_row(line: str) -> list[str]:
@@ -300,7 +309,7 @@ def parse_markdown(path: Path, styles: StyleSheet1) -> list:
 def build_table(table_lines: list[str], styles: StyleSheet1) -> Table:
     rows = [split_table_row(line) for line in table_lines]
     paragraphs = [
-        [Paragraph(inline_to_para(cell), styles["BodyText"]) for cell in row]
+        [Paragraph(inline_to_para(cell), styles["TableCellFinal"]) for cell in row]
         for row in rows
     ]
     col_count = len(paragraphs[0])

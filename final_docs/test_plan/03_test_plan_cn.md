@@ -185,7 +185,7 @@ The reason for selecting `pytest` is that it directly matches the Python reposit
 Cost estimation uses person-days plus tool/runtime overhead rather than a vague description.
 
 | Work Item | Estimated Workload |
-| --- | ---: |
+| --- | --- |
 | Repository reorganization and baseline freeze | 1.0 person-day |
 | Final feature upgrade and verification | 2.0 to 3.0 person-days |
 | Risk analysis and test plan drafting | 1.0 to 1.5 person-days |
