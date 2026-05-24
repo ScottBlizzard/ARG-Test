@@ -9,3 +9,4 @@ __pycache__/
 .idea/
 .local_runs/
 .coverage
+web_demo/

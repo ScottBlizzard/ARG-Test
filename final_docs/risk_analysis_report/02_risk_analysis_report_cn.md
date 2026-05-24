@@ -54,7 +54,7 @@ Whenever the report, PPT, demo, or defense uses quantitative results, the team m
 - dataset split: `dev = 50`, `test = 16`
 - full pipeline: `avg checker score = 0.959`, `avg overall coverage = 0.615`, `avg test count = 7.312`
 - baselines: Rule-based `0.753 / 0.147 / 4.125`; Plain LLM `0.844 / 0.030 / 7.250`; Structured No Checker `0.841 / 0.538 / 6.312`
-- detailed executable evidence: `15 module tests passed`; `27 repo tests passed`; `100% statement coverage`; `100% branch coverage`; `4 / 4 mutants killed`
+- detailed executable evidence: `15 module tests passed`; `32 repo tests passed`; `100% statement coverage`; `100% branch coverage`; `4 / 4 mutants killed`
 
 These numbers are grounded in `report_assets/final_latex_report/main.tex`, `final_docs/execution_evidence/`, and the formal demo snapshot, and must not be replaced by mock outputs or legacy repository leftovers.
 
@@ -96,7 +96,7 @@ Figure 1 shows the current final-submission posture clearly. The high-priority r
 | `R7` | formal result source policy | If the team mixes legacy `outputs/reports/test` leftovers, mock screenshots, or exploratory runs, the authority of the final numbers will be weakened. | 4 | 3 | 4 | 48 | Medium | Controlled | Anchor the official wording to `.local_runs/formal_qwen_novpn`; use `report_assets/final_demo_package/frontend_focus/formal_results_snapshot/` and `report_assets/final_latex_report/` as repository mirrors; see `upgrade_pipeline_verification_summary.md` and `demo_web/app.py`. |
 | `R8` | demo / presentation interpretation | The demo uses `mock` for stable recording. If the explanation is weak, reviewers may misread it as the final live benchmark or as proof of full provider determinism. | 3 | 4 | 3 | 36 | Medium | Controlled | The demo script explicitly requires the wording “mock is for stable interaction, frozen formal result represents final quality”; see `report_assets/final_demo_package/demo_handoff_cn.md` and `final_demo_script_cn.md`. |
 | `R9` | `NFR 4.3.1` | If `.env`, token screenshots, or terminal history with secrets enter the submission package, that creates a low-frequency but embarrassing security issue. | 2 | 3 | 4 | 24 | Low | Controlled | Secrets are injected through environment variables; manifests do not record API keys; artifact and report directories have been secret-scanned; see `09_nfr_validation_report_cn.md` and `nfr_validation_summary.md`. |
-| `R10` | `NFR 4.4.1`, `NFR 4.4.2`, `NFR 4.4.3` | If the project does not present its modern stack, modular architecture, automated tests, and documentation assets as one coherent chain, its maintainability and technology choices may be undervalued. | 3 | 2 | 5 | 30 | Low | Controlled | Use the layered structure of `src/ / experiments/ / tests/ / final_docs/ / demo_web/`, the `27 passed` regression state, the architecture figure, the README, and the demo package together to support `NFR 4.4`. |
+| `R10` | `NFR 4.4.1`, `NFR 4.4.2`, `NFR 4.4.3` | If the project does not present its modern stack, modular architecture, automated tests, and documentation assets as one coherent chain, its maintainability and technology choices may be undervalued. | 3 | 2 | 5 | 30 | Low | Controlled | Use the layered structure of `src/ / experiments/ / tests/ / final_docs/ / demo_web/`, the `32 passed` regression state, the architecture figure, the README, and the demo package together to support `NFR 4.4`. |
 
 ## 6. High-Priority Risk Analysis
 
@@ -159,7 +159,7 @@ This boundary should not be hidden; it should be explained clearly:
 The supporting hard evidence is already strong:
 
 - `15 passed`
-- `27 passed`
+- `32 passed`
 - `100% statement coverage`
 - `100% branch coverage`
 - `4 / 4 mutants killed`
