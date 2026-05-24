@@ -1,208 +1,216 @@
 # Test Plan
 
-## 1. Project Scope
+## 1.Project Scope
 
-### 1.1 Background
+### 1.1Background
 
-`ARG-Test` is an AI-driven AutoTestDesign tool that converts natural-language requirements into auditable black-box test suites. The final project extends the middle-phase prototype into a submission-quality system by adding:
+`ARG-Test` is the implementation workspace for the requirement-driven `AutoTestDesign AI App`. It converts natural-language requirements into structured and auditable black-box test suites. This final course project implements and verifies the `AutoTestDesign AI App` according to the teacher-provided `Requirement_Specification.md`. Therefore, the system under test in this test plan is explicitly the `AutoTestDesign AI App`, not a generic framework, a testing idea, or a standalone sample execution module.
 
-- requirement structuring
-- risk analysis and prioritization
-- multi-technique black-box generation
-- state-model extraction and sequence planning
-- detailed executable evidence for one major module
-- non-functional validation
-- reproducibility and replay support
+The current deliverable is a prototype-level application interface built around the core pipeline. The system provides a lightweight Webdemo supported by FastAPI and keeps a stable CLI-centered workflow. Direct text input, CSV batch input, file input, the `state-model` command, and structured export together form the currently usable interface. This project does not claim to have delivered a fully polished standalone frontend product.
 
-### 1.2 Objectives
+This final project extends the midterm prototype into a submit-ready version. The extension is not merely the addition of isolated features. It connects requirement structuring, risk analysis and prioritization, multi-technique black-box test generation, state-model extraction, and sequence planning into an auditable pipeline. At the same time, the project adds detailed executable evidence for one major module and builds an evidence chain for non-functional verification, result reproduction, and archive replay to support the final submission.
 
-The objectives of the final project are:
+### 1.2Objectives
 
-- generate requirement-driven test cases in a structured, reviewable form
-- align the generated suites with classical testing techniques rather than free-form prompting only
-- provide risk-aware prioritization so that test effort can be focused
-- export reusable testing artifacts in standard formats
-- demonstrate one selected module with both black-box and white-box execution evidence
-- produce a submission package that is auditable and presentation-ready
+The objective of this final project is to generate requirement-driven test cases in a structured and reviewable form so that the outputs can align with classical test design techniques rather than relying only on free-form prompt generation. The system also needs to provide risk-aware priorities so that testing work can cover high-risk requirements first, and it needs to export test cases, test suites, risk information, and summary results as reusable standard artifacts. At the delivery level, this project uses one selected module to demonstrate both black-box and white-box execution evidence, ultimately forming a submission package that is auditable, presentable, and defensible in Q&A.
 
-### 1.3 In-Scope and Out-of-Scope Items
+### 1.3In-Scope and Out-of-Scope Content
 
-In scope:
+The scope of this plan covers ingesting requirements from files, direct text, and CSV batch input, followed by trace generation, parsing, checking, reranking, repair, risk scoring, and export. Interface verification covers the lightweight Webdemo and the CLI-based prototype workflow. The experimental scope includes comparison against rule-based, plain-LLM, and structured-no-checker baselines. In addition, `coupon_discount_engine` is used as the executable anchor for detailed design and execution verification, showing that generated or organized test designs can further be grounded in concrete execution evidence.
 
-- requirement ingestion from file, direct text, and CSV batch input
-- trace generation, parsing, checking, reranking, repair, risk scoring, and export
-- comparison against rule-based, plain-LLM, and structured-no-checker baselines
-- detailed design and execution for `coupon_discount_engine`
+This plan does not cover industrial-scale load testing, nor does it conduct large-scale UI usability research for external users. Because the current deliverable is positioned as a course project prototype, full frontend product polishing is outside the scope of this plan. At the same time, this plan does not promise full determinism at the upstream provider layer. Instead, it controls the consistency of formal evidence through frozen results and replay mechanisms.
 
-Out of scope:
+## 2.Test Items
 
-- industrial-scale load testing
-- UI-centered usability studies with external participants
-- full determinism claims at the upstream provider level
+### 2.1Functional Requirement Test Items
 
-## 2. Test Items
+The following table directly maps the formal `Requirement_Specification.md`. It is the main scope control table for functional testing of the `AutoTestDesign AI App`.
 
-### 2.1 Major Functional Features
+| Requirement ID | Test Item | Test Content | Main Repository Module/Evidence |
+| --- | --- | --- | --- |
+| `FR 1.0` | Requirement input and parsing | The App can ingest requirements from CSV, plain text files, and direct user input, then pass normalized content to the downstream pipeline. | `src/main.py`, `src/input_loader.py`, `run-text`, `batch-csv`, file batch processing runs |
+| `FR 1.1` | Requirement structuring | Raw requirement text can be parsed into testing-related structured elements, such as inputs, ranges, conditions, actions, and expected behavior. | `src/parser.py`, parsed trace artifacts, checker diagnostics |
+| `FR 2.0` | Risk analysis and priority ranking | Each imported requirement can receive risk information and priority signals usable for ordering testing work. | `src/risk.py`, final summaries, the `risk` field in exported artifacts |
+| `FR 3.0` | Black-box test design | The App can generate and check test cases for at least three ISO29119-4 black-box techniques: Equivalence Partitioning, Boundary Value Analysis, and Decision Table Testing. Workflow requirements also cover state transition cases. | `src/checker/`, `src/pipeline.py`, final test suites, checker score and coverage summaries |
+| `FR 4.0` | White-box test modeling/state behavior modeling | The App can extract state models, legal/illegal transitions, and sequence plans for coverage criteria such as all states and all transitions. | `src/state_model.py`, `state-model` command output, state-model demo artifacts |
+| `FR 5.0` | Test oracle generation | Generated cases include expected results or oracle-like expected behavior that can be reviewed and converted into executable checks. | `src/pipeline.py`, exported final tests, `coupon_discount_engine` execution evidence |
+| `FR 6.0` | Output and export | The App can export test artifacts, test suites, risk scores, summaries, and manifests in structured formats such as Markdown, JSON, and CSV. | `src/exporter.py`, `outputs/final_tests/`, `.local_runs/formal_qwen_novpn`, final document figures |
+| `FR 7.0` | Test suite optimization | The system can select better candidate outputs through reranking, repair, and priority control, so that the selected suite improves coverage and usability compared with weaker baselines. | `src/reranker.py`, `src/repair.py`, baseline comparison, ablation results |
 
-| Feature | Description | Primary repository modules |
-| --- | --- | --- |
-| Requirement input/parsing | Read raw requirements from file, direct text, or CSV and structure them for downstream testing logic. | `src/main.py`, `src/input_loader.py`, `src/parser.py` |
-| Structured trace generation | Generate five-part reasoning traces for requirement-driven test design. | `src/pipeline.py`, `src/llm_client.py` |
-| Technique-aware checking | Verify EP, BVA, decision-table, and state-transition obligations. | `src/checker/` |
-| Candidate selection and repair | Select the strongest candidate and repair missing obligations when needed. | `src/reranker.py`, `src/repair.py` |
-| Risk scoring and prioritization | Assign requirement-level risk scores and promote testing focus accordingly. | `src/risk.py` |
-| State-model extraction | Extract states, legal/illegal transitions, and sequence plans. | `src/state_model.py` |
-| Export and reporting | Export Markdown, JSON, CSV, manifests, and aggregate summaries. | `src/exporter.py`, `src/evaluation/metrics.py` |
+### 2.2Non-Functional Requirement Test Items
 
-### 2.2 Major Non-Functional Features
+| Requirement ID | Test Item | Test Interpretation in This Final Project | Main Evidence |
+| --- | --- | --- | --- |
+| `NFR 4.1.1` | Batch analysis performance | Measure processing behavior on the local/mock path and explain that live provider latency is not fully controlled by the local system. This project does not overclaim that strict indicators such as "100 requirements within 5 seconds" are fully satisfied under live LLM calls. | Mock run checks, formal workflow logs, final report interpretation |
+| `NFR 4.1.2` | Single-requirement case generation time | Check whether small demo inputs can complete within a practical time on the mock/local path, while treating live model latency as a provider-bound variable. | Demo runs, smoke runs, formal run metadata |
+| `NFR 4.2.1` | Interface usability | Verify the current prototype interface: a lightweight FastAPI Webdemo plus CLI workflow, covering direct text, CSV batch, file input, `state-model` generation, and output viewing. This is a prototype-level interface, not a polished frontend product. | `README.md`, `demo_web/app.py`, CLI commands, exported artifacts |
+| `NFR 4.2.2` | Traceability | Confirm that generated test cases can be traced back to original requirement IDs, design techniques, checker diagnostics, and exported summaries. | Markdown/JSON/CSV exports, manifests, final result package |
+| `NFR 4.3.1` | Security and data handling | Check that final artifacts do not leak API keys or other secrets, and treat requirement data as local course project artifacts. | Secret-leak scan, manifest review, `.env.example` separation |
+| `NFR 4.4.1` | Technology stack | Confirm that the implementation uses an open Python technology stack suitable for AI integration, testing scripts, and Web/CLI demos. | `src/`, `experiments/`, `demo_web/`, `pytest`, `coverage.py` |
+| `NFR 4.4.2` | Modularity | Confirm low coupling among input loading, provider access, parsing, checking, risk scoring, state modeling, reranking, repair, and export. | Repository module structure, regression tests |
+| `NFR 4.4.3` | Documentation | Confirm that the final package includes the architecture figure, README usage instructions, final documents, demo materials, and evidence paths. | `README.md`, architecture figure, `final_docs/`, `report_assets/final_demo_package/` |
 
-| Non-functional feature | Why it matters in this project | Main evidence |
-| --- | --- | --- |
-| Performance | The tool should finish small to medium requirement batches fast enough for practical coursework use. | Mock runtime checks |
-| Usability | The tool should support direct text, file, and CSV workflows and produce readable outputs. | CLI commands, `README`, exported artifacts |
-| Security | Result bundles and report assets must not leak secrets such as API keys. | Secret-leak scan and manifest review |
-| Maintainability | The repository should remain modular and testable after the final upgrade. | `src/`, `experiments/`, `tests/`, regression suite |
-| Reproducibility | Final results should be reconstructable even when the live provider is not perfectly deterministic. | repeatability summaries and replay support |
-
-### 2.3 System Architecture and Main Components
+### 2.3System Architecture and Main Components
 
 ![ARG-Test Architecture](figures/arg_test_architecture_final.png)
 
-The architecture is centered on a requirement-driven pipeline:
+The system architecture is centered on a requirement-driven pipeline:
 
-1. ingest a requirement from file, direct text, or CSV
-2. generate multiple structured traces
-3. parse and validate each candidate
-4. rerank or repair when necessary
-5. enrich the selected output with risk and state-model metadata
-6. export final suites and aggregate reports
+1. Ingest requirements from files, direct text, or CSV.
+2. Generate multiple structured traces.
+3. Parse and verify each candidate output.
+4. Rerank or repair when necessary.
+5. Add risk and state-model metadata to the selected output.
+6. Export the final test suite and aggregate reports.
 
-Main components:
+The main components are separated according to pipeline responsibilities. `src/main.py` serves as the CLI entry point and connects user commands to concrete workflows. `src/pipeline.py` orchestrates generation, checking, candidate selection, and result enhancement. `src/llm_client.py` encapsulates the model-call logic for interacting with the provider. `src/parser.py` parses structured traces into typed objects that downstream modules can process. Testing-theory constraints are mainly implemented by `src/checker/`. Candidate control is handled by `src/reranker.py` and `src/repair.py`. Risk-scoring logic is centralized in `src/risk.py`. State extraction and coverage-plan generation are centralized in `src/state_model.py`. Finally, `src/exporter.py` exports test artifacts, while `src/evaluation/metrics.py` handles coverage and checker-based evaluation.
 
-- `src/main.py`: CLI entry point
-- `src/pipeline.py`: orchestration of generation, checking, selection, and enrichment
-- `src/llm_client.py`: provider-facing model wrapper
-- `src/parser.py`: typed structured-trace parser
-- `src/checker/`: testing-theory contract checkers
-- `src/reranker.py` and `src/repair.py`: candidate control
-- `src/risk.py`: risk scoring logic
-- `src/state_model.py`: state extraction and coverage-plan generation
-- `src/exporter.py`: artifact export
-- `src/evaluation/metrics.py`: coverage and checker-based evaluation
+## 3.High-Level Test Strategy
 
-## 3. High-Level Test Strategy
+The overall strategy is risk-aware and evidence-driven. High-risk business rules and workflow requirements receive stronger testing attention in the main experiments and detailed execution module.
 
-The overall strategy is risk-aware and evidence-driven. High-risk business-rule and workflow requirements receive stronger attention in both the main experiments and the detailed execution module.
+### 3.1Test Suites
 
-### 3.1 Test Suites
-
-| Suite ID | Suite name | Objective | Main techniques | Evidence |
+| Suite ID | Suite Name | Objective | Main Technique | Evidence |
 | --- | --- | --- | --- | --- |
-| A | Functional pipeline validation | Verify end-to-end generation, parsing, checking, reranking, repair, and export. | integration testing, script-based system checks | `experiments/run_main.py`, report bundles |
-| B | Output quality evaluation | Measure checker score, overall coverage, duplicates, and diagnostics on frozen test requirements. | gold-spec-based evaluation | `outputs/reports/`, formal summary tables |
-| C | Baseline comparison | Compare the full pipeline with non-AI and weaker AI alternatives. | controlled comparative experiment | baseline summary and main comparison |
-| D | Ablation | Isolate the effect of checker-guided control over structure-only generation. | component ablation | main report Section 6.4 |
-| E | Detailed module execution | Demonstrate black-box plus white-box test design for a selected major module. | EP, BVA, decision-table, white-box branch testing | `coupon_discount_engine` evidence |
-| F | NFR and reproducibility validation | Check maintainability, usability, stability, and replayability of the final package. | regression tests, manifest checks, repeatability runs | `final_docs/execution_evidence/` |
+| A | Functional pipeline verification | Verify end-to-end generation, parsing, checking, reranking, repair, and export. | Integration testing, scripted system checks | `experiments/run_main.py`, report package |
+| B | Output quality evaluation | Measure checker score, overall coverage, duplicates, and diagnostics on frozen test requirements. `gold spec` is used only as a manually defined evaluation rubric. It is not trainingdata and is not fed into the real generation pipeline. | Gold-spec-based evaluation | `.local_runs/formal_qwen_novpn`, formal summary tables |
+| C | Baseline comparison | Compare the full pipeline against non-AI and weaker AI alternatives. | Controlled comparative experiment | Baseline summary and main comparison in `.local_runs/formal_qwen_novpn` |
+| D | Ablation experiment | Isolate the effect of checker-guided control relative to structure-only generation. | Component ablation | Ablation results in `.local_runs/formal_qwen_novpn` and main report Section6.4 |
+| E | Detailed module execution | Demonstrate black-box plus white-box test design for a selected major module. | EP, BVA, decision table, white-box branch testing | `coupon_discount_engine` evidence |
+| F | NFR and reproducibility verification | Check maintainability, usability, stability, and final package replay capability. | Regression testing, manifest checks, repeatability runs | `final_docs/execution_evidence/` |
 
-### 3.2 Technique Selection by Risk
+### 3.2Test Technique Selection by Risk
 
-| Requirement class / risk profile | Selected techniques | Rationale |
-| --- | --- | --- |
-| Input validation with thresholds | EP + BVA | Strong partition and boundary obligations |
-| Business-rule logic with interacting conditions | EP + decision table + targeted BVA | Good fit for rule combinations and monetary thresholds |
-| Workflow/state behavior | state-transition testing + negative transition checks | Necessary to cover legal and illegal transitions |
-| Selected detailed module | EP + BVA + decision table + white-box branch testing | Meets the final-project requirement for mixed black-box and white-box evidence |
-
-## 4. Test Levels and Objectives
-
-| Test level | Objective | Typical assets | Exit condition |
+| Requirement Category | Risk Profile | Selected Technique | Rationale |
 | --- | --- | --- | --- |
-| Unit | Validate helper functions, parser behavior, and checker logic. | targeted Python tests | no critical unit failure |
-| Integration | Verify that generated traces flow correctly through parsing, checking, repair, and export. | pipeline scripts and intermediate artifacts | full pipeline completes without structural failure |
-| System | Validate complete requirement-to-suite behavior on the frozen evaluation set. | formal report bundles | canonical summaries generated successfully |
-| Acceptance | Verify that the final package supports report, PPT, demo, and Q&A needs. | `final_docs`, figures, report assets, evidence summaries | all cited artifacts are present and traceable |
+| Input validation with thresholds | EP+BVA | Strengthen partition and boundary obligations. |
+| Business rules with multiple interacting conditions | EP+decision table+targeted BVA | Suitable for rule combinations and amount thresholds. |
+| Workflow/state behavior | State-transition testing+negative transition checks | Must cover both legal and illegal transitions. |
+| Selected detailed module | EP+BVA+decision table+white-box branch testing | Satisfies the final project requirement for both black-box and white-box evidence. |
 
-## 5. Schedule and Checklist
+### 3.3Interface Verification Strategy
 
-The project schedule is organized by deliverable-oriented phases rather than by isolated coding tasks.
+Because the formal requirements mention the application UI, this plan treats the interface as a necessary test item while accurately explaining the current deliverable form. The `AutoTestDesign AI App` provides a lightweight Webdemo for demonstration and a stable CLI-centered prototype interface for repeatable verification. The concrete interface paths cover direct requirement text input through `run-text`, CSV batch requirement import through `batch-csv`, file-based requirement batch processing, state-model generation through `state-model`, and structured artifact viewing through Markdown, JSON, CSV, and summary outputs.
 
-| Phase | Main work | Deliverables | Status expectation |
+The acceptance objective is not frontend visual polish. It is that the user can input requirements, run supported workflows, inspect generated test artifacts, and trace outputs to requirement IDs and design techniques.
+
+### 3.4Test Plan Evidence Chain and Traceability Path
+
+To align with the "rules to tests to results" evidence chain in the detailed test design and execution document, this test plan also uses a centralized traceability method to manage plan items, verification activities, and evidence sources. The test plan itself does not treat temporary mock outputs as formal experimental conclusions. Formal quality judgments preferentially reference `.local_runs/formal_qwen_novpn`, `final_docs/`, `final_docs/execution_evidence/`, and final demo/report materials. Because `.local_runs` is usually a local frozen runtime directory, if the submission package does not directly contain that directory, the formal result snapshot in `report_assets/final_demo_package/frontend_focus/formal_results_snapshot/` is used as the accessible archived evidence.
+
+| Plan Item | Corresponding Requirement or Risk | Verification Activity | Main Evidence Path |
 | --- | --- | --- | --- |
-| Phase 1 | freeze middle baseline, move final materials into the main repository, confirm canonical result roots | `final_docs/`, `frozen_middle/`, evidence source map | completed before final writing |
-| Phase 2 | close feature gaps such as risk scoring, CSV/direct input, state-model closure, and reproducibility controls | upgraded pipeline and manifests | completed before formal report writing |
-| Phase 3 | implement detailed module evidence, run coverage and mutation checks, and refresh figures | executable evidence and report-ready figures | completed before document finalization |
-| Phase 4 | finalize independent documents, align report/PPT wording, and prepare submission package | report PDF, test-plan PDF, risk-report PDF, detailed-execution PDF | pre-submission phase |
-| Phase 5 | final consistency review and presentation preparation | PPT PDF, demo video, compressed scripts | final delivery phase |
+| Input and parsing capability | `FR 1.0`, `FR 1.1` | Execute direct text, CSV batch, and file batch processing inputs, and check whether the structured trace is consistent with downstream pipeline input. | Commands in `README.md`, `src/input_loader.py`, `src/parser.py`, `.local_runs/formal_qwen_novpn` |
+| Risk scoring and priority | `FR 2.0`, risk-based testing objective | Check whether exported results include risk information and confirm that test suite ordering reflects high-risk requirements first. | `src/risk.py`, formal summaries, risk and coverage interpretation in the final report |
+| Black-box technique generation | `FR 3.0` | Check whether EP, BVA, Decision Table, and State Transition obligations are recognized by the checker and reflected in the final test suite. | `src/checker/`, `src/pipeline.py`, `.local_runs/formal_qwen_novpn`, checker score/coverage summaries |
+| State model and sequences | `FR 4.0` | Run the state-model path and check whether states, legal/illegal transitions, and coverage sequences are structurally exported. | `src/state_model.py`, state-model demo artifacts, `report_assets/final_demo_package/` |
+| Oracle and executable anchor | `FR 5.0` | Check whether generated cases contain expected results, and use `coupon_discount_engine` to show that test design can be converted into execution evidence. | `final_docs/execution_evidence/`, `reference_impl/`, `tests/` |
+| Output and export | `FR 6.0` | Check whether Markdown, JSON, CSV, manifests, and summaries can be traced to requirement IDs and technique types. | `src/exporter.py`, `outputs/final_tests/`, `.local_runs/formal_qwen_novpn` |
+| Optimization and comparison | `FR 7.0` | Compare full pipeline, rule-based, plain-LLM, and structured-no-checker, and explain the contribution of rerank/repair. | `.local_runs/formal_qwen_novpn`, baseline summary, ablation summary |
+| NFR boundary | `NFR 4.1~4.4` | Separately check performance boundaries, interface usability, security, modularity, and documentation evidence, avoiding overclaims about provider behavior and UI maturity. | `README.md`, `demo_web/`, `.env.example`, `final_docs/`, `report_assets/final_demo_package/` |
 
-Checklist before submission:
+The role of this evidence chain is to tighten the test plan from a chapter-style explanation into a traceability control document. Each test item can be mapped to a requirement or risk source, a verification activity in the plan, and an evidence location that can finally be cited in the report, demo, or Q&A.
 
-- all cited numbers come from canonical result roots
-- final report, risk report, test plan, and detailed execution document use the same terminology
-- detailed module evidence paths are reachable from the repository
-- PPT and demo use the same selected examples as the report
+## 4.Test Levels and Goals
 
-## 6. Organization Chart and Responsibilities
+| Test Level | Goal | Typical Assets | Exit Condition |
+| --- | --- | --- | --- |
+| Unit | Verify helper functions, parser behavior, and checker logic. | Targeted Python tests | No critical unit failure |
+| Integration | Verify that generated traces flow correctly through parsing, checking, repair, and export. | Pipeline scripts and intermediate artifacts | Full pipeline has no structural failure |
+| System | Verify complete requirement-to-suite behavior on the frozen evaluation set. | Formal report bundles | Canonical summaries are generated successfully |
+| Acceptance | Verify that the final package can support the report, PPT, demo, and Q&A. | `final_docs`, figures, report assets, evidence summaries | All referenced artifacts exist and are traceable |
 
-| Member | Student ID | Primary responsibility |
+## 5.Schedule and Checklist
+
+The project schedule is organized by deliverable phases rather than isolated coding tasks.
+
+| Phase | Main Work | Deliverable | Expected Status |
+| --- | --- | --- | --- |
+| Phase 1 | Freeze the midterm baseline, migrate final materials into the main repository, and confirm canonical result roots. | `final_docs/`, `frozen_middle/`, evidence source map | Completed before final writing |
+| Phase 2 | Close functional gaps such as risk scoring, CSV/direct input, state-model closure, and reproducibility controls. | Upgraded pipeline and manifests | Completed before formal report writing |
+| Phase 3 | Implement detailed module evidence, run coverage and mutation checks, and refresh figures. | Executable evidence and report-ready figures | Completed before document finalization |
+| Phase 4 | Complete standalone documents, align report/PPT wording, and prepare the submission package. | Report PDF, test-plan PDF, risk-report PDF, detailed-execution PDF | Pre-submission stage |
+| Phase 5 | Final consistency review and demo preparation. | PPT PDF, demo video, compressed scripts | Final delivery stage |
+
+The pre-submission consistency checklist focuses on evidence sources and narrative wording. All cited numbers should come from canonical result roots. The final report, risk report, test plan, and detailed execution document need to use the same terminology. Detailed module evidence paths must be reachable from the repository. Examples used in the PPT and demo should also stay consistent with the report, avoiding conflicts in evidence paths or project interpretation during final Q&A.
+
+## 6.Organization Structure and Responsibilities
+
+The organization structure in this test plan is not simply a personnel list. It describes the responsibility flow formed around testing activities for the `AutoTestDesign AI App`. The team leader is responsible for unifying the requirement source, pipeline, and evidence root. The report and presentation owner converts testing evidence into final documents and defense materials. The data, baseline, evaluation, and detailed execution support members respectively maintain input assets, controlled experiments, evaluation interpretation, and executable evidence.
+
+![Test Activity Organization](figures/test_plan_org_structure.png)
+
+```text
+Yi Xu / Team Leader and Integration Control
+├─ Pipeline control, formal result root, evidence consistency
+├─ Xiang Wang / Data assets and main experiment support
+│  └─ Requirement data, gold spec evaluation materials, main experiment input maintenance
+├─ Fengxuan Kang / Baseline and detailed execution support
+│  └─ Rule-based, plain-LLM, structured-no-checker comparison and module execution support
+├─ Yiwei Chen / Evaluation and verification materials
+│  └─ Coverage, ablation, generalization, and verification interpretation
+└─ Luowu Zhang / Report, PPT, and demo assets
+   └─ Final report, test plan, PPT, demo materials, and wording synchronization
+```
+
+| Member | Student ID | Main Responsibility |
 | --- | --- | --- |
-| Yi Xu | 2351441 | group leader; final integration, pipeline control, evidence consistency, final merge |
-| Luowu Zhang | 2352746 | final report editing, PPT production, presentation assets |
-| Xiang Wang | 2351039 | dataset maintenance and main experiment support |
-| Fengxuan Kang | 2350283 | baseline support and detailed module execution support |
-| Yiwei Chen | 2350217 | evaluation support, ablation/generalization support, validation materials |
+| Yi Xu | 2351441 | Team leader; final integration, pipeline control, evidence consistency, final merge |
+| Luowu Zhang | 2352746 | Final report editing, PPT production, demo assets |
+| Xiang Wang | 2351039 | Dataset maintenance and main experiment support |
+| Fengxuan Kang | 2350283 | Baseline support and detailed module execution support |
+| Yiwei Chen | 2350217 | Evaluation support, ablation/generalization support, verification materials |
 
-This organization is important for the final package because the submission is not only code. It also includes formal documents, evidence paths, and presentation assets that must remain consistent with each other.
+This organization structure is important to the final package because the submission is not only code. It also includes formal documents, evidence paths, and demo assets, all of which must stay mutually consistent.
 
-## 7. Testing Framework and Rationale
+## 7.Test Framework and Selection Rationale
 
-### 7.1 Primary Framework
+### 7.1Main Framework
 
-`pytest` is the primary execution framework for the detailed module and repository regression checks.
+`pytest` is the main execution framework for the detailed module and repository regression checks.
 
-Rationale:
+The reason for selecting `pytest` is that it directly matches the Python repository structure of this project, has low usage cost, and makes it easy to reproduce experiments and regression checks on other machines. It naturally integrates with `coverage` and supports selective execution by directory, file, or test marker. Therefore, it is suitable for carrying black-box cases, white-box cases, and repository-level regression tests at the same time.
 
-- it matches the Python-based repository directly
-- it is lightweight and easy to reproduce on another machine
-- it integrates naturally with `coverage`
-- it supports selective execution for black-box and white-box cases
+### 7.2Supporting Tool Chain
 
-### 7.2 Supporting Toolchain
-
-| Tool | Purpose |
+| Tool | Usage |
 | --- | --- |
-| `coverage.py` | statement and branch coverage collection |
-| repository scripts in `experiments/` | formal experiment orchestration, baselines, repeatability, and figure generation |
-| JSON/CSV/Markdown exports | structured outputs for inspection and downstream reuse |
+| `coverage.py` | Collect statement coverage and branch coverage. |
+| Repository scripts in `experiments/` | Orchestrate formal experiments, baselines, repeatability, and figure generation. |
+| JSON/CSV/Markdown export | Provide checkable and reusable structured outputs. |
 
-## 8. Cost Estimation
+## 8.Cost Estimation
 
-The cost estimate is intentionally presented as person-days plus tool/runtime overhead rather than vague prose.
+Cost estimation uses person-days plus tool/runtime overhead rather than a vague description.
 
-| Work item | Estimated effort |
+| Work Item | Estimated Workload |
 | --- | ---: |
-| repository restructuring and baseline freezing | 1.0 person-day |
-| final feature upgrades and verification | 2.0 to 3.0 person-days |
-| risk analysis and test plan authoring | 1.0 to 1.5 person-days |
-| detailed module implementation and execution | 2.0 person-days |
-| figure generation, report polishing, and package consistency review | 1.5 to 2.0 person-days |
+| Repository reorganization and baseline freeze | 1.0 person-day |
+| Final feature upgrade and verification | 2.0 to 3.0 person-days |
+| Risk analysis and test plan drafting | 1.0 to 1.5 person-days |
+| Detailed module implementation and execution | 2.0 person-days |
+| Figure generation, report polishing, and package consistency review | 1.5 to 2.0 person-days |
 | PPT, demo, and final packaging | 1.0 to 1.5 person-days |
 
-Estimated total:
+Based on the work items above, the overall workload is estimated at `8.5 to 11.0 person-days`. API and runtime costs are expected to be moderate, mainly controlled by freezing formal results, reusing generated artifacts, and using replay-based verification.
 
-- `8.5 to 11.0 person-days`
-- moderate API/runtime cost, bounded by frozen results and replay-oriented reuse
+From the perspective of using the `AutoTestDesign AI App` for testing activities, cost savings mainly come from automation in test design, risk ordering, formatted export, and result summarization rather than the complete removal of human review. Human work is still needed to confirm whether requirement interpretation is reasonable, inspect key boundaries and business combinations, prepare defense materials, and maintain formal evidence paths.
 
-## 9. Exit Criteria
+| Activity | Main Cost in Manual Testing | Cost Change After Using AutoTestDesign |
+| --- | --- | --- |
+| Requirement decomposition and test item identification | Requires manual reading of each requirement and extraction of inputs, conditions, boundaries, and expected behavior. State or combination rules are easy to miss. | Parser, structured trace, and checker help form candidate test items. Humans mainly review and correct them, reducing design preparation time. |
+| Black-box technique application | EP, BVA, Decision Table, and State Transition need to be manually applied, creating much repetitive work. | The tool automatically generates and checks technique obligations. Humans focus on confirming high-risk requirements and exceptional cases, reducing mechanical design cost. |
+| Risk ordering | Requires manual risk estimation and maintenance of a priority table. | `src/risk.py` and exported results provide a unified risk field. Humans handle interpretation and final confirmation. |
+| Export and traceability | Manually maintaining Markdown, JSON, CSV, and summaries can easily cause path or ID inconsistencies. | `src/exporter.py` exports artifacts consistently, making requirement IDs, technique types, and risk information easier to trace. |
+| Result reproduction and defense preparation | Manually reproducing experiments and finding evidence paths is time-consuming. | Evidence sources are fixed through `.local_runs/formal_qwen_novpn`, `final_docs/`, and the demo package, reducing final integration cost. |
 
-The test plan is considered satisfied when:
+Therefore, the cost estimate of this project is not "AI replaces all testers". It is "the tool reduces repetitive test design and artifact organization cost, while humans remain responsible for requirement interpretation, evidence review, and defense explanation". This is also consistent with the positioning of the course project: verifying that the `AutoTestDesign AI App` can make the requirement-driven test design process more structured and more traceable, rather than claiming complete automation of real industrial testing.
 
-- the canonical formal result bundle is fixed and fully traceable
-- the final report, risk report, test plan, and detailed execution document are all complete
-- the selected major module has both black-box and white-box execution evidence
-- NFR and reproducibility evidence are present
-- the final package is presentation-ready and can support Q&A without path confusion
+## 9.Exit Criteria
 
-## 10. Conclusion
+When the canonical formal result bundle has been fixed and is fully traceable, and when the final report, risk report, test plan, and detailed execution document have all been completed, this test plan reaches the basic delivery condition. On this basis, the selected major module also needs to have black-box and white-box execution evidence, and NFR and reproducibility evidence must be locatable and explainable. The final submission package should support the demo and Q&A, and should not contain confusion about result sources, file paths, or the interpretation of the system under test.
 
-This test plan is stronger than a minimal coursework plan because it is tied to concrete repository assets, formal evidence roots, named responsibilities, and explicit exit criteria. It therefore functions not only as a planning document, but also as a control document for keeping the final submission coherent.
+## 10.Conclusion
+
+This test plan is not a minimal course description. It is a control document bound to concrete repository assets, formal evidence roots, clear responsibilities, and exit criteria. It explains how to test the `AutoTestDesign AI App` and also ensures that the final deliverables stay consistent in requirement source, experiment wording, evidence paths, and defense explanation.
