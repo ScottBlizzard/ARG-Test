@@ -29,20 +29,43 @@ function num(value) {
   return Number(value).toFixed(3);
 }
 
+function titleCase(value) {
+  return String(value || "n/a")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function activateTab(panelId) {
+  document.querySelectorAll(".nav-tab").forEach((button) => {
+    button.classList.toggle("active", button.dataset.tabTarget === panelId);
+  });
+  document.querySelectorAll(".tab-panel").forEach((panel) => {
+    panel.classList.toggle("active", panel.id === panelId);
+  });
+}
+
+document.querySelectorAll(".nav-tab").forEach((button) => {
+  button.addEventListener("click", () => activateTab(button.dataset.tabTarget));
+});
+
 function setStatus(id, message) {
   document.getElementById(id).textContent = message;
 }
 
-function renderMetricGrid(items) {
+function renderMetricGrid(items, primaryIndex = -1) {
   return `
     <div class="metric-grid">
-      ${items.map((item) => `
-        <div class="metric-card">
+      ${items.map((item, index) => {
+        const rawValue = String(item.value ?? "");
+        const denseValue = rawValue.length > 18 || rawValue.includes("\\") || rawValue.includes("/");
+        return `
+        <div class="metric-card ${index === primaryIndex ? "primary" : ""} ${denseValue ? "dense" : ""}">
           <span class="metric-label">${escapeHtml(item.label)}</span>
           <strong class="metric-value">${escapeHtml(item.value)}</strong>
           <small class="metric-footnote">${escapeHtml(item.note || "")}</small>
         </div>
-      `).join("")}
+      `;
+      }).join("")}
     </div>
   `;
 }
@@ -72,50 +95,40 @@ function renderRiskBlock(risk) {
   `;
 }
 
-function renderTestCaseTable(testCases) {
+function renderTestCases(testCases) {
   if (!testCases || !testCases.length) {
     return "";
   }
   return `
     <div class="table-card">
       <h3>Generated Test Cases</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Test ID</th>
-              <th>Technique</th>
-              <th>Input</th>
-              <th>Expected Output</th>
-              <th>Priority</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${testCases.map((item) => `
-              <tr>
-                <td>${escapeHtml(item.test_id)}</td>
-                <td>${escapeHtml(item.technique)}</td>
-                <td>${escapeHtml(item.input)}</td>
-                <td>${escapeHtml(item.expected_output)}</td>
-                <td>${escapeHtml(item.priority || "")}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
+      <div class="case-grid">
+        ${testCases.map((item) => `
+          <article class="case-card">
+            <div class="case-meta">
+              <span class="chip">${escapeHtml(item.test_id)}</span>
+              <span class="chip">${escapeHtml(item.technique)}</span>
+              ${item.priority ? `<span class="chip signal">${escapeHtml(item.priority)}</span>` : ""}
+            </div>
+            <p><strong>Input:</strong> ${escapeHtml(item.input)}</p>
+            <p><strong>Expected:</strong> ${escapeHtml(item.expected_output)}</p>
+          </article>
+        `).join("")}
       </div>
     </div>
   `;
 }
 
 function renderArtifactPaths(paths) {
+  const entries = Object.entries(paths || {}).filter(([, value]) => value);
+  if (!entries.length) {
+    return "";
+  }
   return `
     <div class="panel-card">
       <h3>Artifact Paths</h3>
       <ul class="artifact-list">
-        ${Object.entries(paths || {})
-          .filter(([, value]) => value)
-          .map(([key, value]) => `<li><strong>${escapeHtml(key)}:</strong> <code>${escapeHtml(value)}</code></li>`)
-          .join("")}
+        ${entries.map(([key, value]) => `<li><strong>${escapeHtml(key)}:</strong> <code>${escapeHtml(value)}</code></li>`).join("")}
       </ul>
     </div>
   `;
@@ -127,19 +140,43 @@ function renderDirectResult(payload) {
   const metrics = summary.metrics || {};
   const goldSpecFound = Boolean(metrics.gold_spec_found);
   const categoryLabel = summary.category || (summary.split === "adhoc" ? "adhoc demo input" : "dataset category unavailable");
+  textResult.classList.remove("empty-state");
   textResult.innerHTML = `
     ${renderMetricGrid([
       { label: "Checker Score", value: num(summary.score), note: `Category: ${categoryLabel}` },
-      { label: "Overall Coverage", value: goldSpecFound ? pct(metrics.overall_coverage) : "N/A", note: goldSpecFound ? `${metrics.test_count || 0} test cases` : "No gold spec for this live input. Use the Formal Evidence Dashboard for official coverage." },
+      { label: "Overall Coverage", value: goldSpecFound ? pct(metrics.overall_coverage) : "N/A", note: goldSpecFound ? `${metrics.test_count || 0} test cases` : "No gold spec for this live input" },
       { label: "Selected Candidate", value: summary.candidate_index || "n/a", note: summary.repaired ? "Repaired version accepted" : "Original candidate kept" },
-    ])}
+      { label: "Requirement", value: summary.requirement_id || "n/a", note: summary.split || "n/a" },
+    ], 0)}
     ${renderRiskBlock(summary.risk_assessment)}
     <div class="panel-card">
       <h3>Diagnostics</h3>
       <ul class="plain-list">${(summary.diagnostics || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
     </div>
-    ${renderTestCaseTable(parsed.test_cases || [])}
+    ${renderTestCases(parsed.test_cases || [])}
     ${renderArtifactPaths(payload.artifact_paths || {})}
+  `;
+}
+
+function renderTransitionTable(title, rows) {
+  return `
+    <div class="table-card">
+      <h3>${escapeHtml(title)}</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Source</th><th>Trigger</th><th>Target</th></tr></thead>
+          <tbody>
+            ${(rows || []).map((item) => `
+              <tr>
+                <td>${escapeHtml(item.source_state)}</td>
+                <td>${escapeHtml(item.trigger)}</td>
+                <td>${escapeHtml(item.target_state)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
   `;
 }
 
@@ -149,36 +186,18 @@ function renderStateModel(payload) {
   const legalTransitions = stateModel.legal_transitions || [];
   const illegalTransitions = stateModel.illegal_transitions || [];
   const coveragePlans = stateModel.coverage_plans || [];
+  stateResult.classList.remove("empty-state");
   stateResult.innerHTML = `
     ${renderMetricGrid([
       { label: "States", value: (stateModel.states || []).length, note: (stateModel.states || []).join(", ") || "n/a" },
       { label: "Legal Transitions", value: legalTransitions.length, note: "Derived from requirement rules" },
-      { label: "Illegal Transitions", value: illegalTransitions.length, note: "Useful for negative workflow tests" },
-    ])}
+      { label: "Illegal Transitions", value: illegalTransitions.length, note: "Negative workflow tests" },
+      { label: "Coverage Plans", value: coveragePlans.length, note: "All-states / all-transitions" },
+    ], 0)}
     ${renderRiskBlock(summary.risk_assessment)}
     <div class="two-column">
-      <div class="table-card">
-        <h3>Legal Transitions</h3>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Source</th><th>Trigger</th><th>Target</th></tr></thead>
-            <tbody>
-              ${legalTransitions.map((item) => `<tr><td>${escapeHtml(item.source_state)}</td><td>${escapeHtml(item.trigger)}</td><td>${escapeHtml(item.target_state)}</td></tr>`).join("")}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="table-card">
-        <h3>Illegal Transitions</h3>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Source</th><th>Trigger</th><th>Target</th></tr></thead>
-            <tbody>
-              ${illegalTransitions.map((item) => `<tr><td>${escapeHtml(item.source_state)}</td><td>${escapeHtml(item.trigger)}</td><td>${escapeHtml(item.target_state)}</td></tr>`).join("")}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      ${renderTransitionTable("Legal Transitions", legalTransitions)}
+      ${renderTransitionTable("Illegal Transitions", illegalTransitions)}
     </div>
     <div class="result-list">
       ${coveragePlans.map((plan) => `
@@ -194,11 +213,12 @@ function renderStateModel(payload) {
 
 function renderCsvBatch(payload) {
   const records = payload.records || [];
+  csvResult.classList.remove("empty-state");
   csvResult.innerHTML = `
     ${renderMetricGrid([
       { label: "Batch Size", value: payload.batch_size || 0, note: "Requirements processed from CSV upload" },
       { label: "Artifact Root", value: payload.artifact_root || "n/a", note: payload.uploaded_file || "" },
-    ])}
+    ], 0)}
     <div class="result-list">
       ${records.map((record) => {
         const summary = record.summary || {};
@@ -207,13 +227,13 @@ function renderCsvBatch(payload) {
         return `
           <div class="result-card">
             <h3>${escapeHtml(summary.requirement_id || "unknown requirement")}</h3>
-            <p>
-              Category: <strong>${escapeHtml(summary.category || "n/a")}</strong> |
-              Checker: <strong>${escapeHtml(num(summary.score))}</strong> |
-              Coverage: <strong>${escapeHtml(goldSpecFound ? pct(metrics.overall_coverage) : "N/A")}</strong> |
-              Risk: <strong>${escapeHtml((summary.risk_assessment || {}).level || "n/a")}</strong>
-            </p>
-            ${goldSpecFound ? "" : "<p>This row has no gold spec. Official coverage should be interpreted from the frozen dashboard, not from an adhoc live input.</p>"}
+            <div class="chip-row">
+              <span class="chip">${escapeHtml(summary.category || "n/a")}</span>
+              <span class="chip">Checker ${escapeHtml(num(summary.score))}</span>
+              <span class="chip">${escapeHtml(goldSpecFound ? pct(metrics.overall_coverage) : "N/A coverage")}</span>
+              <span class="chip signal">Risk ${(escapeHtml((summary.risk_assessment || {}).level || "n/a"))}</span>
+            </div>
+            ${goldSpecFound ? "" : "<p>This row has no gold spec. Official coverage should be interpreted from the frozen dashboard, not from an ad hoc live input.</p>"}
           </div>
         `;
       }).join("")}
@@ -221,70 +241,77 @@ function renderCsvBatch(payload) {
   `;
 }
 
+function renderSmallTable(title, headers, rows) {
+  return `
+    <div class="table-card">
+      <h3>${escapeHtml(title)}</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead>
+          <tbody>${rows.join("")}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
 function renderFormalEvidence(payload) {
+  const official = payload.official_run || {};
+  const baselineRows = Object.entries(payload.baseline_averages || {}).map(([name, value]) => `
+    <tr>
+      <td>${escapeHtml(titleCase(name))}</td>
+      <td>${escapeHtml(num(value.avg_checker_score))}</td>
+      <td>${escapeHtml(pct(value.avg_overall_coverage))}</td>
+      <td>${escapeHtml(num(value.avg_test_count))}</td>
+    </tr>
+  `);
+  const categoryRows = (payload.generalization || []).map((row) => `
+    <tr>
+      <td>${escapeHtml(row.category)}</td>
+      <td>${escapeHtml(row.requirement_count)}</td>
+      <td>${escapeHtml(num(row.avg_checker_score))}</td>
+      <td>${escapeHtml(pct(row.avg_overall_coverage))}</td>
+    </tr>
+  `);
+  const reproducibilityRows = (payload.reproducibility || []).map((row) => `
+    <tr>
+      <td>${escapeHtml(row.label)}</td>
+      <td>${escapeHtml(pct(row.stable_rate))}</td>
+      <td>${escapeHtml(num(row.avg_max_score_delta))}</td>
+      <td>${escapeHtml(num(row.avg_max_coverage_delta))}</td>
+    </tr>
+  `);
+
+  formalSummary.classList.remove("loading-block");
   formalSummary.innerHTML = `
-    <div class="panel-card">
-      <h3>Tracked Formal Data Source</h3>
-      <p><code>${escapeHtml(payload.formal_report_source || "n/a")}</code></p>
+    <div class="dashboard-grid">
+      <div class="panel-card">
+        <h3>Tracked Formal Data Source</h3>
+        <p><code>${escapeHtml(payload.formal_report_source || "n/a")}</code></p>
+      </div>
+      ${renderMetricGrid([
+        { label: "Official Test Requirements", value: official.requirement_count, note: "Frozen held-out split" },
+        { label: "Avg Checker Score", value: num(official.avg_checker_score), note: "Main pipeline" },
+        { label: "Avg Overall Coverage", value: pct(official.avg_overall_coverage), note: "Against gold specs" },
+        { label: "Avg Test Count", value: num(official.avg_test_count), note: `${official.high_risk_count} high-risk requirements` },
+      ], 2)}
     </div>
-    ${renderMetricGrid([
-      { label: "Official Test Requirements", value: payload.official_run.requirement_count, note: "Frozen held-out split" },
-      { label: "Avg Checker Score", value: num(payload.official_run.avg_checker_score), note: "Main pipeline" },
-      { label: "Avg Overall Coverage", value: pct(payload.official_run.avg_overall_coverage), note: "Against gold specs" },
-      { label: "Avg Test Count", value: num(payload.official_run.avg_test_count), note: `${payload.official_run.high_risk_count} high-risk requirements` },
-    ])}
-    <div class="compact-grid">
-      ${Object.entries(payload.baseline_averages || {}).map(([name, value]) => `
-        <div class="panel-card">
-          <h3>${escapeHtml(name)}</h3>
-          <p>Checker: <strong>${escapeHtml(num(value.avg_checker_score))}</strong></p>
-          <p>Coverage: <strong>${escapeHtml(pct(value.avg_overall_coverage))}</strong></p>
-          <p>Avg tests: <strong>${escapeHtml(num(value.avg_test_count))}</strong></p>
-        </div>
-      `).join("")}
-    </div>
+
     <div class="two-column">
-      <div class="table-card">
-        <h3>Category Generalization</h3>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Category</th><th>Count</th><th>Checker</th><th>Coverage</th></tr></thead>
-            <tbody>
-              ${(payload.generalization || []).map((row) => `
-                <tr>
-                  <td>${escapeHtml(row.category)}</td>
-                  <td>${escapeHtml(row.requirement_count)}</td>
-                  <td>${escapeHtml(num(row.avg_checker_score))}</td>
-                  <td>${escapeHtml(pct(row.avg_overall_coverage))}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="table-card">
-        <h3>Reproducibility Snapshot</h3>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Run</th><th>Stable Rate</th><th>Score Delta</th><th>Coverage Delta</th></tr></thead>
-            <tbody>
-              ${(payload.reproducibility || []).map((row) => `
-                <tr>
-                  <td>${escapeHtml(row.label)}</td>
-                  <td>${escapeHtml(pct(row.stable_rate))}</td>
-                  <td>${escapeHtml(num(row.avg_max_score_delta))}</td>
-                  <td>${escapeHtml(num(row.avg_max_coverage_delta))}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
+      ${renderSmallTable("Baselines", ["Method", "Checker", "Coverage", "Tests"], baselineRows)}
+      ${renderSmallTable("Category Generalization", ["Category", "Count", "Checker", "Coverage"], categoryRows)}
+    </div>
+
+    <div class="two-column">
+      ${renderSmallTable("Reproducibility Snapshot", ["Run", "Stable Rate", "Score Delta", "Coverage Delta"], reproducibilityRows)}
+      <div class="panel-card">
+        <h3>Recommended Cases for PPT and Demo</h3>
+        <div class="chip-row">
+          ${(payload.recommended_cases || []).map((row) => `<span class="chip">${escapeHtml(row.requirement_id)} - ${escapeHtml(row.category)} - ${escapeHtml(pct(row.overall_coverage))}</span>`).join("")}
         </div>
       </div>
     </div>
-    <div class="panel-card">
-      <h3>Recommended Cases for PPT and Demo</h3>
-      <div class="chip-row">${(payload.recommended_cases || []).map((row) => `<span class="chip">${escapeHtml(row.requirement_id)} · ${escapeHtml(row.category)} · ${escapeHtml(pct(row.overall_coverage))}</span>`).join("")}</div>
-    </div>
+
     <div class="figure-grid">
       ${(payload.figure_gallery || []).map((figure) => `
         <div class="figure-card">
@@ -312,7 +339,8 @@ async function postJson(url, body) {
 
 async function runDirectAnalysis() {
   setStatus("text-status", "Running...");
-  textResult.innerHTML = "";
+  textResult.classList.remove("empty-state");
+  textResult.innerHTML = `<div class="loading-block">Generating structured test suite...</div>`;
   try {
     const payload = await postJson("/api/analyze-text", {
       requirement_id: document.getElementById("text-requirement-id").value,
@@ -333,7 +361,8 @@ async function runDirectAnalysis() {
 
 async function runStateModelAnalysis() {
   setStatus("state-status", "Running...");
-  stateResult.innerHTML = "";
+  stateResult.classList.remove("empty-state");
+  stateResult.innerHTML = `<div class="loading-block">Building state model...</div>`;
   try {
     const payload = await postJson("/api/state-model", {
       requirement_id: document.getElementById("state-requirement-id").value,
@@ -354,9 +383,11 @@ async function runStateModelAnalysis() {
 
 async function runCsvAnalysis() {
   setStatus("csv-status", "Running...");
-  csvResult.innerHTML = "";
+  csvResult.classList.remove("empty-state");
+  csvResult.innerHTML = `<div class="loading-block">Running CSV batch...</div>`;
   const fileInput = document.getElementById("csv-file");
   if (!fileInput.files.length) {
+    csvResult.innerHTML = `<div class="panel-card"><p>Please choose a CSV file first.</p></div>`;
     setStatus("csv-status", "Please choose a CSV file.");
     return;
   }
@@ -413,19 +444,27 @@ async function maybeAutorun() {
   const params = new URLSearchParams(window.location.search);
   const autorun = params.get("autorun");
   const focus = params.get("focus");
-  if (focus === "formal") {
-    document.body.classList.add("focus-formal");
-    setTimeout(() => {
-      document.getElementById("formal-evidence")?.scrollIntoView({ behavior: "instant", block: "start" });
-    }, 50);
+  const focusMap = {
+    direct: "direct-panel",
+    csv: "csv-panel",
+    state: "state-panel",
+    formal: "formal-panel",
+  };
+
+  if (focusMap[focus]) {
+    activateTab(focusMap[focus]);
   }
+
   if (autorun === "direct") {
+    activateTab("direct-panel");
     setStatus("text-status", "Auto-running...");
     await runDirectAnalysis();
   } else if (autorun === "state") {
+    activateTab("state-panel");
     setStatus("state-status", "Auto-running...");
     await runStateModelAnalysis();
   } else if (autorun === "csv") {
+    activateTab("csv-panel");
     setStatus("csv-status", "Choose a CSV file to continue.");
   }
 }
