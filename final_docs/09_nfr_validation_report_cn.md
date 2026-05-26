@@ -1,36 +1,35 @@
 # Non-Functional Requirements Validation Report
 
-日期：`2026-05-07`
+Date: 2026-05-07
 
-本报告对应课程作业中 `1.1.2 Non-Functional Requirements` 的正式化补充，覆盖：
+This report formalizes the non-functional requirement evidence for the final ARG-Test submission. It is aligned with the teacher-provided `Requirement_Specification.md` and covers performance, usability, security, and maintainability.
 
-- Performance
-- Usability
-- Security
-- Maintainability
+Primary evidence files:
 
-核心证据来源：
-
-- [nfr_validation_summary.md](/D:/软件测试/Final/ARG-Test/final_docs/execution_evidence/nfr_validation_summary.md:1)
-- [nfr_validation_summary.json](/D:/软件测试/Final/ARG-Test/final_docs/execution_evidence/nfr_validation_summary.json:1)
+- `final_docs/execution_evidence/nfr_validation_summary.md`
+- `final_docs/execution_evidence/nfr_validation_summary.json`
 
 ## 1. Performance
 
-采用 mock provider 对 `test` split 的 5 条 requirement 做本地基准检查。
+The controlled performance claim is scoped to the local/mock path because this is the part of the system controlled by the repository. Live LLM latency is provider-bound and is therefore discussed as external variance rather than used for deterministic NFR thresholds.
 
-结果：
+Latest local/mock benchmark:
 
-- sample size = `5`
-- average mock processing time per requirement = `0.014 s`
+- Sample size: `100` requirement jobs
+- Unique requirement files used before cycling: `66`
+- Total processing time: `1.1331 s`
+- Average processing time per requirement: `0.0113 s`
+- Maximum single-requirement processing time: `0.0187 s`
+- NFR 4.1.1 local-path threshold, `100 requirements within 5 seconds`: `passed`
+- NFR 4.1.2 local-path threshold, `single requirement within 2 seconds`: `passed`
 
-结论：
-
-- 对课程项目规模而言，当前本地流程性能充足
-- 真正的时间成本主要来自在线模型调用，而不是本地 parser/checker/exporter
+Conclusion: the deterministic local path has a large margin against both performance thresholds. The final report should still state clearly that live provider calls may take longer and are not fully controlled by the tool.
 
 ## 2. Usability
 
-当前 CLI 已支持：
+The final system exposes both reproducible CLI workflows and a stable Web demo workflow.
+
+Supported CLI commands:
 
 - `run`
 - `run-text`
@@ -38,70 +37,69 @@
 - `batch-csv`
 - `state-model`
 
-这意味着输入形式已经覆盖：
+Supported input modes:
 
-- plain text file
-- direct text input
+- Plain requirement file
+- Direct text input
 - CSV batch input
+- Built-in formal-example replay through the Web demo
 
-同时 README 已补充：
+The Web demo provides four main pages:
 
-- quick start
-- formal run workflow
-- direct text input example
-- CSV input example
-- state-model example
+- Direct Input
+- CSV Batch
+- State Model
+- Formal Evidence
 
-结论：
-
-- 与课程要求相比，输入与使用路径已经比最低要求更完整
+Conclusion: the final system exceeds the minimal input requirement because it supports plain files, direct text, CSV batches, and a frontend demonstration path.
 
 ## 3. Security
 
-本次检查重点不做“高强度安全测试”，而是做课程项目层面的最关键控制：
+The course-project security goal is to prevent accidental credential exposure and keep generated artifacts auditable.
 
-- secrets 通过 `.env` / environment variable 注入
-- run manifest 记录 provider/model，但不记录 API key
-- 对 `outputs / artifacts / final_docs / formal reports` 做 secret leak scan
+Validated controls:
 
-结果：
+- API keys are expected to be injected through `.env` or environment variables.
+- Runtime manifests record provider/model metadata but do not record API keys.
+- Generated/report artifacts are scanned for obvious secret leakage.
 
-- secret leak found = `false`
-- manifests record provider metadata without API key disclosure = `true`
+Latest result:
 
-结论：
+- Secret leak found in generated/report artifacts: `false`
+- Manifests record provider metadata without API key disclosure: `true`
 
-- 当前仓库在课程项目范围内满足基本安全性要求
-- 后续最终提交时仍应避免把 `.env` 或 token 截图放入提交包
+Conclusion: the project satisfies the course-level security requirement. Final submission should still avoid uploading `.env` files, API tokens, or screenshots containing credentials.
 
 ## 4. Maintainability
 
-当前可维护性证据：
+Maintainability is supported through modular implementation, isolated experiment outputs, automated tests, and documented evidence paths.
 
-- `src/` Python modules = `27`
-- experiment scripts = `14`
-- automated test files = `5`
-- automated test cases = `23`
-- current pytest summary = `23 passed in 0.19s`
-- runtime output isolation supported = `true`
+Latest repository evidence:
 
-其中最重要的可维护性设计包括：
+- `src/` Python modules: `27`
+- Experiment scripts: `19`
+- Test files: `7`
+- Automated test cases: `38`
+- Pytest summary: `38 passed in 3.74s`
+- Runtime output isolation supported: `true`
 
-- `src/ / experiments/ / tests/ / final_docs/ / frozen_middle/` 分层明确
-- `.local_runs/` 用于隔离正式运行结果
-- `run_manifest` / `baseline_manifest` / `ablation_manifest` / `generalization_manifest` / `repeatability_manifest` 保证结果可追踪
+Key maintainability structures:
 
-结论：
+- `src/` for the tool implementation
+- `experiments/` for formal runs, baselines, ablation, replay, and validation
+- `tests/` for regression and executable evidence
+- `final_docs/` for required course documents
+- `report_assets/` for final report, figures, demo package, and presentation support
 
-- 当前仓库已经具备清晰的结构化维护基础
-- 对课程 final 而言，可维护性不再是短板
+Conclusion: maintainability is now supported by implementation structure and executable evidence rather than by narrative claims only.
 
-## 5. 总结
+## 5. Summary
 
-本次 NFR formalization 的核心成果不是“写了几段说明”，而是：
+The NFR package now gives explicit evidence for all four non-functional dimensions:
 
-1. 把 usability 落成了真实 CLI 能力
-2. 把 performance/security/maintainability 落成了可复核证据
-3. 让 NFR 不再只是作业说明里的空标题
+- Performance is measured against the teacher's local-path thresholds and passes both.
+- Usability is demonstrated through CLI and Web workflows.
+- Security is supported by secret-separation and artifact scanning.
+- Maintainability is supported by modular code, tests, scripts, documentation, and isolated result roots.
 
-因此，`NFR` 这一项现在可以视为已从“未成型”升级为“有独立证据支撑的正式部分”。
+Therefore, NFR validation can be treated as a formal, evidence-backed part of the final submission.

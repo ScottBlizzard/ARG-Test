@@ -24,6 +24,10 @@
 \definecolor{ourband}{HTML}{ECEFF3}
 \definecolor{headband}{HTML}{F5F7FA}
 \renewcommand{\arraystretch}{1.08}
+% The report uses requirement labels, file paths, and prompt section names
+% frequently. Keep them in the main text family rather than a code font so
+% the body text and tables look typographically consistent.
+\renewcommand{\texttt}[1]{{\normalfont #1}}
 
 \pdfinfo{/TemplateVersion (KR.2026.0)}
 
@@ -62,7 +66,7 @@ with Structured LLM Reasoning, Contract Verification, and Reproducible Evidence}
 \begin{abstract}
 This report presents \textbf{ARG-Test}, an AI-enhanced software testing tool that converts natural-language system requirements into auditable black-box test suites. The final project fully implements the \textbf{requirement-driven} branch of the assignment and pushes it beyond a prompt-only prototype by adding contract checking, risk-aware prioritization, state-model extraction, detailed execution evidence, non-functional validation, and reproducibility support. The core problem is that plain large language model prompting can produce plausible test cases, but it often hides the reasoning process, misses invalid partitions or boundary obligations, and provides weak guarantees that the generated suite actually follows established software-testing techniques. ARG-Test addresses this problem by requiring a five-section structured testing trace consisting of \texttt{Analysis}, \texttt{Pattern}, \texttt{Steps}, \texttt{Verification}, and \texttt{FinalAnswer}, and then validating the trace with technique-specific contracts for Equivalence Partitioning, Boundary Value Analysis, Decision Table Testing, and State Transition Testing.
 
-The final system contains a prompt builder, LLM client, parser, checker suite, candidate reranker, targeted repair module, risk scorer, state-model builder, CSV and direct-text input interfaces, a FastAPI Web demonstration surface, exporter, and experiment scripts. We evaluate the method on an internally curated requirement dataset with \textbf{50 development requirements} and \textbf{16 held-out test requirements} covering input validation, business-rule logic, and workflow behavior. On the frozen test split, the canonical formal result achieves an \textbf{average checker score of 0.959}, an \textbf{average overall coverage of 0.615}, and \textbf{zero duplicate cases}, while the rule-based baseline reaches only \textbf{0.147} coverage and the plain-LLM baseline reaches only \textbf{0.030} coverage. We further provide a detailed executable case study for \texttt{coupon\_discount\_engine} with \textbf{15 passing black-box and white-box tests}, \textbf{100\% statement coverage}, \textbf{100\% branch coverage}, and a \textbf{4/4 mutant kill rate}. Finally, we formalize non-functional validation and reproducibility: mock repeatability is \textbf{16/16 stable} under a three-seed schedule, and archive-grade replay can reconstruct frozen outputs from saved raw generations without calling the model provider again.
+The final system contains a prompt builder, LLM client, parser, checker suite, candidate reranker, targeted repair module, risk scorer, state-model builder, CSV and direct-text input interfaces, a FastAPI Web demonstration surface, exporter, and experiment scripts. We evaluate the method on an internally curated requirement dataset with \textbf{50 development requirements} and \textbf{16 held-out test requirements} covering input validation, business-rule logic, and workflow behavior. On the frozen test split, the canonical formal result achieves an \textbf{average checker score of 0.959}, an \textbf{average overall coverage of 0.615}, and \textbf{zero duplicate cases}, while the rule-based baseline reaches only \textbf{0.147} coverage and the plain-LLM baseline reaches only \textbf{0.030} coverage. We further provide a detailed executable case study for \texttt{coupon\_discount\_engine} with \textbf{15 passing black-box and white-box tests}, \textbf{100\% statement coverage}, \textbf{100\% branch coverage}, and a \textbf{4/4 mutant kill rate}. Finally, we formalize non-functional validation and reproducibility: the local/mock NFR run processes \textbf{100 requirements in 1.1331 seconds}, the maximum single-requirement time is only \textbf{0.0187 seconds}, mock repeatability is \textbf{16/16 stable} under a three-seed schedule, and archive-grade replay can reconstruct frozen outputs from saved raw generations without calling the model provider again.
 
 These results show that ARG-Test is not merely an AI prompt. It is a complete, auditable, and experimentally supported testing pipeline that satisfies the final-project requirements at a level well above a minimal course submission.
 \end{abstract}
@@ -101,6 +105,28 @@ Optimization and reproducibility & Multi-candidate reranking, targeted repair, s
 \end{table*}
 
 Table~\ref{tab:capability} is important for the final report because it shows that the project now closes all strict capability gaps that remained after the middle phase. In particular, the final system no longer stops at ``generate some black-box tests.'' It also prioritizes them by risk, supports richer requirement input modes, materializes state models, and documents how frozen outputs can be reproduced.
+
+\subsection{Course Deliverable Closure}
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Mapping from the course grading artifacts to the final repository deliverables.}
+\label{tab:deliverables}
+\begin{tabular}{p{0.21\textwidth} p{0.27\textwidth} p{0.42\textwidth}}
+\toprule
+\textbf{Course artifact} & \textbf{Required intent} & \textbf{Final ARG-Test evidence} \\
+\midrule
+AI-driven AutoTestDesign tool & Source code, prompts, setup guide, output examples, and demo evidence & Modular Python implementation under \texttt{src/}; prompts under \texttt{prompts/}; quick start and workflows in \texttt{README.md}; Web demo under \texttt{demo\_web/}; formal outputs under \texttt{.local\_runs/formal\_qwen\_novpn}; demo guide under \texttt{report\_assets/final\_demo\_package/}. \\
+Risk Analysis Report & Identify and prioritize final-project risks, especially FR/NFR and defense risks & Standalone report in \texttt{final\_docs/risk\_analysis\_report/}; risk model implementation in \texttt{src/risk.py}; exported risk fields in formal result summaries. \\
+Test Plan & Define scope, test items, high-level suite design, schedule, roles, framework rationale, and cost & Standalone plan in \texttt{final\_docs/test\_plan/}; FR/NFR item mapping, technique matrix, schedule/checklist, organization, framework rationale, cost estimation, and evidence chain. \\
+Detailed test design and execution & Select one major module, apply black-box and white-box design, implement tests, and analyze execution & Standalone document in \texttt{final\_docs/detailed\_test\_design\_execution/}; executable coupon-engine case study with 15 passing tests, 100\% statement coverage, 100\% branch coverage, and 4/4 killed mutants. \\
+Presentation and video support & Show the tool clearly within the defense time and keep claims traceable & PPT blueprint in \texttt{report\_assets/final\_ppt\_blueprint\_cn.md}; compressed demo script and frontend-focused package in \texttt{report\_assets/final\_demo\_package/}; stable Web workflow for Direct Input, CSV Batch, State Model, and Formal Evidence. \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:deliverables} makes the submission boundary explicit. This final report is the integrator and evidence narrative; it does not replace the three required standalone documents or the runnable tool package. The repository therefore satisfies both sides of the assignment: the software artifact is executable, and the documentation package is separately auditable. The technical constraints in the teacher specification are also covered explicitly: the primary implementation language is Python, the LLM integration uses an OpenAI-compatible interface that can target Qwen-style endpoints, the deterministic demo path uses a mock provider, and sample requirement data plus historical execution artifacts are kept under the repository's data and formal-result roots.
 
 \section{Method}
 \subsection{Overview}
@@ -188,10 +214,11 @@ Experiment scripts & Main, baseline, ablation, repeatability, replay, and valida
 \textbf{Item} & \textbf{Final setting} \\
 \midrule
 Input type & Natural-language requirement documents, direct text, CSV batches \\
+Primary implementation language & Python 3 \\
 Testing scope & AI-enhanced requirement-driven black-box dynamic testing \\
 Supported techniques & EP, BVA, Decision Table Testing, State Transition Testing \\
 Model & \texttt{qwen3.5-flash} \\
-Provider interface & OpenAI-compatible endpoint \\
+Provider interface & OpenAI-compatible endpoint plus deterministic mock provider for local demo and NFR validation \\
 API mode for seeded study & \texttt{chat\_completions} \\
 Candidate count & 3 \\
 Repair & Enabled \\
@@ -308,7 +335,8 @@ The pairwise win counts are also favorable. The full pipeline beats the rule-bas
 
 \begin{table}[h]
 \centering
-\small
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \caption{Category-level generalization and risk profile on the frozen test split.}
 \label{tab:generalization}
 \begin{tabular}{lcccc}
@@ -374,25 +402,26 @@ Table~\ref{tab:detailedmodule} shows that the detailed case study is not just a 
 The final project also includes a defect-seeded usefulness demonstration. We created four mutants for the reference implementation: one that incorrectly allows multiple coupons, one that rejects \texttt{SAVE10} exactly at the subtotal-50 boundary, one that ignores the \texttt{SAVE20} sale-item restriction, and one that rejects \texttt{FREESHIP} exactly at the subtotal-30 boundary. The curated executable suite kills \textbf{all four mutants}. This result is important because it shows that the generated or derived tests are not only structurally plausible; they are also strong enough to detect realistic seeded faults.
 
 \section{Non-Functional and Practical Validation}
-\begin{table*}[t]
+\begin{table}[!htbp]
 \centering
-\small
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \caption{Non-functional validation summary for the final system.}
 \label{tab:nfr}
-\begin{tabular}{p{0.16\textwidth} p{0.72\textwidth}}
+\begin{tabular}{p{0.23\columnwidth} p{0.64\columnwidth}}
 \toprule
 \textbf{Dimension} & \textbf{Observed evidence} \\
 \midrule
-Performance & On a five-requirement mock sample, average processing time is about 0.014 seconds per requirement, which is sufficient for local validation workflows. \\
+Performance & A 100-requirement local/mock NFR run completes in 1.1331 seconds, averaging 0.0113 seconds per requirement with a 0.0187-second maximum single-requirement time; this satisfies the local-path thresholds for NFR 4.1.1 and NFR 4.1.2. \\
 Usability & The CLI supports \texttt{batch}, \texttt{batch-csv}, \texttt{run}, \texttt{run-text}, and \texttt{state-model}; the Web demo supports Direct Input, CSV Batch, State Model, and Formal Evidence views with frozen replay for formal examples; the repository also provides a README quick start, a formal workflow script, and JSON/CSV/Markdown outputs. \\
 Security & No secret leak is found in generated or report artifacts, and manifests record provider metadata without exposing API keys. \\
 Maintainability & The repository is organized into modular \texttt{src/}, \texttt{experiments/}, \texttt{tests/}, and \texttt{report\_assets/} layers, and the final regression suite passes at report-preparation time. \\
 Runtime isolation & Result bundles are separated by output roots, which prevents one experiment from silently overwriting another. \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
-This non-functional validation is useful for two reasons. First, it demonstrates that the project is usable as a tool rather than only as a one-time experiment. Second, it shows that engineering quality was considered explicitly in the final phase. The final project is still a student system, so the NFR analysis is lightweight rather than industrial-grade, but it is concrete and evidence-backed.
+This non-functional validation is useful for two reasons. First, it demonstrates that the project is usable as a tool rather than only as a one-time experiment. Second, it shows that engineering quality was considered explicitly in the final phase. The performance claim is intentionally scoped to the local/mock path controlled by the repository; live-model latency remains provider-bound and is therefore discussed separately instead of being folded into the deterministic NFR threshold.
 
 \section{Reproducibility and Stability}
 \subsection{Seeded Repeatability and Replay}
@@ -417,7 +446,7 @@ Figure~\ref{fig:repro} complements Table~\ref{tab:repro} by presenting the engin
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.94\textwidth]{figures/reproducibility_stability_overview.png}
+\includegraphics[width=0.94\textwidth]{figures/reproducibility_stability_overview.pdf}
 \caption{Formal reproducibility and stability overview. The figure highlights three takeaways: the repository chain is deterministic under seeded mock control, live seeded studies remain usable but expose some provider variance, and archive-grade replay provides the final submission-level reproducibility guarantee.}
 \label{fig:repro}
 \end{figure*}
@@ -428,51 +457,45 @@ This section should be read in two layers. At the \emph{pipeline layer}, the res
 This distinction still strengthens the project rather than weakening it. A mature final submission should separate what it can control locally from what belongs to the upstream model service. ARG-Test does this explicitly. It uses seeded experimentation, multi-candidate selection, and targeted repair to stabilize the local workflow, and it uses frozen generations plus offline replay to guarantee submission-level reproducibility for the archived package. The same principle is reflected in the Web demo: stable mock interaction is used for presentation, while official formal examples are replayed from the frozen result snapshot for quantitative claims. That is a more defensible engineering claim than pretending the provider itself is perfectly deterministic.
 
 \section{Comparison with a Traditional Non-AI Technique}
-\begin{table*}[t]
-\centering
-\small
-\caption{Traditional non-AI rule-based baseline versus ARG-Test.}
+The comparison in Table~\ref{tab:nonai} answers the course requirement to compare an AI-enhanced technique against a traditional non-AI approach. The rule-based baseline is cheap and deterministic, which is attractive, but it cannot recover enough structure from realistic natural-language requirements. ARG-Test is more expensive and more complex, yet it is dramatically stronger in coverage and artifact richness. For this final project, that trade-off is justified.
+
+\begin{center}
+\captionsetup{type=table}
+\captionof{table}{Traditional non-AI rule-based baseline versus ARG-Test.}
 \label{tab:nonai}
-\begin{tabular}{p{0.18\textwidth} p{0.31\textwidth} p{0.31\textwidth}}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{0.98}
+\begin{tabular}{p{0.20\columnwidth} p{0.31\columnwidth} p{0.34\columnwidth}}
 \toprule
 \textbf{Aspect} & \textbf{Traditional rule-based baseline} & \textbf{ARG-Test full pipeline} \\
 \midrule
-Core mechanism & Deterministic pattern rules & LLM generation plus parser, checker, reranking, repair, and risk-aware enrichment \\
+Core mechanism & Deterministic pattern rules & LLM generation plus parser, checker, reranking, repair, and risk enrichment \\
 Language flexibility & Weak on implicit logic and mixed constraints & Strong on realistic natural-language interpretation \\
-Auditability & High only for the rules it already knows & High due to structured traces, checker logs, manifests, and exported summaries \\
-Cost & Very low & Moderate API cost and engineering complexity \\
-Variance & Deterministic & Stochastic at provider level but controlled and replayable at pipeline level \\
-Coverage on frozen test split & 0.147 & 0.615 \\
-Best use case & Simple mandatory-field or range heuristics & Mixed business-rule, validation, and workflow requirements \\
+Auditability & High only for known rules & High through traces, checker logs, manifests, and summaries \\
+Cost & Very low & Moderate API and engineering cost \\
+Variance & Deterministic & Provider-level variance controlled by replayable pipeline artifacts \\
+Coverage & 0.147 on the frozen test split & 0.615 on the frozen test split \\
+Best use case & Simple mandatory-field or range checks & Mixed business-rule, validation, and workflow requirements \\
 \bottomrule
 \end{tabular}
-\end{table*}
-
-The comparison in Table~\ref{tab:nonai} answers the course requirement to compare an AI-enhanced technique against a traditional non-AI approach. The rule-based baseline is cheap and deterministic, which is attractive, but it cannot recover enough structure from realistic natural-language requirements. ARG-Test is more expensive and more complex, yet it is dramatically stronger in coverage and artifact richness. For this final project, that trade-off is justified.
+\end{center}
+\FloatBarrier
 
 \section{Discussion and Limitations}
 \subsection{Why the Final System Works}
-The final system works because it avoids asking the model to solve the entire testing problem in one opaque step. The structured trace exposes the reasoning, the contract checkers turn testing theory into deterministic obligations, and reranking plus repair reduce the effect of single-sample errors. Risk scoring and state-model extraction then make the result more actionable and better aligned with a practical testing workflow. In short, the project succeeds because it combines LLM flexibility with deterministic control layers.
+The final system works because it avoids asking the model to solve the entire testing problem in one opaque step. The structured trace exposes the reasoning, the contract checkers turn testing theory into deterministic obligations, and reranking plus repair reduce single-sample errors. Risk scoring and state-model extraction then make the result actionable for practical testing.
 
 \subsection{Remaining Limitations}
-The final report should still state its limitations explicitly.
-\begin{enumerate}[leftmargin=1.5em]
-\item The project focuses on the requirement-driven branch rather than the codebase-driven branch, so conclusions apply to requirement-based black-box test design.
-\item The frozen test split has 16 requirements, which is sufficient for a course final project but not a large benchmark study.
-\item Coverage metrics depend on authored gold specifications, so evaluation quality still depends on the quality of the gold definitions.
-\item The detailed executable evidence is strong for the chosen module, but the full 16-requirement benchmark is still evaluated mainly at the test-design level rather than by executing every generated suite against a real implementation.
-\item Provider-level live determinism is limited, so strong reproducibility claims must rely on frozen generations and replay instead of on the provider alone.
-\end{enumerate}
+The limitations are scoped rather than fatal. The project focuses on the requirement-driven branch, so its conclusions apply to requirement-based black-box design rather than codebase-driven generation. The frozen test split has 16 requirements, which is sufficient for a course final project but not a large benchmark study. Coverage depends on authored gold specifications, and the full benchmark is evaluated mainly at the test-design level even though the coupon module has executable evidence. Provider-level live determinism is also limited, so the strongest reproducibility claim relies on frozen generations and replay.
 
+\newpage
 \subsection{Threats to Validity and Practical Interpretation}
-These limitations define scope rather than failure. Within that scope, the project is already strong: it is auditable, reproducible at the submission level, substantially stronger than traditional and prompt-only baselines, and supported by concrete executable evidence. The correct final interpretation is therefore not that the system is perfect, but that it is a high-quality course project with honest boundaries and unusually complete engineering support.
+These limitations define scope rather than failure. Within that scope, the project is auditable, reproducible at the submission level, stronger than traditional and prompt-only baselines, and supported by concrete executable evidence. The correct interpretation is not that the system is perfect, but that it is a high-quality course project with honest boundaries and complete engineering support.
 
 \section{Conclusion}
-This report presented ARG-Test, a requirement-driven AI-enhanced testing tool that transforms natural-language requirements into auditable black-box test suites. The key idea is simple but effective: do not trust a free-form model answer; instead, require a structured testing trace, validate it against testing-theory contracts, control variance with reranking and repair, and preserve enough metadata to audit and reproduce the result later.
-
-The strongest evidence is empirical. On the frozen 16-requirement test split, ARG-Test reaches an average checker score of 0.959 and average overall coverage of 0.615, clearly outperforming rule-based automation, plain LLM prompting, and weaker structured variants. The project is further strengthened by detailed executable evidence for \texttt{coupon\_discount\_engine}, mutation-based usefulness demonstration, non-functional validation, and archive-grade replay support.
-
-A current limitation is scope rather than collapse: the project focuses on requirement-driven black-box testing and still depends on a non-deterministic live provider. Extending the same audited pipeline to broader executable benchmarks or stronger provider-level determinism would be a natural next step. Even with that limitation, ARG-Test already satisfies the final-project requirements at a level significantly above a minimal submission and provides a defendable end-to-end artifact package.
+ARG-Test shows that requirement-driven black-box test generation can be auditable rather than prompt-only. Its structured traces, contract checks, repair, risk and state metadata, and replayable artifacts reach 0.959 checker score and 0.615 coverage on the frozen split, outperforming all baselines. With executable evidence, 4/4 killed mutants, the Web demo, formal NFR checks, replay, and standalone risk/test-plan/detailed-execution documents, the final submission closes the assignment requirements at the tool, experiment, and documentation levels.
 
 \clearpage
 \onecolumn
@@ -489,7 +512,7 @@ Analysis, Pattern, Steps, Verification, FinalAnswer.
 \subsection{Generation Prompt Skeleton}
 \begin{verbatim}
 Requirement:
-{{REQUIREMENT_TEXT}}
+<REQUIREMENT_TEXT>
 
 Task:
 Generate black-box test cases using a structured testing trace.
@@ -514,13 +537,13 @@ FinalAnswer:
 The previous structured testing trace failed the contract checker.
 
 Requirement:
-{{REQUIREMENT_TEXT}}
+<REQUIREMENT_TEXT>
 
 Previous trace:
-{{RAW_TRACE}}
+<RAW_TRACE>
 
 Diagnostics:
-{{DIAGNOSTICS}}
+<DIAGNOSTICS>
 
 Revise only the necessary parts.
 Keep the five-section structure unchanged.
@@ -565,7 +588,8 @@ The following excerpt shows the normalized output style used by ARG-Test for wor
 
 \begin{table}[h]
 \centering
-\scriptsize
+\tiny
+\setlength{\tabcolsep}{2pt}
 \caption{Representative generated test cases for a workflow-state requirement.}
 \label{tab:outputexample}
 \begin{tabular}{p{0.08\textwidth} p{0.10\textwidth} p{0.10\textwidth} p{0.11\textwidth} p{0.12\textwidth} p{0.16\textwidth} p{0.11\textwidth}}

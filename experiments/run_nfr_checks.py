@@ -23,7 +23,14 @@ SECRET_PATTERNS = {
 }
 
 
-def benchmark_mock_pipeline(sample_size: int = 5) -> dict:
+def _nfr_requirement_pool() -> list[Path]:
+    files: list[Path] = []
+    for split in ["dev", "test"]:
+        files.extend(list_requirement_files(ROOT, split))
+    return sorted(files)
+
+
+def benchmark_mock_pipeline(sample_size: int = 100) -> dict:
     pipeline = ARGTestPipeline(
         base_dir=ROOT,
         provider="mock",
@@ -31,8 +38,21 @@ def benchmark_mock_pipeline(sample_size: int = 5) -> dict:
         candidates=3,
         output_root=".local_runs/nfr_check_mock",
     )
-    files = list_requirement_files(ROOT, "test")[:sample_size]
+    pool = _nfr_requirement_pool()
+    if not pool:
+        return {
+            "sample_size": 0,
+            "unique_requirement_files": 0,
+            "total_seconds": 0.0,
+            "average_seconds_per_requirement": 0.0,
+            "max_seconds_per_requirement": 0.0,
+            "passes_100_requirement_analysis_target": False,
+            "passes_single_requirement_generation_target": False,
+            "per_requirement": [],
+        }
+    files = [pool[index % len(pool)] for index in range(sample_size)]
     per_requirement = []
+    total_started = time.perf_counter()
     for path in files:
         started = time.perf_counter()
         summary = pipeline.process_requirement_file(path, candidates=3, export=False)
@@ -43,10 +63,17 @@ def benchmark_mock_pipeline(sample_size: int = 5) -> dict:
                 "seconds": round(elapsed, 4),
             }
         )
+    total_seconds = round(time.perf_counter() - total_started, 4)
     avg_seconds = round(sum(item["seconds"] for item in per_requirement) / len(per_requirement), 4) if per_requirement else 0.0
+    max_seconds = max((item["seconds"] for item in per_requirement), default=0.0)
     return {
         "sample_size": len(per_requirement),
+        "unique_requirement_files": len(pool),
+        "total_seconds": total_seconds,
         "average_seconds_per_requirement": avg_seconds,
+        "max_seconds_per_requirement": max_seconds,
+        "passes_100_requirement_analysis_target": len(per_requirement) >= 100 and total_seconds <= 5.0,
+        "passes_single_requirement_generation_target": max_seconds <= 2.0,
         "per_requirement": per_requirement,
     }
 
@@ -152,13 +179,20 @@ def build_markdown(payload: dict) -> str:
         "## Performance",
         "",
         f"- Sample size: `{performance['sample_size']}`",
+        f"- Unique requirement files used before cycling: `{performance['unique_requirement_files']}`",
+        f"- Total mock/local processing time: `{performance['total_seconds']} s`",
         f"- Average mock processing time per requirement: `{performance['average_seconds_per_requirement']} s`",
+        f"- Maximum single-requirement mock processing time: `{performance['max_seconds_per_requirement']} s`",
+        f"- Passes NFR 4.1.1 local-path threshold (100 requirements within 5 seconds): `{str(performance['passes_100_requirement_analysis_target']).lower()}`",
+        f"- Passes NFR 4.1.2 local-path threshold (single requirement within 2 seconds): `{str(performance['passes_single_requirement_generation_target']).lower()}`",
         "",
-        "| Requirement | Seconds |",
+        "| Requirement preview | Seconds |",
         "| --- | ---: |",
     ]
-    for item in performance["per_requirement"]:
+    for item in performance["per_requirement"][:10]:
         lines.append(f"| {item['requirement_id']} | {item['seconds']} |")
+    if len(performance["per_requirement"]) > 10:
+        lines.append(f"| ... {len(performance['per_requirement']) - 10} additional requirements omitted from preview ... | |")
 
     lines.extend(
         [

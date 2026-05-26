@@ -2,16 +2,27 @@
 
 ## Performance
 
-- Sample size: `5`
-- Average mock processing time per requirement: `0.014 s`
+- Sample size: `100`
+- Unique requirement files used before cycling: `66`
+- Total mock/local processing time: `1.1331 s`
+- Average mock processing time per requirement: `0.0113 s`
+- Maximum single-requirement mock processing time: `0.0187 s`
+- Passes NFR 4.1.1 local-path threshold (100 requirements within 5 seconds): `true`
+- Passes NFR 4.1.2 local-path threshold (single requirement within 2 seconds): `true`
 
-| Requirement | Seconds |
+| Requirement preview | Seconds |
 | --- | ---: |
-| address_international_format_validation | 0.0189 |
-| bank_transfer_rule_checker | 0.0123 |
-| bundle_discount_eligibility_rules | 0.0138 |
-| checkout_promo_stack_and_priority | 0.0117 |
-| coupon_discount_engine | 0.0135 |
+| age_restricted_product_purchase_validation | 0.0143 |
+| backorder_policy_and_eta | 0.0123 |
+| cart_item_quantity_limit | 0.011 |
+| cart_merge_on_login | 0.01 |
+| cart_stock_check_on_add | 0.0099 |
+| cash_on_delivery_eligibility | 0.0096 |
+| checkout_address_postcode_format | 0.011 |
+| checkout_address_required_fields | 0.0127 |
+| coupon_code_format_validation | 0.0109 |
+| coupon_expiry_and_timezone | 0.0121 |
+| ... 90 additional requirements omitted from preview ... | |
 
 ## Usability
 
@@ -33,9 +44,9 @@
 ## Maintainability
 
 - `src/` Python modules: `27`
-- experiment scripts: `18`
+- experiment scripts: `19`
 - test files: `7`
 - test cases: `38`
 - pytest exit code: `0`
-- pytest summary: `38 passed in 5.72s`
+- pytest summary: `38 passed in 3.74s`
 - runtime output isolation supported: `true`

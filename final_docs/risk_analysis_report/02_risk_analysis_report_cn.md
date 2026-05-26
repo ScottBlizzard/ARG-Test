@@ -106,7 +106,7 @@ Mitigation and evidence summary:
 - `R2`: Always report `0.959 / 0.615 / 7.312` together with the baselines; state that `checker_score != correctness` and that the `gold spec` is an evaluation rubric, not training data.
 - `R3`: In the detailed document, separate the AutoTestDesign app feature under validation from the selected executable validation module; cite `src/state_model.py` and `coupon_discount_engine_execution_summary.md`.
 - `R4`: State the UI boundary directly: the project has a stable `demo_web/` FastAPI Web demo for direct text, CSV, state-model, and formal-dashboard demonstration; CLI and exported artifacts remain the audit/reproduction path.
-- `R5`: Split the performance claim into mock/local processing and live-provider latency; the latest NFR evidence records a local sample average of `0.014 s / requirement`.
+- `R5`: Split the performance claim into mock/local processing and live-provider latency; the latest NFR evidence records `100` local/mock requirement jobs in `1.1331 s`, an average of `0.0113 s / requirement`, and a maximum single-requirement time of `0.0187 s`.
 - `R6`: Keep wording and paths synchronized across `README.md`, `final_docs/README.md`, `05_evidence_and_submission_checklist_cn.md`, and `report_assets/final_demo_package/`.
 - `R7`: Anchor official results to `.local_runs/formal_qwen_novpn` and the formal result snapshot under `report_assets/final_demo_package/frontend_focus/formal_results_snapshot/`.
 - `R8`: Explain during the demo that built-in formal examples use `frozen_formal_run` replay, while edited ad hoc inputs use local `mock` generation and must not be cited as official benchmark quality.
