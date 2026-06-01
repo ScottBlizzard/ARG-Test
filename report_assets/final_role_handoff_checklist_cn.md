@@ -95,7 +95,7 @@ Baselines:
 Detailed module evidence:
 
 - `15 module tests passed`
-- `38 repo tests passed`
+- `45 repo tests passed`
 - `100% statement coverage`
 - `100% branch coverage`
 - `4 / 4 mutants killed`
@@ -294,7 +294,7 @@ Detailed document 里最好显式区分两层：
 这些是你最硬的证据，必须保住：
 
 - `15 passed`
-- `38 passed`
+- `45 passed`
 - `100% statement`
 - `100% branch`
 - `4/4 mutants killed`

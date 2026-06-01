@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import shutil
 from pathlib import Path
 
@@ -72,6 +73,14 @@ def save_fig(fig: plt.Figure, output_path: Path) -> None:
 
 def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
+
+
+def count_repo_test_functions() -> int:
+    pattern = re.compile(r"^\s*def\s+test_", re.MULTILINE)
+    total = 0
+    for path in (ROOT / "tests").glob("test_*.py"):
+        total += len(pattern.findall(path.read_text(encoding="utf-8")))
+    return total
 
 
 def risk_color(priority: int) -> str:
@@ -165,6 +174,7 @@ def save_risk_heatmap(output_path: Path) -> None:
 
 
 def save_coupon_scorecard(output_path: Path) -> None:
+    repo_test_count = count_repo_test_functions()
     configure()
     fig = plt.figure(figsize=(8.8, 3.7), dpi=220)
     ax = fig.add_axes([0, 0, 1, 1])
@@ -180,7 +190,7 @@ def save_coupon_scorecard(output_path: Path) -> None:
     )
 
     cards = [
-        ("Executable tests", "15 module tests\n38 repo tests", PALETTE["gold_soft"], PALETTE["gold"]),
+        ("Executable tests", f"15 module tests\n{repo_test_count} repo tests", PALETTE["gold_soft"], PALETTE["gold"]),
         ("Coverage", "100% statement\n100% branch", PALETTE["teal_soft"], PALETTE["teal"]),
         ("Mutation result", "4 / 4 mutants killed", PALETTE["red_soft"], PALETTE["red"]),
     ]

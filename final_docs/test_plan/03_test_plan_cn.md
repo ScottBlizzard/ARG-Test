@@ -1,3 +1,17 @@
+<div style="height: 88vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+  <div style="font-size: 34px; font-weight: 700; margin-bottom: 44px;">Test Plan</div>
+  <div style="font-size: 24px; font-weight: 600; margin-bottom: 20px;">Team 7</div>
+  <div style="font-size: 19px; line-height: 1.9;">
+    2351441 许奕<br>
+    2351039 王相<br>
+    2350283 康凤轩<br>
+    2352746 张洛梧<br>
+    2350217 陈奕玮
+  </div>
+</div>
+
+<div class="page"></div>
+
 # Test Plan
 
 ## 1. Project Scope
@@ -135,8 +149,9 @@ The assignment requires designer participation and interactive review. In this p
 1. select or enter a `MiniShop Checkout` requirement
 2. let `ARG-Test` generate a structured trace and candidate suite
 3. review risk signals, selected techniques, generated cases, and diagnostics
-4. revise requirement wording or designer guidance when needed
-5. export the reviewed suite and use the detailed module for executable validation where applicable
+4. revise requirement wording or designer guidance before rerun when needed
+5. directly edit generated test cases after generation when designer review identifies gaps
+6. export the reviewed suite and use the detailed module for executable validation where applicable
 
 The current practical review surfaces are:
 
@@ -149,7 +164,8 @@ The current interactive review controls support:
 
 - designer-selected technique emphasis
 - explicit coverage-item review notes
-- rerun-based revision of generated suites with preserved review metadata
+- direct post-generation editing of generated test cases in the Web demo
+- revised-suite export with preserved review metadata and refreshed checker/coverage diagnostics
 
 ### 3.4 Evidence Chain and Traceability
 

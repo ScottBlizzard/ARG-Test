@@ -2,411 +2,411 @@
   "performance": {
     "sample_size": 100,
     "unique_requirement_files": 66,
-    "total_seconds": 1.1331,
-    "average_seconds_per_requirement": 0.0113,
-    "max_seconds_per_requirement": 0.0187,
+    "total_seconds": 0.3646,
+    "average_seconds_per_requirement": 0.0036,
+    "max_seconds_per_requirement": 0.0056,
     "passes_100_requirement_analysis_target": true,
     "passes_single_requirement_generation_target": true,
     "per_requirement": [
       {
         "requirement_id": "age_restricted_product_purchase_validation",
-        "seconds": 0.0143
+        "seconds": 0.0056
       },
       {
         "requirement_id": "backorder_policy_and_eta",
-        "seconds": 0.0123
+        "seconds": 0.0041
       },
       {
         "requirement_id": "cart_item_quantity_limit",
-        "seconds": 0.011
+        "seconds": 0.0037
       },
       {
         "requirement_id": "cart_merge_on_login",
-        "seconds": 0.01
+        "seconds": 0.0033
       },
       {
         "requirement_id": "cart_stock_check_on_add",
-        "seconds": 0.0099
+        "seconds": 0.0033
       },
       {
         "requirement_id": "cash_on_delivery_eligibility",
-        "seconds": 0.0096
+        "seconds": 0.0034
       },
       {
         "requirement_id": "checkout_address_postcode_format",
-        "seconds": 0.011
+        "seconds": 0.0036
       },
       {
         "requirement_id": "checkout_address_required_fields",
-        "seconds": 0.0127
+        "seconds": 0.0037
       },
       {
         "requirement_id": "coupon_code_format_validation",
-        "seconds": 0.0109
+        "seconds": 0.0034
       },
       {
         "requirement_id": "coupon_expiry_and_timezone",
-        "seconds": 0.0121
+        "seconds": 0.0032
       },
       {
         "requirement_id": "coupon_minimum_spend",
-        "seconds": 0.012
+        "seconds": 0.0033
       },
       {
         "requirement_id": "coupon_stackability",
-        "seconds": 0.0117
+        "seconds": 0.0031
       },
       {
         "requirement_id": "coupon_usage_limit_per_user",
-        "seconds": 0.0125
+        "seconds": 0.0033
       },
       {
         "requirement_id": "currency_conversion_rate_expiry",
-        "seconds": 0.015
+        "seconds": 0.0046
       },
       {
         "requirement_id": "customer_tier_upgrade_rules",
-        "seconds": 0.0126
+        "seconds": 0.0036
       },
       {
         "requirement_id": "delivery_slot_capacity_booking",
-        "seconds": 0.0126
+        "seconds": 0.0038
       },
       {
         "requirement_id": "digital_product_instant_delivery",
-        "seconds": 0.0096
+        "seconds": 0.0032
       },
       {
         "requirement_id": "download_link_expiry_and_download_limit",
-        "seconds": 0.0095
+        "seconds": 0.003
       },
       {
         "requirement_id": "exchange_request_workflow_state",
-        "seconds": 0.0135
+        "seconds": 0.0043
       },
       {
         "requirement_id": "flash_sale_stock_reservation",
-        "seconds": 0.0105
+        "seconds": 0.0035
       },
       {
         "requirement_id": "fraud_risk_scoring_rules",
-        "seconds": 0.0109
+        "seconds": 0.0037
       },
       {
         "requirement_id": "free_shipping_threshold_by_member_tier",
-        "seconds": 0.0101
+        "seconds": 0.0031
       },
       {
         "requirement_id": "gift_card_code_validation",
-        "seconds": 0.0097
+        "seconds": 0.0032
       },
       {
         "requirement_id": "gift_card_partial_redemption",
-        "seconds": 0.0117
+        "seconds": 0.0038
       },
       {
         "requirement_id": "invoice_vat_number_validation",
-        "seconds": 0.01
+        "seconds": 0.0032
       },
       {
         "requirement_id": "login_lockout_workflow",
-        "seconds": 0.0129
+        "seconds": 0.0046
       },
       {
         "requirement_id": "loyalty_points_earn",
-        "seconds": 0.0099
+        "seconds": 0.0032
       },
       {
         "requirement_id": "loyalty_points_redeem_limit",
-        "seconds": 0.0102
+        "seconds": 0.0032
       },
       {
         "requirement_id": "multi_currency_price_rounding",
-        "seconds": 0.0099
+        "seconds": 0.003
       },
       {
         "requirement_id": "order_cancellation_window",
-        "seconds": 0.0095
+        "seconds": 0.0033
       },
       {
         "requirement_id": "order_status_fulfillment_state_machine",
-        "seconds": 0.0142
+        "seconds": 0.0043
       },
       {
         "requirement_id": "order_total_tax_calculation",
-        "seconds": 0.0101
+        "seconds": 0.0035
       },
       {
         "requirement_id": "password_policy_checker",
-        "seconds": 0.0121
+        "seconds": 0.0039
       },
       {
         "requirement_id": "payment_authorize_capture_refund_workflow",
-        "seconds": 0.0103
+        "seconds": 0.0033
       },
       {
         "requirement_id": "payment_method_availability_by_country",
-        "seconds": 0.0095
+        "seconds": 0.0032
       },
       {
         "requirement_id": "payment_retry_and_lockout",
-        "seconds": 0.0118
+        "seconds": 0.0041
       },
       {
         "requirement_id": "preorder_deposit_and_balance_payment",
-        "seconds": 0.0108
+        "seconds": 0.004
       },
       {
         "requirement_id": "product_variant_selection_validation",
-        "seconds": 0.0101
+        "seconds": 0.0035
       },
       {
         "requirement_id": "refund_amount_calculation_rules",
-        "seconds": 0.0101
+        "seconds": 0.0033
       },
       {
         "requirement_id": "return_request_eligibility",
-        "seconds": 0.0132
+        "seconds": 0.0034
       },
       {
         "requirement_id": "review_moderation_state_machine",
-        "seconds": 0.0161
+        "seconds": 0.0043
       },
       {
         "requirement_id": "review_submission_validation",
-        "seconds": 0.012
+        "seconds": 0.0036
       },
       {
         "requirement_id": "seller_payout_fee_calculation",
-        "seconds": 0.0097
+        "seconds": 0.0034
       },
       {
         "requirement_id": "shipping_fee_calculator",
-        "seconds": 0.011
+        "seconds": 0.004
       },
       {
         "requirement_id": "shipping_method_eligibility_by_weight",
-        "seconds": 0.0105
+        "seconds": 0.0034
       },
       {
         "requirement_id": "subscription_pause_resume_workflow",
-        "seconds": 0.0098
+        "seconds": 0.0034
       },
       {
         "requirement_id": "subscription_renewal_billing_rules",
-        "seconds": 0.0096
+        "seconds": 0.0031
       },
       {
         "requirement_id": "subscription_trial_to_paid_workflow",
-        "seconds": 0.0127
+        "seconds": 0.0045
       },
       {
         "requirement_id": "tax_exempt_certificate_validation",
-        "seconds": 0.0104
+        "seconds": 0.0039
       },
       {
         "requirement_id": "user_registration_validation",
-        "seconds": 0.0109
+        "seconds": 0.0037
       },
       {
         "requirement_id": "address_international_format_validation",
-        "seconds": 0.0111
+        "seconds": 0.0041
       },
       {
         "requirement_id": "bank_transfer_rule_checker",
-        "seconds": 0.0123
+        "seconds": 0.0037
       },
       {
         "requirement_id": "bundle_discount_eligibility_rules",
-        "seconds": 0.0121
+        "seconds": 0.004
       },
       {
         "requirement_id": "checkout_promo_stack_and_priority",
-        "seconds": 0.0101
+        "seconds": 0.0033
       },
       {
         "requirement_id": "coupon_discount_engine",
-        "seconds": 0.0109
+        "seconds": 0.0037
       },
       {
         "requirement_id": "gift_card_and_coupon_combination_rules",
-        "seconds": 0.0099
+        "seconds": 0.0036
       },
       {
         "requirement_id": "gift_order_recipient_contact_validation",
-        "seconds": 0.0112
+        "seconds": 0.0039
       },
       {
         "requirement_id": "order_approval_state_machine",
-        "seconds": 0.0187
+        "seconds": 0.0049
       },
       {
         "requirement_id": "order_split_shipment_state_machine",
-        "seconds": 0.0149
+        "seconds": 0.0045
       },
       {
         "requirement_id": "payment_3ds_authentication_flow",
-        "seconds": 0.0176
+        "seconds": 0.0047
       },
       {
         "requirement_id": "payment_card_expiry_and_cvv_validation",
-        "seconds": 0.0114
+        "seconds": 0.0037
       },
       {
         "requirement_id": "pickup_station_contact_validation",
-        "seconds": 0.0112
+        "seconds": 0.0039
       },
       {
         "requirement_id": "return_exchange_approval_workflow",
-        "seconds": 0.0157
+        "seconds": 0.0051
       },
       {
         "requirement_id": "return_refund_method_eligibility",
-        "seconds": 0.0101
+        "seconds": 0.0031
       },
       {
         "requirement_id": "ticket_booking_refund_rule",
-        "seconds": 0.011
+        "seconds": 0.0037
       },
       {
         "requirement_id": "warehouse_pickup_order_workflow",
-        "seconds": 0.015
+        "seconds": 0.0045
       },
       {
         "requirement_id": "age_restricted_product_purchase_validation",
-        "seconds": 0.0114
+        "seconds": 0.0033
       },
       {
         "requirement_id": "backorder_policy_and_eta",
-        "seconds": 0.0106
+        "seconds": 0.0038
       },
       {
         "requirement_id": "cart_item_quantity_limit",
-        "seconds": 0.0109
+        "seconds": 0.0035
       },
       {
         "requirement_id": "cart_merge_on_login",
-        "seconds": 0.0099
+        "seconds": 0.0032
       },
       {
         "requirement_id": "cart_stock_check_on_add",
-        "seconds": 0.0093
+        "seconds": 0.0034
       },
       {
         "requirement_id": "cash_on_delivery_eligibility",
-        "seconds": 0.0092
+        "seconds": 0.0033
       },
       {
         "requirement_id": "checkout_address_postcode_format",
-        "seconds": 0.0109
+        "seconds": 0.0037
       },
       {
         "requirement_id": "checkout_address_required_fields",
-        "seconds": 0.0122
+        "seconds": 0.0033
       },
       {
         "requirement_id": "coupon_code_format_validation",
-        "seconds": 0.0157
+        "seconds": 0.0039
       },
       {
         "requirement_id": "coupon_expiry_and_timezone",
-        "seconds": 0.0104
+        "seconds": 0.0036
       },
       {
         "requirement_id": "coupon_minimum_spend",
-        "seconds": 0.0108
+        "seconds": 0.0034
       },
       {
         "requirement_id": "coupon_stackability",
-        "seconds": 0.011
+        "seconds": 0.0034
       },
       {
         "requirement_id": "coupon_usage_limit_per_user",
-        "seconds": 0.0111
+        "seconds": 0.0032
       },
       {
         "requirement_id": "currency_conversion_rate_expiry",
-        "seconds": 0.0128
+        "seconds": 0.0045
       },
       {
         "requirement_id": "customer_tier_upgrade_rules",
-        "seconds": 0.0114
+        "seconds": 0.0034
       },
       {
         "requirement_id": "delivery_slot_capacity_booking",
-        "seconds": 0.011
+        "seconds": 0.0038
       },
       {
         "requirement_id": "digital_product_instant_delivery",
-        "seconds": 0.0095
+        "seconds": 0.0031
       },
       {
         "requirement_id": "download_link_expiry_and_download_limit",
-        "seconds": 0.0095
+        "seconds": 0.0033
       },
       {
         "requirement_id": "exchange_request_workflow_state",
-        "seconds": 0.0125
+        "seconds": 0.0046
       },
       {
         "requirement_id": "flash_sale_stock_reservation",
-        "seconds": 0.0111
+        "seconds": 0.0033
       },
       {
         "requirement_id": "fraud_risk_scoring_rules",
-        "seconds": 0.0122
+        "seconds": 0.0034
       },
       {
         "requirement_id": "free_shipping_threshold_by_member_tier",
-        "seconds": 0.0098
+        "seconds": 0.0034
       },
       {
         "requirement_id": "gift_card_code_validation",
-        "seconds": 0.0101
+        "seconds": 0.0033
       },
       {
         "requirement_id": "gift_card_partial_redemption",
-        "seconds": 0.0095
+        "seconds": 0.0033
       },
       {
         "requirement_id": "invoice_vat_number_validation",
-        "seconds": 0.0094
+        "seconds": 0.0031
       },
       {
         "requirement_id": "login_lockout_workflow",
-        "seconds": 0.0139
+        "seconds": 0.0039
       },
       {
         "requirement_id": "loyalty_points_earn",
-        "seconds": 0.0101
+        "seconds": 0.0033
       },
       {
         "requirement_id": "loyalty_points_redeem_limit",
-        "seconds": 0.0094
+        "seconds": 0.0031
       },
       {
         "requirement_id": "multi_currency_price_rounding",
-        "seconds": 0.0095
+        "seconds": 0.0034
       },
       {
         "requirement_id": "order_cancellation_window",
-        "seconds": 0.0093
+        "seconds": 0.003
       },
       {
         "requirement_id": "order_status_fulfillment_state_machine",
-        "seconds": 0.0122
+        "seconds": 0.0041
       },
       {
         "requirement_id": "order_total_tax_calculation",
-        "seconds": 0.0095
+        "seconds": 0.0038
       },
       {
         "requirement_id": "password_policy_checker",
-        "seconds": 0.0107
+        "seconds": 0.004
       },
       {
         "requirement_id": "payment_authorize_capture_refund_workflow",
-        "seconds": 0.0098
+        "seconds": 0.0031
       }
     ]
   },
@@ -440,9 +440,7 @@
     "secret_scan_roots": [
       "outputs",
       "artifacts",
-      "final_docs",
-      ".local_runs\\formal_qwen_novpn\\outputs\\reports",
-      ".local_runs\\formal_qwen_upgrade_smoke\\outputs\\reports"
+      "final_docs"
     ],
     "secret_findings": [],
     "secret_leak_found": false,
@@ -451,10 +449,10 @@
   "maintainability": {
     "src_module_count": 27,
     "experiment_script_count": 19,
-    "test_file_count": 7,
-    "test_case_count": 38,
+    "test_file_count": 8,
+    "test_case_count": 45,
     "pytest_exit_code": 0,
-    "pytest_summary": "38 passed in 3.74s",
+    "pytest_summary": "45 passed, 1 warning in 1.41s",
     "runtime_output_isolation_supported": true
   }
 }

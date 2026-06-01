@@ -10,6 +10,12 @@ let requirementCatalog = {
   state_requirements: [],
   byId: new Map(),
 };
+let directSuiteState = {
+  payload: null,
+  cases: [],
+  editorNotes: "",
+  status: "Idle",
+};
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -84,6 +90,45 @@ function parseCoverageItems(value) {
     .split(/\r?\n/)
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function normalizeEditedCase(item, fallbackRequirement, index) {
+  return {
+    test_id: item.test_id || `T${String(index + 1).padStart(2, "0")}`,
+    technique: item.technique || "EP",
+    requirement_target: item.requirement_target || fallbackRequirement,
+    preconditions: item.preconditions || "",
+    input: item.input || "",
+    expected_output: item.expected_output || "",
+    covered_item: item.covered_item || "",
+    priority: item.priority || "Medium",
+    checker_status: item.checker_status || "pending",
+  };
+}
+
+function renumberEditedCases() {
+  const fallbackRequirement = directSuiteState.payload?.summary?.requirement_id
+    || directSuiteState.payload?.parsed_trace?.requirement_id
+    || document.getElementById("text-requirement-id").value
+    || "adhoc_requirement";
+  directSuiteState.cases = directSuiteState.cases.map((item, index) => ({
+    ...item,
+    test_id: `T${String(index + 1).padStart(2, "0")}`,
+    requirement_target: item.requirement_target || fallbackRequirement,
+  }));
+}
+
+function hydrateDirectSuiteState(payload) {
+  const parsed = payload.parsed_trace || {};
+  const summary = payload.summary || {};
+  const cases = Array.isArray(parsed.test_cases) ? parsed.test_cases : [];
+  const fallbackRequirement = summary.requirement_id || parsed.requirement_id || "adhoc_requirement";
+  directSuiteState = {
+    payload,
+    cases: cases.map((item, index) => normalizeEditedCase(item, fallbackRequirement, index)),
+    editorNotes: payload.editor_notes || summary.editor_notes || "",
+    status: payload.manual_case_revision || summary.manual_case_revision ? "Revised suite exported." : "Idle",
+  };
 }
 
 function resetDirectPreview() {
@@ -242,6 +287,93 @@ function renderArtifactPaths(paths) {
   `;
 }
 
+function renderEditableCaseSuite() {
+  if (!directSuiteState.payload || !directSuiteState.cases.length) {
+    return "";
+  }
+  return `
+    <div class="panel-card case-editor-card" id="case-editor-shell">
+      <div class="editor-header">
+        <div>
+          <h3>Interactive Test-Case Revision</h3>
+          <p class="helper-note">Edit generated cases, add or remove rows, then export a revised JSON / CSV / Markdown suite.</p>
+        </div>
+        <div class="chip-row">
+          <span class="chip">Designer can revise cases</span>
+          <span class="chip signal">Manual export path</span>
+        </div>
+      </div>
+      <label>
+        Revision Notes
+        <textarea id="case-editor-notes" rows="3" placeholder="Example: replace generic invalid input with explicit phone-format cases and promote negative tests first.">${escapeHtml(directSuiteState.editorNotes)}</textarea>
+      </label>
+      <div class="form-actions case-editor-actions">
+        <button type="button" class="secondary-button" data-case-action="add">Add Blank Case</button>
+        <button type="button" data-case-action="save">Export Revised Suite</button>
+        <span class="status-note" id="case-editor-status">${escapeHtml(directSuiteState.status)}</span>
+      </div>
+      <div class="editable-case-grid">
+        ${directSuiteState.cases.map((item, index) => `
+          <article class="editable-case-card">
+            <div class="editable-case-top">
+              <div class="case-meta">
+                <span class="chip">${escapeHtml(item.test_id)}</span>
+                <span class="chip">${escapeHtml(item.requirement_target)}</span>
+              </div>
+              <button type="button" class="tiny-button" data-case-action="remove" data-case-index="${index}">Remove</button>
+            </div>
+            <div class="editable-case-fields">
+              <label>
+                Technique
+                <input type="text" value="${escapeHtml(item.technique)}" data-case-index="${index}" data-case-field="technique">
+              </label>
+              <label>
+                Priority
+                <input type="text" value="${escapeHtml(item.priority)}" data-case-index="${index}" data-case-field="priority">
+              </label>
+              <label>
+                Checker Status
+                <input type="text" value="${escapeHtml(item.checker_status)}" data-case-index="${index}" data-case-field="checker_status">
+              </label>
+              <label class="span-2">
+                Preconditions
+                <input type="text" value="${escapeHtml(item.preconditions)}" data-case-index="${index}" data-case-field="preconditions">
+              </label>
+              <label class="span-2">
+                Input
+                <textarea rows="3" data-case-index="${index}" data-case-field="input">${escapeHtml(item.input)}</textarea>
+              </label>
+              <label class="span-2">
+                Expected Output
+                <textarea rows="3" data-case-index="${index}" data-case-field="expected_output">${escapeHtml(item.expected_output)}</textarea>
+              </label>
+              <label class="span-2">
+                Covered Item
+                <input type="text" value="${escapeHtml(item.covered_item)}" data-case-index="${index}" data-case-field="covered_item">
+              </label>
+            </div>
+          </article>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function rerenderCaseEditor() {
+  const shell = document.getElementById("case-editor-shell");
+  if (shell) {
+    shell.outerHTML = renderEditableCaseSuite();
+  }
+}
+
+function setCaseEditorStatus(message) {
+  directSuiteState.status = message;
+  const node = document.getElementById("case-editor-status");
+  if (node) {
+    node.textContent = message;
+  }
+}
+
 function renderDesignerReview(review) {
   if (!review) {
     return "";
@@ -263,15 +395,19 @@ function renderDesignerReview(review) {
 }
 
 function renderDirectResult(payload) {
+  hydrateDirectSuiteState(payload);
   const summary = payload.summary || {};
   const parsed = payload.parsed_trace || {};
   const metrics = summary.metrics || {};
   const goldSpecFound = Boolean(metrics.gold_spec_found);
   const categoryLabel = summary.category || (summary.split === "adhoc" ? "adhoc demo input" : "dataset category unavailable");
   const frozenReplay = payload.replay_source === "frozen_formal_run" || summary.demo_mode === "frozen_formal_replay";
-  const modeMetric = frozenReplay
-    ? { label: "Run Mode", value: "Replay", note: "Frozen formal output" }
-    : { label: "Selected Candidate", value: summary.candidate_index || "n/a", note: summary.repaired ? "Repaired version accepted" : "Original candidate kept" };
+  const manualRevision = Boolean(payload.manual_case_revision || summary.manual_case_revision || summary.demo_mode === "manual_case_revision");
+  const modeMetric = manualRevision
+    ? { label: "Run Mode", value: "Edited", note: "Manual case revision exported" }
+    : frozenReplay
+      ? { label: "Run Mode", value: "Replay", note: "Frozen formal output" }
+      : { label: "Selected Candidate", value: summary.candidate_index || "n/a", note: summary.repaired ? "Repaired version accepted" : "Original candidate kept" };
   textResult.classList.remove("empty-state");
   textResult.innerHTML = `
     ${renderMetricGrid([
@@ -280,6 +416,15 @@ function renderDirectResult(payload) {
       modeMetric,
       { label: "Requirement", value: summary.requirement_id || "n/a", note: summary.split || "n/a" },
     ], 0)}
+    ${manualRevision ? `
+      <div class="panel-card">
+        <h3>Revision Status</h3>
+        <div class="chip-row">
+          <span class="chip signal">Manual case revision saved</span>
+          <span class="chip">Re-exported from edited suite</span>
+        </div>
+      </div>
+    ` : ""}
     ${frozenReplay ? `
       <div class="panel-card">
         <h3>Result Source</h3>
@@ -297,6 +442,7 @@ function renderDirectResult(payload) {
       <ul class="plain-list">${(summary.diagnostics || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
     </div>
     ${renderTestCases(parsed.test_cases || [])}
+    ${renderEditableCaseSuite()}
     ${renderArtifactPaths(payload.artifact_paths || {})}
   `;
 }
@@ -507,6 +653,50 @@ async function runDirectAnalysis() {
   }
 }
 
+async function saveRevisedSuite() {
+  if (!directSuiteState.payload || !directSuiteState.cases.length) {
+    setCaseEditorStatus("Generate a suite before editing.");
+    return;
+  }
+  setStatus("text-status", "Exporting revised suite...");
+  setCaseEditorStatus("Saving revised suite...");
+  try {
+    const summary = directSuiteState.payload.summary || {};
+    const parsed = directSuiteState.payload.parsed_trace || {};
+    const payload = await postJson("/api/revise-test-suite", {
+      requirement_text: document.getElementById("text-requirement").value,
+      requirement_id: summary.requirement_id || parsed.requirement_id || document.getElementById("text-requirement-id").value,
+      split: summary.split || document.getElementById("text-split").value,
+      category: parsed.category || summary.category || null,
+      analysis: parsed.analysis || "",
+      pattern: parsed.pattern || "",
+      steps: parsed.steps || [],
+      verification: parsed.verification || "",
+      test_cases: directSuiteState.cases.map((item) => ({
+        test_id: item.test_id,
+        technique: item.technique,
+        requirement_target: item.requirement_target,
+        preconditions: item.preconditions,
+        input: item.input,
+        expected_output: item.expected_output,
+        covered_item: item.covered_item,
+        priority: item.priority,
+        checker_status: item.checker_status,
+      })),
+      risk_assessment: parsed.risk_assessment || summary.risk_assessment || null,
+      state_model: parsed.state_model || summary.state_model || null,
+      designer_review: summary.designer_review || null,
+      editor_notes: directSuiteState.editorNotes,
+    });
+    renderDirectResult(payload);
+    setStatus("text-status", "Revised suite exported.");
+    setCaseEditorStatus("Revised suite exported.");
+  } catch (error) {
+    setStatus("text-status", "Revision export failed.");
+    setCaseEditorStatus(error.message);
+  }
+}
+
 async function runStateModelAnalysis() {
   setStatus("state-status", "Running...");
   stateResult.classList.remove("empty-state");
@@ -562,6 +752,73 @@ async function runCsvAnalysis() {
 textForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   await runDirectAnalysis();
+});
+
+textResult.addEventListener("input", (event) => {
+  const target = event.target;
+  if (target.id === "case-editor-notes") {
+    directSuiteState.editorNotes = target.value;
+    return;
+  }
+  const field = target.dataset.caseField;
+  const index = Number(target.dataset.caseIndex);
+  if (!field || Number.isNaN(index) || !directSuiteState.cases[index]) {
+    return;
+  }
+  directSuiteState.cases[index][field] = target.value;
+  setCaseEditorStatus("Unsaved case edits.");
+});
+
+textResult.addEventListener("click", async (event) => {
+  const actionTarget = event.target.closest("[data-case-action]");
+  if (!actionTarget) {
+    return;
+  }
+  const action = actionTarget.dataset.caseAction;
+  if (action === "add") {
+    const fallbackRequirement = directSuiteState.payload?.summary?.requirement_id
+      || directSuiteState.payload?.parsed_trace?.requirement_id
+      || document.getElementById("text-requirement-id").value
+      || "adhoc_requirement";
+    directSuiteState.cases.push(
+      normalizeEditedCase(
+        {
+          technique: "EP",
+          requirement_target: fallbackRequirement,
+          preconditions: "",
+          input: "",
+          expected_output: "",
+          covered_item: "",
+          priority: "Medium",
+          checker_status: "revised",
+        },
+        fallbackRequirement,
+        directSuiteState.cases.length,
+      ),
+    );
+    renumberEditedCases();
+    directSuiteState.status = "Blank case added.";
+    rerenderCaseEditor();
+    return;
+  }
+  if (action === "remove") {
+    if (directSuiteState.cases.length <= 1) {
+      setCaseEditorStatus("At least one test case must remain.");
+      return;
+    }
+    const index = Number(actionTarget.dataset.caseIndex);
+    if (Number.isNaN(index) || !directSuiteState.cases[index]) {
+      return;
+    }
+    directSuiteState.cases.splice(index, 1);
+    renumberEditedCases();
+    directSuiteState.status = "Case removed.";
+    rerenderCaseEditor();
+    return;
+  }
+  if (action === "save") {
+    await saveRevisedSuite();
+  }
 });
 
 stateForm.addEventListener("submit", async (event) => {

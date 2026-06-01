@@ -1,3 +1,17 @@
+<div style="height: 88vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+  <div style="font-size: 34px; font-weight: 700; margin-bottom: 44px;">Detailed Test Design and Execution</div>
+  <div style="font-size: 24px; font-weight: 600; margin-bottom: 20px;">Team 7</div>
+  <div style="font-size: 19px; line-height: 1.9;">
+    2351441 许奕<br>
+    2351039 王相<br>
+    2350283 康凤轩<br>
+    2352746 张洛梧<br>
+    2350217 陈奕玮
+  </div>
+</div>
+
+<div class="page"></div>
+
 # Detailed Test Design and Execution
 
 ## 1. Target Application and Selected Major Module
@@ -212,7 +226,7 @@ Together, the black-box and white-box tests form a layered design. The black-box
 | Item | Observed result |
 | --- | --- |
 | Module-specific executable tests | `15 passed` |
-| Repository regression suite at report-preparation time | `38 passed` |
+| Repository regression suite at report-preparation time | `45 passed` |
 | Statement coverage on the reference module | `100%` |
 | Branch coverage on the reference module | `100%` |
 | Mutation result | `4 / 4 mutants killed` |

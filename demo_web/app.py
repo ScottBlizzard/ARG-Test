@@ -13,9 +13,19 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from src.evaluation.metrics import evaluate_suite
 from src.input_loader import load_requirements_from_csv
 from src.pipeline import ARGTestPipeline
-from src.utils import extract_requirement_id
+from src.schemas import (
+    ParsedTrace,
+    RiskAssessment,
+    StateCoveragePlan,
+    StateModel,
+    StateTestSequence,
+    StateTransition,
+    TestCase,
+)
+from src.utils import extract_requirement_id, gold_spec_path
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -97,6 +107,34 @@ class AnalyzeTextRequest(BaseModel):
     designer_review_notes: str | None = None
 
 
+class EditedTestCaseRequest(BaseModel):
+    test_id: str | None = None
+    technique: str = "EP"
+    requirement_target: str | None = None
+    preconditions: str = ""
+    input: str = ""
+    expected_output: str = ""
+    covered_item: str = ""
+    priority: str = "Medium"
+    checker_status: str = "revised"
+
+
+class ReviseTestSuiteRequest(BaseModel):
+    requirement_text: str = Field(min_length=1)
+    requirement_id: str
+    split: str = "adhoc"
+    category: str | None = None
+    analysis: str = ""
+    pattern: str = ""
+    steps: list[str] = Field(default_factory=list)
+    verification: str = ""
+    test_cases: list[EditedTestCaseRequest] = Field(default_factory=list)
+    risk_assessment: dict[str, Any] | None = None
+    state_model: dict[str, Any] | None = None
+    designer_review: dict[str, Any] | None = None
+    editor_notes: str | None = None
+
+
 def _read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -121,6 +159,196 @@ def _build_session_root(prefix: str) -> Path:
     session_root = WEB_RUNS_ROOT / f"{prefix}_{stamp}"
     session_root.mkdir(parents=True, exist_ok=True)
     return session_root
+
+
+def _build_risk_assessment(payload: dict[str, Any] | None) -> RiskAssessment | None:
+    if not payload:
+        return None
+    return RiskAssessment(
+        level=str(payload.get("level", "Medium")),
+        score=float(payload.get("score", 0.0) or 0.0),
+        rule_count=int(payload.get("rule_count", 0) or 0),
+        numeric_constraint_count=int(payload.get("numeric_constraint_count", 0) or 0),
+        technique_count=int(payload.get("technique_count", 0) or 0),
+        drivers=[str(item) for item in payload.get("drivers", [])],
+        recommended_focus=[str(item) for item in payload.get("recommended_focus", [])],
+    )
+
+
+def _build_state_model(payload: dict[str, Any] | None) -> StateModel | None:
+    if not payload:
+        return None
+
+    def _build_transition(item: dict[str, Any], *, default_legal: bool) -> StateTransition:
+        return StateTransition(
+            source_state=str(item.get("source_state", "")),
+            trigger=str(item.get("trigger", "")),
+            target_state=str(item.get("target_state", "")),
+            legal=bool(item.get("legal", default_legal)),
+            source_rule=item.get("source_rule"),
+        )
+
+    def _build_sequence(item: dict[str, Any]) -> StateTestSequence:
+        return StateTestSequence(
+            sequence_id=str(item.get("sequence_id", "")),
+            coverage_goal=str(item.get("coverage_goal", "")),
+            steps=[str(step) for step in item.get("steps", [])],
+            covered_states=[str(state) for state in item.get("covered_states", [])],
+            covered_transitions=[str(transition) for transition in item.get("covered_transitions", [])],
+        )
+
+    coverage_plans = [
+        StateCoveragePlan(
+            coverage_goal=str(plan.get("coverage_goal", "")),
+            sequence_count=int(plan.get("sequence_count", 0) or 0),
+            fully_covered=bool(plan.get("fully_covered", False)),
+            sequences=[_build_sequence(sequence) for sequence in plan.get("sequences", [])],
+        )
+        for plan in payload.get("coverage_plans", [])
+    ]
+
+    return StateModel(
+        states=[str(state) for state in payload.get("states", [])],
+        start_states=[str(state) for state in payload.get("start_states", [])],
+        legal_transitions=[_build_transition(item, default_legal=True) for item in payload.get("legal_transitions", [])],
+        illegal_transitions=[_build_transition(item, default_legal=False) for item in payload.get("illegal_transitions", [])],
+        coverage_plans=coverage_plans,
+        notes=[str(note) for note in payload.get("notes", [])],
+    )
+
+
+def _build_test_cases(rows: list[EditedTestCaseRequest], requirement_id: str) -> list[TestCase]:
+    if not rows:
+        raise HTTPException(status_code=400, detail="At least one edited test case is required.")
+    cases: list[TestCase] = []
+    for index, row in enumerate(rows, start=1):
+        cases.append(
+            TestCase(
+                test_id=f"T{index:02d}",
+                technique=row.technique.strip() or "EP",
+                requirement_target=(row.requirement_target or requirement_id).strip() or requirement_id,
+                preconditions=row.preconditions.strip(),
+                input_data=row.input.strip(),
+                expected_output=row.expected_output.strip(),
+                covered_item=row.covered_item.strip(),
+                priority=row.priority.strip() or "Medium",
+                checker_status=row.checker_status.strip() or "revised",
+            )
+        )
+    return cases
+
+
+def _build_manual_review_payload(
+    designer_review: dict[str, Any] | None,
+    editor_notes: str | None,
+) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
+    forced = [str(item) for item in (designer_review or {}).get("forced_techniques", []) if str(item).strip()]
+    coverage = [str(item) for item in (designer_review or {}).get("coverage_items", []) if str(item).strip()]
+    notes: list[str] = []
+    original_notes = str((designer_review or {}).get("designer_review_notes", "")).strip()
+    if original_notes:
+        notes.append(original_notes)
+    revised_notes = str(editor_notes or "").strip()
+    if revised_notes:
+        notes.append(f"Manual test-case revision notes: {revised_notes}")
+    if not forced and not coverage and not notes:
+        return [], None
+    payload = {
+        "forced_techniques": forced,
+        "coverage_items": coverage,
+        "designer_review_notes": " | ".join(notes),
+        "manual_case_revision": True,
+    }
+    return [payload], payload
+
+
+def _build_revised_suite_payload(payload: ReviseTestSuiteRequest) -> dict[str, Any]:
+    requirement_id = extract_requirement_id(payload.requirement_text, payload.requirement_id)
+    session_root = _build_session_root("revised")
+    pipeline = _build_pipeline(
+        provider=DEFAULT_PROVIDER,
+        model=DEFAULT_MODEL,
+        candidates=1,
+        api_mode=DEFAULT_API_MODE,
+        seed=DEFAULT_SEED,
+        temperature=DEFAULT_TEMPERATURE,
+        top_p=DEFAULT_TOP_P,
+        output_root=session_root,
+    )
+
+    parsed = ParsedTrace(
+        requirement_id=requirement_id,
+        analysis=payload.analysis.strip(),
+        pattern=payload.pattern.strip(),
+        steps=[str(step).strip() for step in payload.steps if str(step).strip()],
+        verification=payload.verification.strip(),
+        test_cases=_build_test_cases(payload.test_cases, requirement_id),
+        raw_text="",
+        category=payload.category,
+        risk_assessment=_build_risk_assessment(payload.risk_assessment),
+        state_model=_build_state_model(payload.state_model),
+    )
+    parsed.raw_text = parsed.to_markdown()
+
+    revised_candidate = pipeline.assess_trace(
+        parsed,
+        requirement_text=payload.requirement_text,
+        source="manual_revision",
+        repaired=False,
+        candidate_index=1,
+        generation_metadata={"source": "manual_revision"},
+    )
+    metrics = evaluate_suite(
+        revised_candidate.parsed_trace.test_cases,
+        gold_spec_path(pipeline.config.paths.root, payload.split, requirement_id),
+    )
+    metrics["checker_score"] = revised_candidate.score
+    metrics["repaired"] = revised_candidate.repaired
+
+    candidate_controls, manual_review = _build_manual_review_payload(payload.designer_review, payload.editor_notes)
+    run_context = pipeline.build_requirement_run_context(payload.split, 1)
+    run_context["manual_case_revision"] = True
+    if payload.editor_notes:
+        run_context["manual_case_revision_notes"] = payload.editor_notes.strip()
+
+    pipeline.exporter.export_run(
+        requirement_id,
+        payload.split,
+        [parsed.to_markdown()],
+        [{"candidate_index": 1, "source": "manual_revision"}],
+        revised_candidate,
+        metrics,
+        run_context,
+        candidate_controls,
+    )
+
+    summary = {
+        "requirement_id": requirement_id,
+        "split": payload.split,
+        "category": revised_candidate.parsed_trace.category,
+        "score": revised_candidate.score,
+        "repaired": revised_candidate.repaired,
+        "candidate_index": 1,
+        "generation_metadata": {"source": "manual_revision"},
+        "candidate_controls": candidate_controls,
+        "risk_assessment": revised_candidate.parsed_trace.risk_assessment.to_dict() if revised_candidate.parsed_trace.risk_assessment else None,
+        "state_model": revised_candidate.parsed_trace.state_model.to_dict() if revised_candidate.parsed_trace.state_model else None,
+        "designer_review": manual_review,
+        "metrics": metrics,
+        "diagnostics": revised_candidate.diagnostics(),
+        "demo_mode": "manual_case_revision",
+        "manual_case_revision": True,
+        "editor_notes": payload.editor_notes.strip() if payload.editor_notes else "",
+    }
+    response_payload = _load_run_payload(
+        pipeline.config.paths.runtime_root,
+        payload.split,
+        requirement_id,
+        summary,
+    )
+    response_payload["manual_case_revision"] = True
+    response_payload["editor_notes"] = payload.editor_notes.strip() if payload.editor_notes else ""
+    return response_payload
 
 
 def _ensure_provider_ready(provider: str) -> None:
@@ -504,6 +732,11 @@ def analyze_text(payload: AnalyzeTextRequest) -> dict[str, Any]:
         coverage_items=payload.coverage_items,
         designer_review_notes=payload.designer_review_notes,
     )
+
+
+@app.post("/api/revise-test-suite")
+def revise_test_suite(payload: ReviseTestSuiteRequest) -> dict[str, Any]:
+    return _build_revised_suite_payload(payload)
 
 
 @app.post("/api/state-model")

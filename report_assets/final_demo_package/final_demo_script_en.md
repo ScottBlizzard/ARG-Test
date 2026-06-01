@@ -10,25 +10,23 @@ Hello. This short demo shows the final-project tool itself rather than the full 
 
 We will use a stable mock run for live interaction, and then connect it to our frozen formal results and executable evidence. This way, the recording shows the real workflow without depending on a live API call.
 
-## 0:20 - 1:10 Live command execution
+## 0:20 - 1:15 Direct input and structured generation
 
-First, we demonstrate direct text input. The tool accepts a requirement from standard input and produces a structured testing result together with risk and state-model metadata.
-
-Second, we demonstrate CSV batch input. This shows that the system can ingest multiple requirements from a structured spreadsheet-like source and export separate artifacts for each one.
-
-Third, we demonstrate state-model extraction on a workflow requirement. This is the final-project feature that closes the white-box modeling requirement at the system-behavior level.
+First, we demonstrate direct input. The tool accepts a requirement and produces a structured testing result together with risk and state-model metadata.
 
 At this stage, the point is not final benchmark quality yet. The point is to show that the tool really runs, accepts multiple input modes, and produces structured outputs automatically.
 
-## 1:10 - 1:50 Inspect direct-text output
+## 1:15 - 1:55 Interactive review and revised-suite export
 
-Now we open the direct-text summary.
+Now we continue on the Direct Input page.
 
-Here we can see that the output is not just a free-form answer. It includes the selected candidate profile, a checker score, a risk assessment, and an explicit state model with legal transitions and coverage plans.
+Here we can see that the output is not just a free-form answer. It includes the selected candidate profile, a checker score, a risk assessment, and explicit generated test cases.
 
-This is important because our final system is designed as an auditable testing pipeline rather than a one-shot prompt.
+Then we show the designer-in-the-loop review step. We adjust technique emphasis before generation, and after generation we directly edit one test case, add one new negative case, and export a revised suite.
 
-## 1:50 - 2:20 Inspect CSV output
+This is important because the course brief requires interactive review and modification of coverage items, strategy, and test cases. Our final Direct Input workflow now supports all three parts in one interface.
+
+## 1:55 - 2:20 Inspect CSV output
 
 Next, we open one result from the CSV batch run.
 
@@ -58,7 +56,7 @@ Our local seeded pipeline is reproducible, and submission-level reproducibility 
 
 Finally, we show the detailed module evidence for coupon_discount_engine.
 
-This part demonstrates that the final project is not limited to requirement-level design metrics. We also built executable black-box and white-box tests, achieved 100 percent statement and branch coverage on the selected reference module, and killed 4 out of 4 seeded mutants.
+This part demonstrates that the final project is not limited to requirement-level design metrics. We also built executable black-box and white-box tests, achieved 100 percent statement and branch coverage on the selected reference module, and now pass 44 repository-level tests overall, while still killing 4 out of 4 seeded mutants.
 
 ## 4:15 - 4:30 Closing
 

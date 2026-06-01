@@ -4,24 +4,24 @@
 
 - Sample size: `100`
 - Unique requirement files used before cycling: `66`
-- Total mock/local processing time: `1.1331 s`
-- Average mock processing time per requirement: `0.0113 s`
-- Maximum single-requirement mock processing time: `0.0187 s`
+- Total mock/local processing time: `0.3646 s`
+- Average mock processing time per requirement: `0.0036 s`
+- Maximum single-requirement mock processing time: `0.0056 s`
 - Passes NFR 4.1.1 local-path threshold (100 requirements within 5 seconds): `true`
 - Passes NFR 4.1.2 local-path threshold (single requirement within 2 seconds): `true`
 
 | Requirement preview | Seconds |
 | --- | ---: |
-| age_restricted_product_purchase_validation | 0.0143 |
-| backorder_policy_and_eta | 0.0123 |
-| cart_item_quantity_limit | 0.011 |
-| cart_merge_on_login | 0.01 |
-| cart_stock_check_on_add | 0.0099 |
-| cash_on_delivery_eligibility | 0.0096 |
-| checkout_address_postcode_format | 0.011 |
-| checkout_address_required_fields | 0.0127 |
-| coupon_code_format_validation | 0.0109 |
-| coupon_expiry_and_timezone | 0.0121 |
+| age_restricted_product_purchase_validation | 0.0056 |
+| backorder_policy_and_eta | 0.0041 |
+| cart_item_quantity_limit | 0.0037 |
+| cart_merge_on_login | 0.0033 |
+| cart_stock_check_on_add | 0.0033 |
+| cash_on_delivery_eligibility | 0.0034 |
+| checkout_address_postcode_format | 0.0036 |
+| checkout_address_required_fields | 0.0037 |
+| coupon_code_format_validation | 0.0034 |
+| coupon_expiry_and_timezone | 0.0032 |
 | ... 90 additional requirements omitted from preview ... | |
 
 ## Usability
@@ -45,8 +45,8 @@
 
 - `src/` Python modules: `27`
 - experiment scripts: `19`
-- test files: `7`
-- test cases: `38`
+- test files: `8`
+- test cases: `45`
 - pytest exit code: `0`
-- pytest summary: `38 passed in 3.74s`
+- pytest summary: `45 passed, 1 warning in 1.41s`
 - runtime output isolation supported: `true`

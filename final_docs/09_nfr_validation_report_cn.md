@@ -17,9 +17,9 @@ Latest local/mock benchmark:
 
 - Sample size: `100` requirement jobs
 - Unique requirement files used before cycling: `66`
-- Total processing time: `1.1331 s`
-- Average processing time per requirement: `0.0113 s`
-- Maximum single-requirement processing time: `0.0187 s`
+- Total processing time: `0.3646 s`
+- Average processing time per requirement: `0.0036 s`
+- Maximum single-requirement processing time: `0.0056 s`
 - NFR 4.1.1 local-path threshold, `100 requirements within 5 seconds`: `passed`
 - NFR 4.1.2 local-path threshold, `single requirement within 2 seconds`: `passed`
 
@@ -51,6 +51,8 @@ The Web demo provides four main pages:
 - State Model
 - Formal Evidence
 
+The Direct Input page now also supports post-generation manual test-case editing and revised-suite export, which strengthens the required interactive review path rather than limiting the UI to one-shot generation only.
+
 Conclusion: the final system exceeds the minimal input requirement because it supports plain files, direct text, CSV batches, and a frontend demonstration path.
 
 ## 3. Security
@@ -78,9 +80,9 @@ Latest repository evidence:
 
 - `src/` Python modules: `27`
 - Experiment scripts: `19`
-- Test files: `7`
-- Automated test cases: `38`
-- Pytest summary: `38 passed in 3.74s`
+- Test files: `8`
+- Automated test cases: `45`
+- Pytest summary: `45 passed, 1 warning in 1.41s`
 - Runtime output isolation supported: `true`
 
 Key maintainability structures:

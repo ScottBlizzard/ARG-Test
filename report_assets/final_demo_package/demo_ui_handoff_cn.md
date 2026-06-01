@@ -59,6 +59,12 @@
 3. `State-Model Extraction`
 4. `Formal Evidence Dashboard`
 
+其中 `Direct Requirement Input` 现在不只是“点一下生成”。它还包括：
+
+- 生成前的 interactive review controls
+- 生成后的 test-case editor
+- revised-suite export
+
 你录视频时必须把这四块都体现到，因为它们分别对应老师需求里的：
 
 - `FR 1.0` 输入
@@ -73,9 +79,10 @@
 
 1. 先说这个页面是 `ARG-Test` 的 demo console
 2. 先做一次 `mock` 交互，证明工具真的能跑
-3. 再展示 `CSV` 和 `state model`
-4. 最后切到 `Formal Evidence Dashboard`
-5. 强调最终质量结论来自 frozen official results
+3. 在 `Direct Input` 里继续展示生成后编辑 test case 并导出 revised suite
+4. 再展示 `CSV` 和 `state model`
+5. 最后切到 `Formal Evidence Dashboard`
+6. 强调最终质量结论来自 frozen official results
 
 不要一上来就说：
 

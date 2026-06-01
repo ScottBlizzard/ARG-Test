@@ -98,6 +98,23 @@ Recommended policy:
 
 - use `mock` for the recorded live interaction
 - use the frozen formal results in the dashboard for final-quality claims
+- use the Direct Input review controls to adjust technique emphasis and coverage focus before generation
+- use the Direct Input case editor to revise generated test cases and export a reviewed suite after generation
+
+The Web demo exposes four tabs:
+
+- `Direct Input`
+- `CSV Batch`
+- `State Model`
+- `Formal Evidence`
+
+The `Direct Input` tab now supports the full designer-in-the-loop cycle required by the course brief:
+
+1. enter or select a requirement
+2. add pre-generation review guidance
+3. generate a structured suite
+4. edit generated test cases in place
+5. export the revised suite with refreshed checker and coverage diagnostics
 
 ## Formal run workflow
 

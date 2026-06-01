@@ -182,6 +182,64 @@ def test_demo_web_designer_review_guidance_overrides_frozen_replay() -> None:
     assert review["designer_review_notes"] == "Emphasize negative financial-rule cases first."
 
 
+def test_demo_web_revise_test_suite_exports_manual_revision() -> None:
+    response = client.post(
+        "/api/revise-test-suite",
+        json={
+            "requirement_text": "Requirement ID: revise_demo\nRules:\n1. A request starts in Draft.\n2. Submit is allowed only from Draft and moves the request to Submitted.\n3. Cancel is allowed only from Draft and moves the request to Cancelled.",
+            "requirement_id": "revise_demo",
+            "split": "adhoc",
+            "category": "workflow_state",
+            "analysis": "Identify the Draft source state and two outgoing actions.",
+            "pattern": "State Transition + EP",
+            "steps": [
+                "Derive valid state transitions from the requirement text.",
+                "Preserve one valid path and one invalid attempt in the final suite.",
+            ],
+            "verification": "Check that valid transitions are explicit and illegal transitions remain rejected.",
+            "test_cases": [
+                {
+                    "technique": "State Transition",
+                    "requirement_target": "revise_demo",
+                    "preconditions": "Request is in Draft.",
+                    "input": "Submit the request.",
+                    "expected_output": "State changes to Submitted.",
+                    "covered_item": "Draft -> Submitted legal transition",
+                    "priority": "High",
+                    "checker_status": "covered",
+                },
+                {
+                    "technique": "EP",
+                    "requirement_target": "revise_demo",
+                    "preconditions": "Request is in Submitted.",
+                    "input": "Try to submit again.",
+                    "expected_output": "Action is rejected and state remains Submitted.",
+                    "covered_item": "Repeated submit is invalid",
+                    "priority": "Medium",
+                    "checker_status": "revised",
+                },
+            ],
+            "designer_review": {
+                "forced_techniques": ["State Transition"],
+                "coverage_items": ["illegal repeated submit"],
+                "designer_review_notes": "Keep the state path short and explicit.",
+            },
+            "editor_notes": "Added an explicit invalid repeated-submit case.",
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["manual_case_revision"] is True
+    assert payload["editor_notes"] == "Added an explicit invalid repeated-submit case."
+    assert payload["summary"]["manual_case_revision"] is True
+    assert payload["summary"]["demo_mode"] == "manual_case_revision"
+    assert payload["summary"]["designer_review"]["manual_case_revision"] is True
+    assert len(payload["parsed_trace"]["test_cases"]) == 2
+    assert payload["parsed_trace"]["test_cases"][1]["checker_status"] == "revised"
+    artifact_root = REPO_ROOT / payload["artifact_paths"]["runtime_root"]
+    assert artifact_root.exists()
+
+
 def test_demo_web_analyze_csv_mock() -> None:
     csv_bytes = BytesIO(
         (

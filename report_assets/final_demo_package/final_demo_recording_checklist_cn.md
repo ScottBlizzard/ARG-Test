@@ -22,15 +22,18 @@ python -m uvicorn demo_web.app:app --host 127.0.0.1 --port 8000
 2. 打开 `Formal Evidence` tab，展示 `16` 个 test requirements、`Avg Overall Coverage = 61.5%`、baseline 和 category generalization。
 3. 切到 `Direct Input`，选择 `pickup_station_contact_validation`，点击 `Generate Test Suite`。
 4. 指出页面显示 `Replay`、`Frozen formal replay`、`Matches Formal Evidence coverage`、`No live API call`。
-5. 切到 `CSV Batch`，上传 sample CSV，展示匹配正式样例的行显示 `Frozen replay`。
-6. 切到 `State Model`，选择 `warehouse_pickup_order_workflow`，点击 `Build State Model`。
-7. 展示 `States = 5`、`Legal Transitions = 4`、`Illegal Transitions = 2`、`Coverage Plans = 2`。
-8. 最后回到 `Formal Evidence`，强调正式结论来自冻结结果，不来自临时 ad hoc mock。
+5. 向下滚动到 case editor，修改一条 case，再新增一条负例，点击 `Export Revised Suite`。
+6. 强调这一步说明设计者可以在生成后直接修改测试用例并重新导出。
+7. 切到 `CSV Batch`，上传 sample CSV，展示匹配正式样例的行显示 `Frozen replay`。
+8. 切到 `State Model`，选择 `warehouse_pickup_order_workflow`，点击 `Build State Model`。
+9. 展示 `States = 5`、`Legal Transitions = 4`、`Illegal Transitions = 2`、`Coverage Plans = 2`。
+10. 最后回到 `Formal Evidence`，强调正式结论来自冻结结果，不来自临时 ad hoc mock。
 
 ## 3. 必须讲清楚的话
 
 - `mock` 只用于稳定交互，不是 final benchmark 本身。
 - 正式样例的 Direct/CSV 结果会 replay frozen formal output，所以 coverage 与 Formal Evidence 一致。
+- Direct Input 现在支持生成后编辑测试用例并重新导出 reviewed suite。
 - 如果手动改 requirement 文本，页面会走本地 mock 生成，这种结果不能引用为正式实验质量。
 - `checker_score` 不是正确率；它是结构化契约检查分数。
 - `overall_coverage` 来自人工 gold spec 的 obligation 覆盖，不是模型训练标签。
