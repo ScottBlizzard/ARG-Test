@@ -96,6 +96,9 @@ class BaseLLMClient(ABC):
             "candidate_index": (control or {}).get("candidate_index"),
             "profile_label": (control or {}).get("profile_label"),
             "profile_instruction": (control or {}).get("profile_instruction"),
+            "forced_techniques": (control or {}).get("forced_techniques"),
+            "coverage_items": (control or {}).get("coverage_items"),
+            "designer_review_notes": (control or {}).get("designer_review_notes"),
             "response_id": response_id,
             "system_fingerprint": system_fingerprint,
             "finish_reason": finish_reason,
@@ -184,13 +187,16 @@ class MockLLMClient(BaseLLMClient):
         candidate_index: int,
         control: dict[str, Any] | None = None,
     ) -> str:
-        techniques = infer_techniques(requirement_text)
+        forced_techniques = list(control.get("forced_techniques") or []) if control else []
+        techniques = forced_techniques or infer_techniques(requirement_text)
         rules = extract_rule_lines(requirement_text)
         numeric_hints = extract_numeric_hints(requirement_text)
         analysis_lines = [f"- Requirement target: {requirement_id}"]
         analysis_lines.extend(f"- Rule: {rule}" for rule in rules[:6])
         if control and control.get("profile_label"):
             analysis_lines.append(f"- Candidate focus: {control['profile_label']}")
+        if control and control.get("coverage_items"):
+            analysis_lines.append(f"- Designer coverage focus: {'; '.join(control['coverage_items'])}")
         if numeric_hints:
             analysis_lines.extend(
                 f"- Numeric constraint: {hint['field']} -> {hint.get('low')} to {hint.get('high', 'threshold')}" for hint in numeric_hints[:4]
@@ -201,6 +207,8 @@ class MockLLMClient(BaseLLMClient):
         ]
         if control and control.get("profile_instruction"):
             pattern_lines.append(f"- Deterministic profile: {control['profile_instruction']}")
+        if control and control.get("designer_review_notes"):
+            pattern_lines.append(f"- Designer review note: {control['designer_review_notes']}")
         steps = []
         step_index = 1
         if "EP" in techniques:

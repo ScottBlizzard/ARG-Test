@@ -1,8 +1,37 @@
 # Detailed Test Design and Execution
 
-## 1. Selected Major Module
+## 1. Target Application and Selected Major Module
 
-This document treats `coupon_discount_engine` as the selected major feature of the target e-commerce promotion application. It is not the whole AutoTestDesign tool itself. Instead, it is the executable feature used to demonstrate that the test designs produced or refined with ARG-Test can be translated into concrete black-box and white-box tests.
+### 1.1 Target Application Context
+
+The independent application under test in this final project is **MiniShop Checkout**, a compact e-commerce checkout prototype implemented in:
+
+- `target_app/minishop_checkout/`
+
+Its formal definition is recorded in:
+
+- `final_docs/12_target_application_definition_cn.md`
+
+`MiniShop Checkout` includes the following concrete application modules:
+
+- cart and checkout preview orchestration
+- promotion and coupon logic
+- shipping fee calculation
+- tax and order-total calculation
+- payment-card validation
+- pickup-station and recipient validation
+
+This document focuses on one selected major module of that application, as required by the assignment.
+
+### 1.2 Selected Major Module
+
+This document treats `coupon_discount_engine` as the selected major feature/module of `MiniShop Checkout`. It belongs to the application's **Promotion service** and is not the AutoTestDesign tool itself.
+
+Its role inside the final project is:
+
+- to preserve a concrete and independently executable application module inside `MiniShop Checkout`
+- to show that the test designs produced or refined with `ARG-Test` can be translated into black-box and white-box tests
+- to provide executable evidence for a high-risk financial-rule component of the target application
 
 This module is a strong detailed-execution target because it combines:
 
@@ -36,10 +65,15 @@ These rules define the coverage items used in the rest of the document. The blac
 
 | Item | Path |
 | --- | --- |
+| Target application package | `target_app/minishop_checkout/` |
+| Promotion-service entry point | `target_app/minishop_checkout/promotion.py` |
+| Checkout integration path | `target_app/minishop_checkout/checkout.py` |
 | Reference implementation | `reference_impl/coupon_discount_engine.py` |
 | Black-box tests | `tests/test_coupon_discount_engine_blackbox.py` |
 | White-box tests | `tests/test_coupon_discount_engine_whitebox.py` |
 | Seeded mutants | `reference_impl/coupon_discount_engine_mutants.py` |
+
+The detailed module is executed through the preserved `reference_impl` path so that the strongest existing `pytest`, coverage, and mutation evidence remains valid. At the same time, the application package now imports the same coupon engine through the promotion-service layer, which means the detailed module is part of the chosen target application rather than an isolated helper script.
 
 ## 3. Test Environment and Tooling
 
@@ -207,36 +241,7 @@ Second, the white-box suite is not decorative. It exercises the explicit negativ
 
 Third, the combined suite is compact. With only `15` module-focused cases, it achieves complete statement and branch coverage on the selected implementation, which is a good tradeoff between completeness and maintainability for this module-level validation.
 
-## 7. Web Demo Consistency Validation
-
-The final delivery also validates that the Web demo presents the same formal evidence used by the report instead of mixing official results with unrelated local mock outputs. This check matters because the demo is the primary presentation surface for the final defense, while the formal result bundle remains the source of quantitative evidence.
-
-![Direct Frozen Replay Evidence](figures/web_demo_direct_frozen_replay.png)
-
-The Direct tab now uses a formal requirement catalog. When a built-in formal test requirement is selected, the backend returns `frozen_formal_run` replay data from the archived result snapshot. This prevents mismatches such as a selected label showing one coverage value while the generated local mock result displays another value.
-
-| Web demo consistency check | Observed result |
-| --- | --- |
-| Direct-tab formal catalog replay | `16 / 16` formal test requirements replayed frozen outputs |
-| CSV sample replay | `2 / 2` matching CSV rows replayed frozen outputs |
-| Formal dashboard aggregate | Average overall coverage shown as `61.5%` |
-| Repository regression after Web demo fixes | `38 passed` |
-
-The State-Model tab was also checked on the five workflow examples included in the demo catalog. Each catalog workflow now produces a non-empty legal-transition model, and illegal transitions are only reported when the requirement text explicitly supports them.
-
-![State Model Extraction Evidence](figures/web_demo_state_model_extraction.png)
-
-| Workflow example | States | Legal transitions | Illegal transitions |
-| --- | ---: | ---: | ---: |
-| `order_approval_state_machine` | `6` | `7` | `0` |
-| `order_split_shipment_state_machine` | `4` | `3` | `2` |
-| `payment_3ds_authentication_flow` | `6` | `6` | `2` |
-| `return_exchange_approval_workflow` | `9` | `8` | `1` |
-| `warehouse_pickup_order_workflow` | `5` | `4` | `2` |
-
-This Web-level validation does not replace the detailed executable module evidence. Instead, it protects the final demonstration from interpretation errors: official quantitative results come from frozen formal replay, while ad hoc edited inputs remain clearly labeled as local mock generation.
-
-## 8. Mutation-Based Usefulness Demonstration
+## 7. Mutation-Based Usefulness Demonstration
 
 The evaluation also includes defect-seeded usefulness evidence. Four representative mutants were created:
 
@@ -260,7 +265,7 @@ Mutation-to-test mapping:
 
 This is important because it shows that the detailed suite is not only structurally complete. It is also effective at detecting realistic logic defects that correspond to the selected business rules and boundaries.
 
-## 9. Evidence Paths
+## 8. Evidence Paths
 
 Primary evidence files:
 
@@ -268,12 +273,9 @@ Primary evidence files:
 - `final_docs/execution_evidence/coupon_discount_engine_coverage.xml`
 - `final_docs/execution_evidence/coupon_discount_engine_branch_coverage.xml`
 - `final_docs/execution_evidence/coupon_discount_engine_mutation_demo.md`
-- `demo_web/app.py`
-- `tests/test_demo_web_api.py`
-- `report_assets/final_demo_package/frontend_focus/formal_results_snapshot/`
 
-## 10. Conclusion
+## 9. Conclusion
 
-The `coupon_discount_engine` module is supported by a complete detailed-design and execution chain. The module is covered by multiple black-box techniques, executable white-box tests, complete statement and branch coverage, and a successful mutation demonstration. This makes it a credible detailed anchor for the overall ARG-Test submission rather than a merely illustrative example.
+The `coupon_discount_engine` module is supported by a complete detailed-design and execution chain. The module is covered by multiple black-box techniques, executable white-box tests, complete statement and branch coverage, and a successful mutation demonstration. This makes it a credible detailed anchor for the overall `MiniShop Checkout` validation package rather than a merely illustrative example.
 
-Most importantly, the evidence chain is complete: requirement rules are transformed into coverage items, coverage items are mapped to executable `pytest` tests, the tests are run against a reference implementation, and the resulting suite is checked with both coverage and mutation evidence. The result is a traceable module-level validation package that connects test case design, test tool implementation, and test result analysis.
+Most importantly, the evidence chain is complete: requirement rules are transformed into coverage items, coverage items are mapped to executable `pytest` tests, the tests are run against the selected `MiniShop Checkout` promotion module, and the resulting suite is checked with both coverage and mutation evidence. The result is a traceable module-level validation package that connects test case design, test tool implementation, and test result analysis.

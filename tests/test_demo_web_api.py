@@ -156,6 +156,32 @@ def test_demo_web_analyze_text_mock() -> None:
     assert payload["summary"]["metrics"]["gold_spec_found"] is False
 
 
+def test_demo_web_designer_review_guidance_overrides_frozen_replay() -> None:
+    requirement_text = (REPO_ROOT / "data" / "requirements" / "test" / "coupon_discount_engine.txt").read_text(encoding="utf-8-sig")
+    response = client.post(
+        "/api/analyze-text",
+        json={
+            "requirement_id": "coupon_discount_engine",
+            "split": "test",
+            "provider": "mock",
+            "model": "mock-arg-test",
+            "candidates": 3,
+            "seed": 202601,
+            "requirement_text": requirement_text,
+            "forced_techniques": ["Decision Table", "BVA"],
+            "coverage_items": ["expired coupon", "premium member threshold"],
+            "designer_review_notes": "Emphasize negative financial-rule cases first.",
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload.get("replay_source") != "frozen_formal_run"
+    review = payload["summary"]["designer_review"]
+    assert review["forced_techniques"] == ["Decision Table", "BVA"]
+    assert review["coverage_items"] == ["expired coupon", "premium member threshold"]
+    assert review["designer_review_notes"] == "Emphasize negative financial-rule cases first."
+
+
 def test_demo_web_analyze_csv_mock() -> None:
     csv_bytes = BytesIO(
         (

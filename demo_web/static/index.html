@@ -87,7 +87,26 @@ Rules:
 7. note is optional with maximum length 120.</textarea>
             </label>
 
-            <p class="helper-note">Choose a frozen test requirement to auto-fill its text. Keep provider as mock for stable recorded interaction.</p>
+            <div class="panel-card review-card">
+              <h3>Interactive Review Controls</h3>
+              <p class="helper-note">Adjust technique emphasis and coverage-review focus before regenerating the target-application suite.</p>
+              <div class="review-techniques">
+                <label class="toggle-option"><input type="checkbox" name="forced-technique" value="EP">EP</label>
+                <label class="toggle-option"><input type="checkbox" name="forced-technique" value="BVA">BVA</label>
+                <label class="toggle-option"><input type="checkbox" name="forced-technique" value="Decision Table">Decision Table</label>
+                <label class="toggle-option"><input type="checkbox" name="forced-technique" value="State Transition">State Transition</label>
+              </div>
+              <label>
+                Coverage Items to Review
+                <textarea id="text-coverage-items" rows="4" placeholder="One coverage item per line, for example:&#10;expired coupon&#10;illegal pickup transition&#10;subtotal=100 boundary"></textarea>
+              </label>
+              <label>
+                Designer Review Notes
+                <textarea id="text-review-notes" rows="4" placeholder="Example: prioritize negative cases first and make sure premium-member coupon rules are explicit."></textarea>
+              </label>
+            </div>
+
+            <p class="helper-note">Choose a frozen test requirement to auto-fill its text. Keep provider as mock for stable recorded interaction. Use the review controls to revise technique focus and coverage priorities before generation.</p>
             <div class="form-actions">
               <button type="submit">Generate Test Suite</button>
               <span class="status-note" id="text-status">Idle</span>

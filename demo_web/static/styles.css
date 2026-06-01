@@ -315,6 +315,37 @@ textarea {
   font-size: 0.86rem;
 }
 
+.review-card {
+  display: grid;
+  gap: 12px;
+}
+
+.review-techniques {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toggle-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  padding: 8px 12px;
+  border: 1px solid rgba(21, 36, 30, 0.12);
+  border-radius: 999px;
+  background: rgba(216, 236, 231, 0.42);
+  color: var(--teal);
+  font-size: 0.82rem;
+}
+
+.toggle-option input {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--teal);
+}
+
 .form-actions {
   display: flex;
   flex-wrap: wrap;

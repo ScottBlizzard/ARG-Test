@@ -79,7 +79,53 @@ class ARGTestPipeline:
     def _candidate_profile(self, index: int) -> dict[str, str]:
         return CANDIDATE_PROFILES[index % len(CANDIDATE_PROFILES)]
 
-    def build_stage_control(self, requirement_id: str, stage: str, slot: int = 0, profile: dict[str, str] | None = None) -> dict[str, Any]:
+    def _normalize_review_guidance(
+        self,
+        *,
+        forced_techniques: list[str] | None = None,
+        coverage_items: list[str] | None = None,
+        designer_review_notes: str | None = None,
+    ) -> dict[str, Any] | None:
+        technique_aliases = {
+            "ep": "EP",
+            "equivalence partitioning": "EP",
+            "equivalence partition": "EP",
+            "bva": "BVA",
+            "boundary value analysis": "BVA",
+            "decision table": "Decision Table",
+            "decision table testing": "Decision Table",
+            "state transition": "State Transition",
+            "state transition testing": "State Transition",
+        }
+        normalized_techniques: list[str] = []
+        for item in forced_techniques or []:
+            key = item.strip().lower()
+            if not key:
+                continue
+            label = technique_aliases.get(key, item.strip())
+            if label not in normalized_techniques:
+                normalized_techniques.append(label)
+
+        normalized_items = [item.strip() for item in (coverage_items or []) if item and item.strip()]
+        normalized_notes = (designer_review_notes or "").strip()
+
+        if not normalized_techniques and not normalized_items and not normalized_notes:
+            return None
+
+        return {
+            "forced_techniques": normalized_techniques,
+            "coverage_items": normalized_items,
+            "designer_review_notes": normalized_notes,
+        }
+
+    def build_stage_control(
+        self,
+        requirement_id: str,
+        stage: str,
+        slot: int = 0,
+        profile: dict[str, str] | None = None,
+        review_guidance: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         payload = {
             "stage": stage,
             "seed": derive_stage_seed(self.config.seed, requirement_id, stage, slot),
@@ -89,9 +135,16 @@ class ARGTestPipeline:
         if profile:
             payload["profile_label"] = profile["label"]
             payload["profile_instruction"] = profile["instruction"]
+        if review_guidance:
+            payload.update(review_guidance)
         return payload
 
-    def build_candidate_controls(self, requirement_id: str, candidates: int) -> list[dict[str, Any]]:
+    def build_candidate_controls(
+        self,
+        requirement_id: str,
+        candidates: int,
+        review_guidance: dict[str, Any] | None = None,
+    ) -> list[dict[str, Any]]:
         controls: list[dict[str, Any]] = []
         for index in range(candidates):
             controls.append(
@@ -100,6 +153,7 @@ class ARGTestPipeline:
                     stage="structured_generation",
                     slot=index + 1,
                     profile=self._candidate_profile(index),
+                    review_guidance=review_guidance,
                 )
             )
         return controls
@@ -119,6 +173,18 @@ class ARGTestPipeline:
             tail.append(f"- Internal focus guidance: {control['profile_instruction']}")
         if control.get("seed") is not None:
             tail.append(f"- Reproducibility seed tag: {control['seed']}")
+        forced_techniques = control.get("forced_techniques") or []
+        coverage_items = control.get("coverage_items") or []
+        designer_review_notes = (control.get("designer_review_notes") or "").strip()
+        if forced_techniques or coverage_items or designer_review_notes:
+            tail.extend(["", "Designer review guidance:"])
+            if forced_techniques:
+                tail.append(f"- Required techniques to emphasize: {', '.join(forced_techniques)}")
+            if coverage_items:
+                tail.append(f"- Coverage items to inspect explicitly: {'; '.join(coverage_items)}")
+            if designer_review_notes:
+                tail.append(f"- Reviewer notes: {designer_review_notes}")
+            tail.append("- Treat the designer guidance as mandatory planning input.")
         tail.append("- Use the focus guidance internally to diversify coverage.")
         tail.append("- Do not repeat the control metadata verbatim in the final answer.")
         return "\n".join([prompt, *tail]).strip()
@@ -271,9 +337,10 @@ class ARGTestPipeline:
         split: str,
         candidates: int | None = None,
         export: bool = True,
+        review_guidance: dict[str, Any] | None = None,
     ) -> dict:
         requested_candidates = candidates or self.config.candidates
-        candidate_controls = self.build_candidate_controls(requirement_id, requested_candidates)
+        candidate_controls = self.build_candidate_controls(requirement_id, requested_candidates, review_guidance=review_guidance)
         raw_candidates = self.client.generate_structured_candidates(
             requirement_id=requirement_id,
             requirement_text=requirement_text,
@@ -282,7 +349,7 @@ class ARGTestPipeline:
             candidate_controls=candidate_controls,
         )
         generation_metadata = self.client.get_last_generation_metadata()
-        return self.summarize_raw_candidates(
+        summary = self.summarize_raw_candidates(
             requirement_text,
             requirement_id,
             split,
@@ -291,6 +358,9 @@ class ARGTestPipeline:
             candidate_controls=candidate_controls,
             export=export,
         )
+        if review_guidance:
+            summary["designer_review"] = review_guidance
+        return summary
 
     def process_requirement_text(
         self,
@@ -299,9 +369,24 @@ class ARGTestPipeline:
         split: str = 'adhoc',
         candidates: int | None = None,
         export: bool = True,
+        forced_techniques: list[str] | None = None,
+        coverage_items: list[str] | None = None,
+        designer_review_notes: str | None = None,
     ) -> dict:
         resolved_id = extract_requirement_id(requirement_text, requirement_id or 'adhoc_requirement')
-        return self._process_requirement(requirement_text, resolved_id, split, candidates=candidates, export=export)
+        review_guidance = self._normalize_review_guidance(
+            forced_techniques=forced_techniques,
+            coverage_items=coverage_items,
+            designer_review_notes=designer_review_notes,
+        )
+        return self._process_requirement(
+            requirement_text,
+            resolved_id,
+            split,
+            candidates=candidates,
+            export=export,
+            review_guidance=review_guidance,
+        )
 
     def process_requirement_file(
         self,

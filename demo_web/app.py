@@ -92,6 +92,9 @@ class AnalyzeTextRequest(BaseModel):
     seed: int | None = DEFAULT_SEED
     temperature: float | None = DEFAULT_TEMPERATURE
     top_p: float | None = DEFAULT_TOP_P
+    forced_techniques: list[str] = Field(default_factory=list)
+    coverage_items: list[str] = Field(default_factory=list)
+    designer_review_notes: str | None = None
 
 
 def _read_json(path: Path) -> Any:
@@ -235,6 +238,9 @@ def _run_pipeline_payload(
     requirement_text: str,
     requirement_id: str | None,
     split: str,
+    forced_techniques: list[str] | None = None,
+    coverage_items: list[str] | None = None,
+    designer_review_notes: str | None = None,
 ) -> dict[str, Any]:
     session_root = _build_session_root(prefix)
     pipeline = _build_pipeline(
@@ -253,6 +259,9 @@ def _run_pipeline_payload(
         split=split,
         candidates=candidates,
         export=True,
+        forced_techniques=forced_techniques,
+        coverage_items=coverage_items,
+        designer_review_notes=designer_review_notes,
     )
     return _load_run_payload(pipeline.config.paths.runtime_root, summary["split"], summary["requirement_id"], summary)
 
@@ -475,7 +484,8 @@ def demo_requirements() -> dict[str, Any]:
 def analyze_text(payload: AnalyzeTextRequest) -> dict[str, Any]:
     resolved_id = extract_requirement_id(payload.requirement_text, payload.requirement_id or "adhoc_requirement")
     replay_payload = _load_formal_replay_payload(payload.split, resolved_id, payload.requirement_text)
-    if payload.provider == DEFAULT_PROVIDER and replay_payload is not None:
+    has_designer_review = bool(payload.forced_techniques or payload.coverage_items or (payload.designer_review_notes or "").strip())
+    if payload.provider == DEFAULT_PROVIDER and replay_payload is not None and not has_designer_review:
         return replay_payload
 
     return _run_pipeline_payload(
@@ -490,6 +500,9 @@ def analyze_text(payload: AnalyzeTextRequest) -> dict[str, Any]:
         requirement_id=payload.requirement_id,
         requirement_text=payload.requirement_text,
         split=payload.split,
+        forced_techniques=payload.forced_techniques,
+        coverage_items=payload.coverage_items,
+        designer_review_notes=payload.designer_review_notes,
     )
 
 

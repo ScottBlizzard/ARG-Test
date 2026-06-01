@@ -22,6 +22,19 @@ class Exporter:
         run_context: dict | None = None,
         candidate_controls: list[dict] | None = None,
     ) -> None:
+        review_payload = None
+        if candidate_controls:
+            first_control = candidate_controls[0]
+            forced = list(first_control.get('forced_techniques') or [])
+            coverage = list(first_control.get('coverage_items') or [])
+            notes = str(first_control.get('designer_review_notes') or '').strip()
+            if forced or coverage or notes:
+                review_payload = {
+                    'forced_techniques': forced,
+                    'coverage_items': coverage,
+                    'designer_review_notes': notes,
+                }
+
         for index, raw_text in enumerate(raw_candidates, start=1):
             raw_path = self.artifacts_root / 'raw_generations' / split / f'{requirement_id}_candidate_{index}.md'
             raw_path.parent.mkdir(parents=True, exist_ok=True)
@@ -63,6 +76,7 @@ class Exporter:
                 'candidate_controls': candidate_controls or [],
                 'risk_assessment': selected.parsed_trace.risk_assessment.to_dict() if selected.parsed_trace.risk_assessment else None,
                 'state_model': selected.parsed_trace.state_model.to_dict() if selected.parsed_trace.state_model else None,
+                'designer_review': review_payload,
                 'checks': [check.to_dict() for check in selected.checks],
                 'diagnostics': selected.diagnostics(),
                 'run_context': run_context or {},
@@ -86,6 +100,7 @@ class Exporter:
             'candidate_controls': candidate_controls or [],
             'risk_assessment': selected.parsed_trace.risk_assessment.to_dict() if selected.parsed_trace.risk_assessment else None,
             'state_model': selected.parsed_trace.state_model.to_dict() if selected.parsed_trace.state_model else None,
+            'designer_review': review_payload,
             'metrics': metrics or {},
             'diagnostics': selected.diagnostics(),
             'run_context': run_context or {},

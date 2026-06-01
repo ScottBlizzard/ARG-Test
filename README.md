@@ -2,6 +2,12 @@
 
 ARG-Test is the final-project workspace for a requirement-driven AI black-box testing tool in the Software Testing course.
 
+For the final-project deliverables, the repository distinguishes between:
+
+- the **AutoTestDesign tool**: `ARG-Test`
+- the **independent application under test**: `MiniShop Checkout`, implemented in `target_app/minishop_checkout/`
+- the **selected executable module** of that application: `coupon_discount_engine`
+
 It follows the structure implied by the assignment, the project guide, and the reference paper:
 
 - `Analysis -> Pattern -> Steps -> Verification -> FinalAnswer`
@@ -39,6 +45,8 @@ ARG-Test/
 ?   ??? requirements/
 ?   ??? gold_specs/
 ?   ??? mutants/
+??? target_app/
+?   ??? minishop_checkout/
 ??? reference_impl/
 ??? tests/
 ??? prompts/
@@ -210,6 +218,7 @@ Important defaults:
 - parsed traces and checker logs: `artifacts/parsed_traces/`, `artifacts/checker_logs/`
 - final test cases and reports: `outputs/final_tests/`, `outputs/reports/`
 - detailed executable module evidence: `reference_impl/`, `tests/`
+- target application prototype: `target_app/minishop_checkout/`
 - experimental scripts: `experiments/`
 - report and PPT outlines: `report_assets/`
 - team collaboration assets: `team_assets/`

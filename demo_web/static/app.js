@@ -73,6 +73,19 @@ function setStatus(id, message) {
   document.getElementById(id).textContent = message;
 }
 
+function readForcedTechniques() {
+  return Array.from(document.querySelectorAll('input[name="forced-technique"]:checked'))
+    .map((input) => input.value)
+    .filter(Boolean);
+}
+
+function parseCoverageItems(value) {
+  return String(value || "")
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function resetDirectPreview() {
   textResult.classList.add("empty-state");
   textResult.innerHTML = `
@@ -229,6 +242,26 @@ function renderArtifactPaths(paths) {
   `;
 }
 
+function renderDesignerReview(review) {
+  if (!review) {
+    return "";
+  }
+  const forcedTechniques = review.forced_techniques || [];
+  const coverageItems = review.coverage_items || [];
+  const notes = String(review.designer_review_notes || "").trim();
+  if (!forcedTechniques.length && !coverageItems.length && !notes) {
+    return "";
+  }
+  return `
+    <div class="panel-card">
+      <h3>Designer Review Inputs</h3>
+      ${forcedTechniques.length ? `<div class="chip-row">${forcedTechniques.map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>` : ""}
+      ${coverageItems.length ? `<ul class="plain-list">${coverageItems.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
+      ${notes ? `<p><strong>Notes:</strong> ${escapeHtml(notes)}</p>` : ""}
+    </div>
+  `;
+}
+
 function renderDirectResult(payload) {
   const summary = payload.summary || {};
   const parsed = payload.parsed_trace || {};
@@ -257,6 +290,7 @@ function renderDirectResult(payload) {
         </div>
       </div>
     ` : ""}
+    ${renderDesignerReview(summary.designer_review)}
     ${renderRiskBlock(summary.risk_assessment)}
     <div class="panel-card">
       <h3>Diagnostics</h3>
@@ -461,6 +495,9 @@ async function runDirectAnalysis() {
       candidates: Number(document.getElementById("text-candidates").value),
       seed: Number(document.getElementById("text-seed").value),
       requirement_text: document.getElementById("text-requirement").value,
+      forced_techniques: readForcedTechniques(),
+      coverage_items: parseCoverageItems(document.getElementById("text-coverage-items").value),
+      designer_review_notes: document.getElementById("text-review-notes").value,
     });
     renderDirectResult(payload);
     setStatus("text-status", "Completed.");

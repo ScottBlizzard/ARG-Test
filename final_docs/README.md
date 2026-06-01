@@ -17,7 +17,12 @@ Current structure:
 - `09_nfr_validation_report_cn.md`: formalized non-functional validation report.
 - `10_feature_closure_status_cn.md`: closure report for the remaining strict-gap features and rerun policy.
 - `11_reproducibility_and_stability_cn.md`: seeded reproducibility upgrade status, live evidence, and final reporting guidance.
+- `12_target_application_definition_cn.md`: formal definition of the independent target application used by the final deliverables.
 - `execution_evidence/`: saved execution evidence for the selected detailed module.
+
+Target application code:
+
+- `target_app/minishop_checkout/`: compact prototype of the independent application under test.
 
 Independent document package convention:
 
