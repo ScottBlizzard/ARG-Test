@@ -57,11 +57,32 @@ This module is a strong detailed-execution target because it combines:
 
 The module is suitable for detailed execution because its expected behavior is explicit, reviewable, and rich enough to require more than one testing technique. A single nominal-path test would not be sufficient: the module has rejection rules, threshold rules, membership restrictions, and implementation branches that must be checked together.
 
-## 2. Requirement Basis and Scope
+### 1.3 Mapping to the Teacher-Required Detailed Chain
+
+The assignment asks for a detailed chain from concept to evidence-based improvement. This document is explicitly organized to follow that chain:
+
+1. **Concept**
+   - define the target application and selected module
+2. **Coverage item identification**
+   - normalize the coupon rules into test obligations
+3. **Coverage strategy and method**
+   - choose EP, BVA, Decision Table, and selected white-box checks
+4. **Traceability**
+   - map requirement rules to concrete test cases and executable test functions
+5. **Prompt design / tool use**
+   - explain how `ARG-Test` was used to support design and review
+6. **Result analysis**
+   - interpret `pytest`, coverage, and mutation evidence
+7. **Evidence-based improvement**
+   - explain which obligations required deliberate reinforcement in the final suite
+
+---
+
+## 2. Requirement Basis, Scope, and Coverage Item Identification
 
 ### 2.1 Formalized Requirement Summary
 
-The detailed execution document uses the following normalized rules derived from the final requirement set and the selected reference implementation:
+The detailed execution document uses the following normalized rules derived from the selected requirement and the preserved reference implementation:
 
 - R1: only one coupon may be applied to an order
 - R2: unknown coupon codes must be rejected
@@ -73,33 +94,109 @@ The detailed execution document uses the following normalized rules derived from
 - R8: `FREESHIP` requires `subtotal >= 30`
 - R9: no-coupon input should leave subtotal and shipping unchanged
 
-These rules define the coverage items used in the rest of the document. The black-box design focuses on externally visible behavior from these rules, while the white-box design checks whether the executable reference implementation exercises all important branches that implement them.
+These rules define the coverage items used in the rest of the document.
 
-### 2.2 Implementation Under Test
+### 2.2 Coverage Item Identification
+
+The normalized rules were converted into explicit coverage obligations before test-case design started.
+
+| Coverage class | Coverage item | Why it matters |
+| --- | --- | --- |
+| Valid partition | no coupon path | baseline behavior must preserve original order values |
+| Invalid partition | multiple coupons | explicit exclusivity rule |
+| Invalid partition | unknown coupon | unsupported input must be rejected |
+| Invalid partition | expired coupon | temporal invalidity must be rejected |
+| Boundary | `SAVE10` threshold at `50` | classic off-by-one risk |
+| Boundary | `SAVE20` threshold at `100` | high-value discount threshold |
+| Boundary | `FREESHIP` threshold at `30` | shipping fee changes discontinuously |
+| Rule interaction | `SAVE20` + non-premium customer | premium-only condition |
+| Rule interaction | `SAVE20` + sale items | exclusivity interaction |
+| Expected-result obligation | correct discount math for `SAVE10` and `SAVE20` | financial correctness |
+| Expected-result obligation | correct shipping fee effect for `FREESHIP` | output transformation correctness |
+| White-box obligation | negative subtotal guard | implementation-level defensive branch |
+| White-box obligation | negative shipping-fee guard | implementation-level defensive branch |
+| White-box obligation | coupon normalization | input-normalization branch that affects accept/reject behavior |
+
+This coverage-item table is important because it bridges the raw requirement wording and the actual test suite design. It prevents the detailed document from becoming only a list of example tests without a clear coverage rationale.
+
+### 2.3 Implementation Under Test
 
 | Item | Path |
 | --- | --- |
 | Target application package | `target_app/minishop_checkout/` |
 | Promotion-service entry point | `target_app/minishop_checkout/promotion.py` |
 | Checkout integration path | `target_app/minishop_checkout/checkout.py` |
-| Reference implementation | `reference_impl/coupon_discount_engine.py` |
+| Reference implementation under detailed execution | `reference_impl/coupon_discount_engine.py` |
 | Black-box tests | `tests/test_coupon_discount_engine_blackbox.py` |
 | White-box tests | `tests/test_coupon_discount_engine_whitebox.py` |
 | Seeded mutants | `reference_impl/coupon_discount_engine_mutants.py` |
 
-The detailed module is executed through the preserved `reference_impl` path so that the strongest existing `pytest`, coverage, and mutation evidence remains valid. At the same time, the application package now imports the same coupon engine through the promotion-service layer, which means the detailed module is part of the chosen target application rather than an isolated helper script.
+The detailed module is executed through the preserved `reference_impl` path so that the strongest existing `pytest`, coverage, and mutation evidence remains valid. At the same time, the application package imports the same coupon engine through the promotion-service layer, which means the detailed module is part of the chosen target application rather than an isolated helper script.
 
-## 3. Test Environment and Tooling
+---
+
+## 3. How ARG-Test Was Used in the Detailed Design
+
+### 3.1 Role of the Tool in This Document
+
+For this detailed module, `ARG-Test` is used as a **design-support and review-support tool**, not as the executable test runner. Its value in this document is to:
+
+- structure the requirement into explicit test obligations
+- propose black-box techniques suitable for the rule set
+- support designer review of coverage focus
+- preserve traceable artifacts from requirement to reviewed suite
+
+The actual execution framework remains `pytest`.
+
+### 3.2 Prompt-Design Intent
+
+The generation and review process for this module is centered on the following prompt-design intent:
+
+1. force the model to produce a structured trace rather than free text
+2. make the model commit to named techniques
+3. require explicit expected outputs for each test case
+4. let the designer strengthen focus on high-risk obligations such as:
+   - threshold boundaries
+   - expired coupon handling
+   - premium membership restriction
+   - sale-item conflict
+
+This prompt-design intent matters because the selected module is small enough that weak prompting would still produce fluent-looking but incomplete tests. The goal here is not to maximize verbosity, but to maximize obligation visibility.
+
+### 3.3 Interactive Review Path Used Here
+
+The final project now supports the designer-in-the-loop review cycle required by the assignment:
+
+1. select or enter the coupon requirement
+2. add technique emphasis and coverage-review notes
+3. generate a structured suite
+4. inspect generated cases, risk hints, and diagnostics
+5. directly edit generated test cases if an obligation is weak or missing
+6. export the revised suite
+
+For this detailed module, the most important review focus was:
+
+- threshold obligations at `30`, `50`, and `100`
+- invalid financial-rule combinations
+- explicit expected outputs rather than vague “should fail” wording
+- implementation branches that are easy to miss from the requirement text alone
+
+---
+
+## 4. Test Environment and Tooling
+
+### 4.1 Tooling
 
 | Tool | Purpose |
 | --- | --- |
+| `ARG-Test` | structured requirement analysis, black-box suite generation, and review support |
 | `pytest` | execute black-box and white-box test cases |
 | `coverage.py` | collect statement and branch coverage |
-| mutant functions | demonstrate defect detection usefulness |
+| mutant functions | demonstrate defect-detection usefulness |
 
 `pytest` was selected because the reference implementation is a compact Python module and the expected outcomes can be expressed directly with assertions. `coverage.py` was added to connect the test design with executable evidence. Branch coverage is especially useful here because coupon logic is implemented through conditionals, not only straight-line statements.
 
-Commands used:
+### 4.2 Commands Used
 
 ```powershell
 python -m pytest tests\test_coupon_discount_engine_blackbox.py tests\test_coupon_discount_engine_whitebox.py -q
@@ -110,11 +207,29 @@ python -m coverage xml -o final_docs\execution_evidence\coupon_discount_engine_c
 python -m coverage xml -o final_docs\execution_evidence\coupon_discount_engine_branch_coverage.xml
 ```
 
-## 4. Black-Box Test Design
+### 4.3 Execution Scope
+
+The selected module is executed at three nested scopes:
+
+1. **module-specific test scope**
+   - black-box and white-box tests for `coupon_discount_engine`
+2. **repository regression scope**
+   - all current repository tests
+3. **application relevance scope**
+   - `MiniShop Checkout` imports the same coupon logic through the promotion-service path and the checkout preview smoke tests
+
+This separation is helpful because it shows both:
+
+- narrow evidence for the selected module
+- broader regression stability for the repository
+
+---
+
+## 5. Black-Box Test Design
 
 The black-box design was derived from the requirement rules without relying on internal implementation details. Three techniques are used together because they cover different risks. Equivalence Partitioning separates valid and invalid classes. Boundary Value Analysis targets monetary thresholds where off-by-one or inclusive/exclusive mistakes are likely. Decision Table Testing captures business-rule combinations, especially for `SAVE20`, where multiple conditions interact.
 
-### 4.1 Equivalence Partitioning
+### 5.1 Equivalence Partitioning
 
 | Partition ID | Partition type | Representative condition | Designed test(s) | Expected result |
 | --- | --- | --- | --- | --- |
@@ -126,7 +241,7 @@ The black-box design was derived from the requirement rules without relying on i
 | EP6 | invalid | restricted coupon combined with sale items | `BB08` | reject with sale-item restriction reason |
 | EP7 | valid | `SAVE20` with all preconditions satisfied | `BB09` | accept and apply 20% discount |
 
-### 4.2 Boundary Value Analysis
+### 5.2 Boundary Value Analysis
 
 | Boundary ID | Threshold | Below | On boundary | Above / valid representative | Designed test(s) |
 | --- | --- | --- | --- | --- | --- |
@@ -134,7 +249,7 @@ The black-box design was derived from the requirement rules without relying on i
 | B2 | `SAVE20` subtotal `100` | `99` | `100` | `120` | `WB03`, `BB09` |
 | B3 | `FREESHIP` subtotal `30` | `29` | `30` | `80` with no coupon | `WB04`, `BB10`, `BB01` |
 
-### 4.3 Decision Table
+### 5.3 Decision Table
 
 | Rule | Coupon | Threshold met | Premium member | Sale items present | Expired | Expected outcome |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -147,7 +262,21 @@ The black-box design was derived from the requirement rules without relying on i
 | D7 | `FREESHIP` | no | N/A | N/A | no | reject |
 | D8 | `FREESHIP` | yes | N/A | N/A | no | accept, shipping becomes zero |
 
-### 4.4 Executable Black-Box Cases
+### 5.4 Expected-Result Synthesis
+
+The assignment explicitly asks for expected-result generation, so the detailed suite does not stop at selecting inputs. Each main case also has an explicit oracle rationale.
+
+| Case type | Oracle logic |
+| --- | --- |
+| `SAVE10` valid | subtotal becomes `subtotal - 10%`, shipping unchanged |
+| `SAVE20` valid | subtotal becomes `subtotal - 20%`, shipping unchanged |
+| `FREESHIP` valid | subtotal unchanged, shipping becomes `0.0` |
+| invalid coupon case | status becomes rejected, subtotal and shipping remain original values |
+| no-coupon case | status accepted, no discount applied, original values preserved |
+
+This explicit oracle layer is important because financial-rule suites are not persuasive if they only check status flags and ignore output values.
+
+### 5.5 Executable Black-Box Cases
 
 | Test ID | `pytest` function | Main technique | Covered rule / purpose |
 | --- | --- | --- | --- |
@@ -162,7 +291,7 @@ The black-box design was derived from the requirement rules without relying on i
 | BB09 | `test_save20_valid_case_applies_discount` | decision table | valid `SAVE20` acceptance |
 | BB10 | `test_freeship_threshold_on_boundary_sets_shipping_to_zero` | BVA | `FREESHIP` exact threshold acceptance |
 
-### 4.5 Requirement-to-Test Traceability
+### 5.6 Requirement-to-Test Traceability
 
 The following traceability matrix connects the requirement rules, coverage ideas, selected techniques, executable test IDs, and expected behavior. This is the main bridge between the abstract test design and the concrete `pytest` implementation.
 
@@ -178,9 +307,11 @@ The following traceability matrix connects the requirement rules, coverage ideas
 | R8 | `FREESHIP` threshold | BVA | `WB04`, `BB10` | `test_freeship_below_threshold_is_rejected`, `test_freeship_threshold_on_boundary_sets_shipping_to_zero` | reject below 30, set shipping to zero at 30 |
 | R9 | no coupon path | EP | `BB01` | `test_no_coupon_keeps_order_values` | accept and keep values unchanged |
 
-## 5. White-Box Test Design
+---
 
-### 5.1 White-Box Objectives
+## 6. White-Box Test Design
+
+### 6.1 White-Box Objectives
 
 The white-box design complements the black-box suite by checking implementation branches that may not be fully justified by a single external rule. For example, the negative value guards are implementation-level safety checks, while coupon normalization verifies that the function handles user-facing input variations such as whitespace and mixed letter case.
 
@@ -192,7 +323,7 @@ The white-box design targets:
 - acceptance branches for `SAVE10`, `SAVE20`, and `FREESHIP`
 - normalization behavior for mixed-case and whitespace coupon input
 
-### 5.2 Branch-to-Test Mapping
+### 6.2 Branch-to-Test Mapping
 
 | White-box obligation | Designed test(s) |
 | --- | --- |
@@ -205,7 +336,7 @@ The white-box design targets:
 | `SAVE20` accept path | `BB09` |
 | `FREESHIP` accept path | `BB10` |
 
-### 5.3 Executable White-Box Cases
+### 6.3 Executable White-Box Cases
 
 | Test ID | `pytest` function | Covered white-box purpose |
 | --- | --- | --- |
@@ -215,13 +346,25 @@ The white-box design targets:
 | WB04 | `test_freeship_below_threshold_is_rejected` | `FREESHIP` rejection branch |
 | WB05 | `test_coupon_normalization_accepts_mixed_case_and_spacing` | normalization and `SAVE10` valid path |
 
-Together, the black-box and white-box tests form a layered design. The black-box part proves that the observable business rules are represented. The white-box part proves that the implementation paths behind those rules are executed, including defensive branches and normalization behavior.
+### 6.4 White-Box Adequacy Interpretation
 
-## 6. Execution Results
+The white-box layer matters for two reasons:
+
+1. some implementation obligations are not visible in the requirement text, such as defensive guards for negative numbers
+2. some user-facing behaviors, such as coupon normalization, are easiest to justify through implementation-path evidence
+
+Together, the black-box and white-box tests form a layered design:
+
+- the black-box part proves that the observable business rules are represented
+- the white-box part proves that the implementation paths behind those rules are executed
+
+---
+
+## 7. Execution Results
 
 ![Detailed Module Execution Evidence](figures/coupon_module_evidence_scorecard.png)
 
-### 6.1 Summary of Observed Results
+### 7.1 Summary of Observed Results
 
 | Item | Observed result |
 | --- | --- |
@@ -231,7 +374,7 @@ Together, the black-box and white-box tests form a layered design. The black-box
 | Branch coverage on the reference module | `100%` |
 | Mutation result | `4 / 4 mutants killed` |
 
-### 6.2 Coverage Summary
+### 7.2 Coverage Summary
 
 ```text
 Name                                       Stmts   Miss Branch BrPart  Cover
@@ -245,17 +388,75 @@ Coverage interpretation:
 - white-box design closes the remaining branch obligations
 - no branch in the selected reference implementation remains unexecuted
 
-### 6.3 Result Analysis
+### 7.3 Result Analysis
 
-The detailed execution result is strong for three reasons.
+The detailed execution result is strong for four reasons.
 
 First, the black-box suite is not superficial. It covers valid partitions, invalid partitions, multiple thresholds, and interacting rule conditions such as premium membership plus sale-item restrictions.
 
-Second, the white-box suite is not decorative. It exercises the explicit negative-input guards and rejection/acceptance branches that are easy to overlook in a purely requirement-level discussion.
+Second, the expected-result layer is explicit. The suite does not stop at “accepted” or “rejected”; it also checks financial output values such as discounted subtotal and shipping fee.
 
-Third, the combined suite is compact. With only `15` module-focused cases, it achieves complete statement and branch coverage on the selected implementation, which is a good tradeoff between completeness and maintainability for this module-level validation.
+Third, the white-box suite is not decorative. It exercises the explicit negative-input guards and rejection/acceptance branches that are easy to overlook in a purely requirement-level discussion.
 
-## 7. Mutation-Based Usefulness Demonstration
+Fourth, the combined suite is compact. With only `15` module-focused cases, it achieves complete statement and branch coverage on the selected implementation, which is a good tradeoff between completeness and maintainability for this module-level validation.
+
+### 7.4 Defect Classes Detectable by This Suite
+
+The final suite is expected to detect at least the following defect classes:
+
+- off-by-one threshold defects
+- missing exclusivity checks
+- premium-membership authorization defects
+- sale-item restriction defects
+- output-value calculation defects
+- normalization/format handling defects
+- missing defensive guards for negative numeric input
+
+---
+
+## 8. Evidence-Based Improvement Loop
+
+The assignment explicitly asks for evidence-based improvement rather than a one-shot generated suite. This section explains how the final coupon suite goes beyond an initial nominal-path design.
+
+### 8.1 Obligations That Needed Reinforcement
+
+The highest-value reinforcement points for this module were:
+
+- explicit rejection of multiple coupons
+- explicit expired-coupon rejection
+- exact threshold checks at `30`, `50`, and `100`
+- premium-member restriction separated from threshold failure
+- sale-item restriction separated from membership failure
+- normalization behavior for mixed-case and whitespace coupon input
+
+These are exactly the kinds of obligations that plain generation can under-specify if the designer only accepts the first plausible-looking suite.
+
+### 8.2 Concrete Improvements Preserved in the Final Suite
+
+The final reviewed suite deliberately preserves the following cases because they materially improve coverage quality:
+
+| Improvement focus | Final case(s) preserved | Why it matters |
+| --- | --- | --- |
+| one-coupon-only enforcement | `BB02` | closes explicit exclusivity rule |
+| expired-coupon invalidity | `BB04` | closes time-sensitive invalid case |
+| threshold below/on distinctions | `BB05`, `BB06`, `WB03`, `WB04`, `BB10` | prevents off-by-one coverage gaps |
+| interaction of premium and sale-item rules | `BB07`, `BB08`, `BB09` | avoids collapsing distinct rejection causes into one vague test |
+| normalization branch | `WB05` | preserves user-input variation and implementation-path evidence |
+
+### 8.3 Why This Counts as Real Improvement
+
+The final suite is better than a superficial first-pass suite because:
+
+- it distinguishes different invalid causes rather than merging them
+- it makes the numeric boundaries explicit
+- it checks both state/status outputs and financial outputs
+- it connects requirement-visible obligations with implementation-visible branches
+
+This is the main reason the detailed module is a credible course-project execution package rather than an illustrative toy example.
+
+---
+
+## 9. Mutation-Based Usefulness Demonstration
 
 The evaluation also includes defect-seeded usefulness evidence. Four representative mutants were created:
 
@@ -279,7 +480,28 @@ Mutation-to-test mapping:
 
 This is important because it shows that the detailed suite is not only structurally complete. It is also effective at detecting realistic logic defects that correspond to the selected business rules and boundaries.
 
-## 8. Evidence Paths
+---
+
+## 10. Relevance to the Full Target Application
+
+The selected module is not detached from the target application. Its relevance to `MiniShop Checkout` is concrete:
+
+- `target_app/minishop_checkout/promotion.py` imports the same coupon engine
+- `target_app/minishop_checkout/checkout.py` consumes coupon results inside the end-to-end preview flow
+- application smoke tests already verify checkout scenarios that depend on coupon behavior
+
+Two examples from the current smoke suite are especially relevant:
+
+| Application smoke scenario | Why it matters for the selected module |
+| --- | --- |
+| `test_checkout_preview_applies_coupon_and_computes_tax` | proves that coupon logic participates correctly in the preview pipeline, including tax and total |
+| `test_checkout_preview_reports_invalid_payment_without_breaking_order_math` | shows that coupon calculation remains stable even when another validation area is failing |
+
+This confirms that the detailed module evidence is not isolated. It strengthens confidence in the promotion part of the real chosen target application.
+
+---
+
+## 11. Evidence Paths
 
 Primary evidence files:
 
@@ -287,9 +509,23 @@ Primary evidence files:
 - `final_docs/execution_evidence/coupon_discount_engine_coverage.xml`
 - `final_docs/execution_evidence/coupon_discount_engine_branch_coverage.xml`
 - `final_docs/execution_evidence/coupon_discount_engine_mutation_demo.md`
+- `tests/test_coupon_discount_engine_blackbox.py`
+- `tests/test_coupon_discount_engine_whitebox.py`
+- `tests/test_minishop_checkout_smoke.py`
 
-## 9. Conclusion
+---
+
+## 12. Conclusion
 
 The `coupon_discount_engine` module is supported by a complete detailed-design and execution chain. The module is covered by multiple black-box techniques, executable white-box tests, complete statement and branch coverage, and a successful mutation demonstration. This makes it a credible detailed anchor for the overall `MiniShop Checkout` validation package rather than a merely illustrative example.
 
-Most importantly, the evidence chain is complete: requirement rules are transformed into coverage items, coverage items are mapped to executable `pytest` tests, the tests are run against the selected `MiniShop Checkout` promotion module, and the resulting suite is checked with both coverage and mutation evidence. The result is a traceable module-level validation package that connects test case design, test tool implementation, and test result analysis.
+Most importantly, the evidence chain is complete:
+
+- requirement rules are transformed into explicit coverage items
+- coverage items are mapped to black-box and white-box strategies
+- those strategies are traced to executable `pytest` functions
+- the tests are run against the selected `MiniShop Checkout` promotion module
+- the resulting suite is validated with coverage and mutation evidence
+- the final suite is justified as a reviewed and improved result rather than a one-shot output
+
+The result is a traceable module-level validation package that connects test case design, test tool implementation, and test result analysis in the exact spirit required by the assignment.
