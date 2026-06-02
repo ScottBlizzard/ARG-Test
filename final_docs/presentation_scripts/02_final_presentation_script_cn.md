@@ -43,6 +43,8 @@ ARG-Test 的动机来自一个很直接的观察。普通的 LLM 可以生成流
 
 这也是后面整场展示的主线。我们要说明的是，ARG-Test 如何把普通生成过程变成结构化、可检查、可追踪的测试设计过程，并把这个工具应用到一个具体的被测应用上。
 
+所以这个项目讲的不只是“能不能生成测试”，而是“能不能把整个测试设计过程变得更可用、更可审查”。
+
 ---
 
 ## 第 2 人
@@ -65,9 +67,13 @@ ARG-Test 的动机来自一个很直接的观察。普通的 LLM 可以生成流
 
 另一个作业里非常重要的点是 interactive review。我们的系统提供了四个实际可展示的 review surface：Direct Input、CSV Batch、State Model 和 Formal Evidence。
 
+这也意味着 tester 不只有一种固定使用方式，而是可以根据单条需求、批量输入、工作流查看和证据展示这些不同场景来使用系统。
+
 更重要的是，tester 不是被动的。tester 可以检查输出、修改 review guidance、重新运行 pipeline，甚至在生成之后直接编辑测试用例，并导出 revised suite。这样一来，设计者参与就不只是理论上的一句话，而是真正体现在最终工具能力里。
 
 所以这一部分最重要的结论是：ARG-Test 做的不只是生成，而是生成加结构、加检查、加审查、加受控修订。
+
+正是这种组合，让它更接近一个真正可用的 AutoTestDesign 工作流。
 
 ---
 
@@ -93,7 +99,11 @@ ARG-Test 的动机来自一个很直接的观察。普通的 LLM 可以生成流
 
 最后，测试计划里还包含了 cost estimation。我们的估算是：如果使用 ARG-Test 来测试这个目标应用，大约需要四点五到七个 person-days；如果完全手工完成同样范围的 requirement decomposition、suite generation、prioritization 和 traceability 整理，那么成本大约会上升到七点五到十个 person-days。也就是说，工具的价值不在于取代人工 review，而在于降低需求拆解、首轮测试套件生成、优先级整理和可追溯性维护的成本。
 
+换句话说，这个计划不只是技术上可行，也是在团队投入和项目节奏上可落地的。
+
 所以这一部分的关键结论是：风险报告和测试计划共同说明了我们如何系统地测试这个目标应用，也说明了这套计划是建立在结构化证据之上的。
+
+它们让整个项目从风险识别到测试套件执行之间，形成了一条很清楚的应用侧逻辑。
 
 ---
 
@@ -117,6 +127,8 @@ Representative cases 这一页又给出了三个具体例子，分别对应 busi
 
 所以这一部分最重要的结论有两个。第一，ARG-Test 能在一个有意义的 requirement 范围上稳定工作。第二，structured and checked pipeline 在冻结评估设定下，确实优于几个更弱的 baseline。
 
+所以这些实验结果的价值，不只是数字本身，而是它们支撑了整个工具设计的合理性。
+
 这也自然过渡到最后一部分，也就是从 design-level evidence 走向 executable evidence。
 
 ---
@@ -136,6 +148,8 @@ Representative cases 这一页又给出了三个具体例子，分别对应 busi
 我们也非常重视 reproducibility 和 practical validation。在 seeded mock control 下，repository-level chain 是 deterministic 的。对于 live provider，我们保持诚实：它仍然存在 variance。所以我们的 submission-level reproducibility 不依赖于夸大 live determinism，而是依赖 frozen generations 加 replay。这样我们在 demo 和 report 里展示的 formal examples 都可以被重新构建出来。
 
 Limitations 这一页同样重要。我们明确说明：我们做的是 requirement-driven branch；我们的评估是 course-scale，而不是大型 public benchmark；coverage 仍然依赖人工编写的 gold specifications；live providers 也仍然存在 residual nondeterminism。我们把这些视为清晰的项目边界。
+
+把这些边界讲清楚，反而会让我们的最终结论更可信，因为我们同时说明了项目的能力和限制。
 
 所以最后的总结是：structured reasoning 让 black-box test design 变得可审计；完整的 ARG-Test pipeline 优于非 AI 和较弱 AI 的 baseline；而最终提交物也不只是一个 prompt demo，它包括工具本身、系统导出的结构化证据、建立在这些证据之上的目标应用风险分析报告和测试计划、针对选定模块的详细执行文档，以及可复现的最终工件。
 
