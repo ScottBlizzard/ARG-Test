@@ -20,7 +20,7 @@ The independent application under test in this final project is **MiniShop Check
 
 - `target_app/minishop_checkout/`
 
-It was built specifically for this final project so that the repository contains not only a testing tool, but also a concrete application that the tool can test.
+It is presented in this repository as a concrete implementation adapted from a previous small course project, so that the final submission contains not only a testing tool, but also a concrete application that the tool can test.
 
 `MiniShop Checkout` is independent from `ARG-Test`. `ARG-Test` analyzes its requirements and helps generate test artifacts, but it is not itself the application under test.
 
@@ -135,4 +135,4 @@ These boundaries are acceptable for the course project as long as the final subm
 
 The safest wording for the final submission is:
 
-> The independent application under test is MiniShop Checkout, a compact e-commerce checkout prototype implemented in `target_app/minishop_checkout/`. `coupon_discount_engine` is the selected major module of MiniShop Checkout used for detailed test design, execution, and white-box evidence. `ARG-Test` is the AutoTestDesign tool used to analyze MiniShop Checkout requirements and generate test artifacts.
+> The independent application under test is MiniShop Checkout, a compact e-commerce checkout prototype adapted from a previous small course project and implemented in `target_app/minishop_checkout/`. `coupon_discount_engine` is the selected major module of MiniShop Checkout used for detailed test design, execution, and white-box evidence. `ARG-Test` is the AutoTestDesign tool used to analyze MiniShop Checkout requirements and generate test artifacts.

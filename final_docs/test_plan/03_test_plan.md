@@ -20,7 +20,7 @@
 
 This test plan is written for the **independent application under test**, not for the AutoTestDesign tool itself.
 
-The application under test is **MiniShop Checkout**, a compact e-commerce checkout prototype implemented in:
+The application under test is **MiniShop Checkout**, a compact e-commerce checkout prototype adapted from a previous small course project and implemented in:
 
 - `target_app/minishop_checkout/`
 

@@ -18,7 +18,7 @@
 
 ### 1.1 Target Application Context
 
-The independent application under test in this final project is **MiniShop Checkout**, a compact e-commerce checkout prototype implemented in:
+The independent application under test in this final project is **MiniShop Checkout**, a compact e-commerce checkout prototype adapted from a previous small course project and implemented in:
 
 - `target_app/minishop_checkout/`
 

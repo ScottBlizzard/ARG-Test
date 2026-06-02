@@ -18,7 +18,7 @@
 
 This report is the **risk analysis report for the chosen target application**, not for the AutoTestDesign tool itself.
 
-The target application under test is **MiniShop Checkout**, a compact e-commerce checkout prototype implemented in:
+The target application under test is **MiniShop Checkout**, a compact e-commerce checkout prototype adapted from a previous small course project and implemented in:
 
 - `target_app/minishop_checkout/`
 
